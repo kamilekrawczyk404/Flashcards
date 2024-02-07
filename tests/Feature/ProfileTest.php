@@ -62,7 +62,7 @@ test('social media can be removed', function () {
     $currentSocialMediaLinks = [
         'instagram' => 'userNameXYZ',
         'facebook' => 'https://facebook.com/pages/XYZ',
-        'twitter' => '@userXYZ',
+        'x' => '@userXYZ',
         'snapchat' => 'userXYZ'
     ];
 

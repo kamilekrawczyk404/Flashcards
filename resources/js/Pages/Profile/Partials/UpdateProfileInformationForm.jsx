@@ -27,10 +27,10 @@ export default function UpdateProfileInformation({
     });
 
     const socialMedias = [
-        { name: "instagram", color: "purple-500" },
-        { name: "facebook", color: "blue-700" },
-        { name: "twitter", color: "blue-500" },
-        { name: "snapchat", color: "yellow-200" },
+        { name: "instagram", color: "text-purple-500" },
+        { name: "facebook", color: "text-blue-700" },
+        { name: "x", color: "text-gray-900" },
+        { name: "snapchat", color: "text-amber-400" },
     ];
 
     const { data, setData, errors, patch, processing, recentlySuccessful } =
@@ -61,6 +61,8 @@ export default function UpdateProfileInformation({
         );
     };
 
+
+    // Repair storing avatar (webp)
     const setNewAvatar = (file) => {
         const maxSize = 1024 * 1024 * 2; // 2MB
 
@@ -209,7 +211,7 @@ export default function UpdateProfileInformation({
                                     <button
                                         type={"button"}
                                         className={
-                                            "bg-gray-200 border-[.175rem] border-dashed border-indigo-500 aspect-square h-10 rounded-md transition hover:bg-gray-300 flex items-center justify-center"
+                                            "bg-gray-200 border-[.175rem] border-dashed border-indigo-500 aspect-square h-[3rem] rounded-md transition hover:bg-gray-300 flex items-center justify-center"
                                         }
                                         onClick={() => {
                                             MicroModal.show("socials");

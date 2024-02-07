@@ -10,7 +10,6 @@ import { Explore } from "@/Pages/Flashcards/Explore.jsx";
 
 export default function Home({
     auth,
-    permissions,
     availableLanguages,
     canLogin,
     canRegister,

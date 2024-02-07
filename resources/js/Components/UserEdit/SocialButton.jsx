@@ -1,3 +1,5 @@
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
 export const SocialButton = ({
     activeSocial,
     handleSetActiveSocial,
@@ -8,8 +10,6 @@ export const SocialButton = ({
     isDeleting = false,
     ...props
 }) => {
-    const style = `aspect-square fa-brands fa-square-${element.name} h-[2.875rem] mt-1 text-${element.color}`;
-
     return usedInForm ? (
         <button
             {...props}
@@ -23,23 +23,23 @@ export const SocialButton = ({
                 handleSetActiveSocial(element.name);
             }}
         >
-            <i className={style}></i>
+            <FontAwesomeIcon icon={`fa-brands ` + (element.name === 'x' ? "fa-square-x-twitter" : `fa-square-${element.name}`)} className={`aspect-square h-[2.875rem] mt-1 ${element.color}`} />
         </button>
     ) : (
         <>
-            <div {...props} className={"relative "}>
-                <i className={style}></i>
+            <div {...props} className={"relative"}>
+                <FontAwesomeIcon  icon={`fa-brands ` + (element.name === 'x' ? "fa-square-x-twitter" : `fa-square-${element.name}`)} className={`aspect-square h-[3.5rem] mt-1 ${element.color}`}/>
                 <button
                     disabled={isDeleting}
                     type="button"
                     className={
-                        "absolute -top-1 -right-2 rounded-full bg-red-600 w-6 aspect-square flex items-center justify-center"
+                        "absolute -top-2 -right-3 rounded-full bg-red-600 w-7 aspect-square"
                     }
                     onClick={(e) => {
                         handleDeleteSocial(e, element.name);
                     }}
                 >
-                    <i className="fa-solid fa-xmark text-gray-100"></i>
+                    <FontAwesomeIcon icon="fa-solid fa-xmark" className={'text-gray-100'}/>
                 </button>
             </div>
         </>

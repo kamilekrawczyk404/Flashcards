@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { SocialButton } from "@/Components/UserEdit/SocialButton.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const SocialsPopUp = ({
     modalId,
@@ -20,14 +21,14 @@ export const SocialsPopUp = ({
         instagram: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/,
         facebook:
             /(?:https?:\/\/)?(?:www\.)?(mbasic.facebook|m\.facebook|facebook|fb)\.(com|me)\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)/,
-        twitter: /(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)/g,
+        x: /(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9-_]+)/g,
         snapchat: /^(?=\S{3,15}$)[a-zA-Z][a-zA-Z0-9]*(?:[_.-][a-zA-Z0-9]+)?$/,
     };
 
     const [isMatching, setIsMatching] = useState({
         instagram: true,
         facebook: true,
-        twitter: true,
+        x: true,
         snapchat: true,
     });
 
@@ -35,7 +36,7 @@ export const SocialsPopUp = ({
         useForm({
             instagram: userSocialMedias.instagram,
             facebook: userSocialMedias.facebook,
-            twitter: userSocialMedias.twitter,
+            x: userSocialMedias.x,
             snapchat: userSocialMedias.snapchat,
         });
 
@@ -142,9 +143,8 @@ export const SocialsPopUp = ({
                                             htmlFor={element.name}
                                         />
                                         <div className={"flex items-center"}>
-                                            <i
-                                                className={`fa-brands fa-square-${element.name} text-[2.875rem] text-${element.color} mr-4`}
-                                            ></i>
+
+                                            <FontAwesomeIcon icon={`fa-brands ` + (element.name === 'x' ? "fa-square-x-twitter" : `fa-square-${element.name}`)} className={`aspect-square h-[3.5rem] mr-4 ${element.color}`} />
                                             <TextInput
                                                 id={element.name}
                                                 value={Object.values(data).at(

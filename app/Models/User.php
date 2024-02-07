@@ -30,7 +30,7 @@ class User extends Authenticatable
         'social_media_links' => '{
             "instagram": null,
             "facebook": null,
-            "twitter": null,
+            "x": null,
             "snapchat": null
         }'
     ];
