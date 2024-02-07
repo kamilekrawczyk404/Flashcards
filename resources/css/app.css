@@ -1,0 +1,72 @@
+@import url('modal.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.rotate-x-180 {
+    transform: rotateX(180deg);
+}
+.rotate-x-0 {
+    transform: rotateX(0);
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateX(180deg);
+}
+
+.flip-card-inner {
+    transform-style: preserve-3d;
+}
+
+.front,
+.back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.polygon-from-top {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+}
+
+.polygon-start {
+    clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+}
+
+.polygon-y-start {
+    clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%);
+}
+
+.polygon-tl-start {
+    clip-path: polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%)
+}
+
+.stretched-bg-image {
+    background-size: 200% 200%;
+}
+.bg-opacity-gray {
+    background-color: hsla(210, 10%, 23%, 0.4);
+}
+
+.animation-delay-100 {
+    animation-delay: 100ms;
+}
+
+.animation-delay-200 {
+    animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+    animation-delay: 300ms;
+}
+.animation-delay-400 {
+    animation-delay: 400ms;
+}
+.animation-delay-500 {
+    animation-delay: 500ms;
+}
+.animation-delay-600 {
+    animation-delay: 600ms;
+}
+.animation-delay-700 {
+    animation-delay: 700ms;
+}
