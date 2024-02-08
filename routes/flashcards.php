@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Route;
     Route::middleware('auth')->name('flashcards.')->group(function () {
         // SetController
         Route::get('/create-set', [SetController::class, 'showNewSet'])->name('showNewSet');
+
         Route::get('/set/{id}/{title}', [SetController::class, 'showSet'])->name('showSet');
+
         Route::post('/create-set', [SetController::class, 'store'])->name('storeNewSet');
 
         // FlashcardsController
@@ -35,11 +37,15 @@ use Illuminate\Support\Facades\Route;
     Route::middleware(['auth', 'canEditSet'])->name('flashcards.')->group(function () {
         // Set controller
         Route::get('/edit-set/{id}/{title}', [SetController::class, 'showEdit'])->name('showEdit');
+
         Route::put('/update-set/{id}/{title}', [SetController::class, 'update'])->name('update');
+
         Route::delete('/delete/set/{id}/{title}', [SetController::class, 'deleteSet'])->name('deleteSet');
 
         // Translations controller
-        Route::put('/set/update-translation/{id}/{title}', [TranslationsController::class, 'update'])->name('updateTranslation');
-        Route::delete('/delete/translation/{id}/{title}', [TranslationsController::class, 'delete'])->name('deleteTranslation');
-        Route::put("/setFavourite/{id}/{title}", [TranslationsController::class, 'updateOnlyFavourite'])->name('updateOnlyFavourite');
+        Route::put('/set/{id}/update-translation/{translation_id}/{title}', [TranslationsController::class, 'update'])->name('updateTranslation');
+
+        Route::delete('/set/{id}/delete/translation/{translation_id}/{title}', [TranslationsController::class, 'delete'])->name('deleteTranslation');
+
+        Route::put("/set/{id}/setFavourite/{translation_id}/{title}", [TranslationsController::class, 'updateOnlyFavourite'])->name('updateOnlyFavourite');
     });

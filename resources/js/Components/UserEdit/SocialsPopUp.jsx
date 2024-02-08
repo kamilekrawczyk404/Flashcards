@@ -83,7 +83,7 @@ export const SocialsPopUp = ({
                 data-micromodal-close={modalId}
             >
                 <div
-                    className="modal__container flex gap-6 flex-col bg-white md:w-1/2 w-full md:m-0 m-4 p-4 rounded-md overflow-y-auto border-b relative z-10"
+                    className="modal__container flex gap-6 flex-col bg-white lg:w-[76rem] w-full m-6 p-4 rounded-md overflow-y-auto border-b relative z-10"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-1-title"
@@ -148,8 +148,8 @@ export const SocialsPopUp = ({
                                             <TextInput
                                                 id={element.name}
                                                 value={Object.values(data).at(
-                                                    index,
-                                                )}
+                                                    index ,
+                                                ) ?? ""}
                                                 className={"w-full"}
                                                 onChange={(e) => {
                                                     setData(

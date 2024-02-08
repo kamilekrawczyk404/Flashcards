@@ -1,3 +1,5 @@
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
 export const GoBackIndicator = ({
     onRight = false,
     handleAnimate,
@@ -15,7 +17,7 @@ export const GoBackIndicator = ({
                 (onRight ? "left-[1vw] rotate-180 " : "right-[1vw]")
             }
         >
-            <i className="fa-solid fa-arrow-right"></i>
+            <FontAwesomeIcon icon="fa-solid fa-arrow-right" />
         </button>
     );
 };

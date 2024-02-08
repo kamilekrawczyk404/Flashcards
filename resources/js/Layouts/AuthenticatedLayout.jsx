@@ -17,7 +17,7 @@ export default function Authenticated({
         <div className={"bg-gray-100 " + (fullScreen && "h-screen")}>
             <nav className="bg-white border-b border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
+                    <div className="flex justify-between h-18">
                         <div className="flex relative items-center">
                             <ApplicationLogo className={"text-4xl"} />
 
@@ -30,14 +30,6 @@ export default function Authenticated({
                                 >
                                     Create Set
                                 </NavLink>
-                                {/*<NavLink*/}
-                                {/*    href={route("flashcards.showAllSets")}*/}
-                                {/*    active={route().current(*/}
-                                {/*        "flashcards.showAllSets",*/}
-                                {/*    )}*/}
-                                {/*>*/}
-                                {/*    Your sets*/}
-                                {/*</NavLink>*/}
                             </div>
                         </div>
 
@@ -59,9 +51,9 @@ export default function Authenticated({
                                                 </span>
                                                 <img
                                                     className={
-                                                        "max-w-[2.5rem] shadow-lg aspect-square border-2 border-indigo-500 rounded-full"
+                                                        "max-w-[3rem] shadow-lg aspect-square border-2 border-indigo-500 rounded-full"
                                                     }
-                                                    src={user.avatar}
+                                                    src={`http://127.0.0.1:8000/storage/users_avatars/${user.avatar}`}
                                                     alt={"avatar"}
                                                 />
                                             </button>

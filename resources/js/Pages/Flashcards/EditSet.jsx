@@ -13,6 +13,8 @@ import TranslationsData from "@/TranslationsData.js";
 import { TranslationForm } from "@/Components/Translations/TranslationForm.jsx";
 import { AddTranslationButton } from "@/Components/Translations/AddTranslationButton.jsx";
 import Animation from "@/Pages/Animation.js";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {ProgressModal} from "@/Components/ProgressModal.jsx";
 
 export default function EditSet({
     auth,
@@ -88,12 +90,10 @@ export default function EditSet({
         });
     };
 
-    const deleteTranslation = (id, title, currentTranslationIndex) => {
+    const deleteTranslation = (translationId, title, currentTranslationIndex) => {
         remove(currentTranslationIndex);
 
-        router.delete(`/delete/translation/${id}/${title}`, {
-            preserveScroll: true,
-        });
+        router.delete(`set/${set.id}/delete/translation/${translationId}/${title}`);
     };
 
     const appendField = () => {
@@ -145,6 +145,7 @@ export default function EditSet({
 
     return (
         <AuthenticatedLayout
+            fullScreen={true}
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-700 leading-tight">
@@ -241,7 +242,7 @@ export default function EditSet({
                         </div>
                     </div>
 
-                    <div className={"overflow-y-scroll max-h-[80vh]"}>
+                    <div className={"overflow-y-scroll max-h-[50vh] space-y-4"}>
                         {fields.map((field, index) => (
                             <TranslationForm
                                 key={index}
@@ -308,13 +309,8 @@ export default function EditSet({
                     </div>
                 </form>
             </Container>
-            {isSetBeingUpdated && (
-                <div
-                    className={"absolute top-0 left-0 w-full h-full bg-red-500"}
-                >
-                    please wait
-                </div>
-            )}
+
+            <ProgressModal isVisible={isSetBeingUpdated} text={"We're updating your set."} />
         </AuthenticatedLayout>
     );
 }

@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -34,16 +35,26 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults(),
-            'avatar' => ['required', 'string', 'max:2048']
-            ],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'avatar' => $request->hasFile('avatar') ? 'mimes:jpg,png,gif,svg,jpeg|max:5120' : ''
         ]);
+
+        $filename = "";
+
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $filename = 'avatar_user_' . (User::max('id') + 1) . '_' . $file->getClientOriginalName();
+
+            $file->storeAs('public/users_avatars', $filename);
+        } else {
+            $filename = "default.png";
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'avatar' => $request->avatar
+            'avatar' => $filename
         ]);
 
         event(new Registered($user));

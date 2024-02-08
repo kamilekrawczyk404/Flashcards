@@ -91,7 +91,7 @@ export const Explore = forwardRef(
                 ...setsRef.current,
             ]);
 
-            resultsAppearingAnimation.animateAll("", "", "");
+            resultsAppearingAnimation.animateAll("<-.2", "", "<-.2");
         }, [sets]);
 
         //TODO: filtering by title, created_date, desc, asc
@@ -152,7 +152,7 @@ export const Explore = forwardRef(
                                     ref={lastSetRef}
                                     translationsCount={set.count}
                                     className={
-                                        "opacity-0 translate-y-6 polygon-start"
+                                        "opacity-0 polygon-start"
                                     }
                                 />
                             ) : (
@@ -165,7 +165,7 @@ export const Explore = forwardRef(
                                     }
                                     translationsCount={set.count}
                                     className={
-                                        "opacity-0 translate-y-6 polygon-start"
+                                        "opacity-0 polygon-start"
                                     }
                                 />
                             ),

@@ -129,7 +129,7 @@ export default function Login({ status, canResetPassword }) {
                             </label>
                         </div>
 
-                        <div className="flex items-center mt-4 space-x-2">
+                        <div className="flex items-center mt-12 space-x-2">
                             <MainButton
                                 className="bg-white hover:bg-gray-300 text-indigo-500"
                                 disabled={processing}

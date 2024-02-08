@@ -47,11 +47,12 @@ class SetController extends Controller
 
     public function store(StoreNewSetRequest $request): RedirectResponse {
         // Store new set
+        $flashcardSet = new FlashcardSets;
+
         $title = trim($request->title);
         $title = str_replace(' ', '_', $title);
         $languages = $request->languages;
 
-        $flashcardSet = new FlashcardSets;
         $flashcardSet->title = $title;
         $flashcardSet->description = trim($request->description);
         $flashcardSet->languages = json_encode($languages);
@@ -127,7 +128,7 @@ class SetController extends Controller
         }
 
         $request->session()->put('isSetBeingUpdated', false);
-//        return redirect()->route('flashcards.showSet', ['id' => $id, 'title' => $newTitle]);
+        return redirect()->route('flashcards.showSet', ['id' => $id, 'title' => $newTitle]);
     }
 
     public function deleteSet(int $id, string $title): RedirectResponse

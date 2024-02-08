@@ -1,6 +1,7 @@
 import { forwardRef, useRef, useState } from "react";
 import { Link, router } from "@inertiajs/react";
 import Animation from "@/Pages/Animation.js";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const SingleSet = forwardRef(
     ({ auth, set, index, translationsCount, className, ...props }, ref) => {
@@ -40,7 +41,7 @@ export const SingleSet = forwardRef(
                         }
                     >
                         {JSON.parse(set.languages).source}
-                        <i className="fa-solid fa-arrow-right mx-2"></i>
+                        <FontAwesomeIcon icon="fa-solid fa-arrow-right" className={'mx-2'} />
                         {JSON.parse(set.languages).target}
 
                         <div className={"flex items-center gap-2"}>
@@ -66,7 +67,7 @@ export const SingleSet = forwardRef(
                             "w-10 aspect-square bg-gray-100 rounded-full flex items-center justify-center z-100"
                         }
                     >
-                        <i className="fa-solid fa-ellipsis-vertical text-gray-700 text-xl"></i>
+                        <FontAwesomeIcon icon="fa-solid fa-ellipsis-vertical" className={'text-gray-700 text-xl'}/>
                     </button>
                 </div>
 
@@ -85,7 +86,7 @@ export const SingleSet = forwardRef(
                             "flex items-center justify-center w-full bg-amber-500 h-full text-gray-700 rounded-l-md hover:w-[200%] transition-[width]"
                         }
                     >
-                        <i className="fa-solid fa-arrow-right"></i>
+                        <FontAwesomeIcon icon="fa-solid fa-arrow-right" />
                     </button>
                     {auth?.user.id === set.user_id && (
                         <>
@@ -98,7 +99,7 @@ export const SingleSet = forwardRef(
                                     set.title,
                                 ])}
                             >
-                                <i className="fa-regular fa-pen-to-square"></i>
+                                <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
                             </Link>
                             <button
                                 onClick={() => deleteSet(set.id, set.title)}
@@ -106,7 +107,7 @@ export const SingleSet = forwardRef(
                                     "flex items-center justify-center w-full bg-red-500 h-full text-gray-700 hover:w-[200%] transition-[width]"
                                 }
                             >
-                                <i className="fa-regular fa-trash-can"></i>
+                                <FontAwesomeIcon icon="fa-solid fa-trash" />
                             </button>
                         </>
                     )}
@@ -117,7 +118,7 @@ export const SingleSet = forwardRef(
                         }
                         href={route("flashcards.showSet", [set.id, set.title])}
                     >
-                        <i className="fa-solid fa-list"></i>
+                        <FontAwesomeIcon icon="fa-solid fa-list" />
                     </Link>
                 </div>
             </div>

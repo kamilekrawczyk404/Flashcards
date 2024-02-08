@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Flashcards;
 
 use App\Http\Controllers\Controller;
 use App\Models\Translations;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class TranslationsController extends Controller
 {

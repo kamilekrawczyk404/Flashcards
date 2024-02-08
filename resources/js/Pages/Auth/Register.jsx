@@ -9,19 +9,25 @@ import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
 import { MainButton } from "@/Components/MainButton.jsx";
 import { ApplicationLogo } from "@/Components/ApplicationLogo.jsx";
 import Animation from "@/Pages/Animation.js";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export default function Register() {
+    const [temporaryAvatar, setTemporaryAvatar] = useState("")
+
+    const defaultAvatarPath = "storage/users_avatars/default.png"
+    const MAX_FILE_SIZE = 1024 * 1024 * 5
+
     let fileInputRef = useRef();
     let imageRef = useRef();
     let logoRef = useRef();
     let formRef = useRef();
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset, } = useForm({
         name: "",
         email: "",
         password: "",
         password_confirmation: "",
-        avatar: "https://img.freepik.com/free-photo/portrait-boy-glasses-dark-background-3d-rendering_1142-41844.jpg?t=st=1706367024~exp=1706370624~hmac=35013e71e5e1cf0f3b838d0c55674342a60ae1f97adccf4fa08f1b468c0a787b&w=1380",
+        avatar: defaultAvatarPath,
     });
 
     const [avatarErrors, setAvatarErrors] = useState({
@@ -32,38 +38,33 @@ export default function Register() {
         },
     });
 
-    const setNewAvatar = () => {
+    const setPreviewAvatar = () => {
         const file = fileInputRef.current.files[0];
-        const maxSize = 1024 * 1024 * 2; // 2MB
 
-        if (
-            file.size < maxSize &&
-            (file.type === "image/png" || file.type === "image/jpg")
-        ) {
+        if (file.size > MAX_FILE_SIZE) {
             setAvatarErrors((prev) => ({
-                fileType: { ...prev.fileType, value: false },
-                size: { ...prev.fileType, value: false },
-            }));
-            let image = URL.createObjectURL(file);
-            setData("avatar", image);
-        } else if (file.size > maxSize) {
-            setAvatarErrors((prev) => ({
-                ...prev,
-                size: { ...prev.size, value: true },
+                size: {
+                    ...prev.size,
+                    value: true
+                },
             }));
         } else {
             setAvatarErrors((prev) => ({
-                ...prev,
-                fileType: { ...prev.fileType, value: true },
+                size: {
+                    ...prev.size,
+                    value: false
+                },
             }));
         }
-    };
+
+        // store image file in form
+        setData('avatar', file);
+
+        const image = URL.createObjectURL(file);
+        setTemporaryAvatar(image);
+    }
 
     useEffect(() => {
-        if (fileInputRef.current?.files.length > 0) {
-            setNewAvatar();
-        }
-
         return () => {
             reset("password", "password_confirmation");
         };
@@ -224,7 +225,7 @@ export default function Register() {
                                         (fileInputRef.current = element)
                                     }
                                     type="file"
-                                    onChange={() => setNewAvatar()}
+                                    onChange={() => setPreviewAvatar()}
                                     className={"hidden"}
                                 />
 
@@ -242,13 +243,13 @@ export default function Register() {
                                             "transition cursor-pointer hover:bg-gray-300 absolute flex items-center justify-center w-10 aspect-square bottom-1 right-1 bg-white rounded-full"
                                         }
                                     >
-                                        <i className="fa-solid fa-camera text-indigo-500 text-md"></i>
+                                        <FontAwesomeIcon icon="fa-solid fa-camera" className={'text-indigo-500 text-md'}/>
                                     </button>
                                     <img
                                         ref={(element) =>
                                             (imageRef.current = element)
                                         }
-                                        src={data.avatar}
+                                        src={data.avatar !== defaultAvatarPath ? temporaryAvatar : data.avatar}
                                         className={
                                             "rounded-full w-[12rem] aspect-square "
                                         }

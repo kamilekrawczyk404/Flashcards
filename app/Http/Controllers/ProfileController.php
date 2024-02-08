@@ -9,8 +9,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Intervention\Image;
 
 class ProfileController extends Controller
 {
@@ -30,7 +32,26 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $filename = "";
+
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+
+
+            if ($file !== 'default.png' && Storage::fileExists('public/users_avatars/' . User::getAvatarName())) {
+                Storage::delete('public/users_avatars/' . User::getAvatarName());
+            }
+
+            $filename = 'avatar_user_' . Auth::id() . '_' . $file->getClientOriginalName();
+
+            $file->storeAs('public/users_avatars', $filename);
+
+        }
+
+        $request->user()->fill([
+            $request->validated(),
+            'avatar' => $filename
+        ]);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;

@@ -12,28 +12,22 @@ import { SocialButton } from "@/Components/UserEdit/SocialButton.jsx";
 export default function UpdateProfileInformation({
     mustVerifyEmail,
     status,
-    className = "",
+    socialMedias
 }) {
     const user = usePage().props.auth.user;
 
     const [isDeleting, setIsDeleting] = useState(false);
+    const [userChangedAvatar, setUserChangedAvatar] = useState(false)
+    const [temporaryAvatar, setTemporaryAvatar] = useState("")
+
+    const MAX_FILE_SIZE = 1024 * 1024 * 5
 
     const [avatarErrors, setAvatarErrors] = useState({
-        size: { value: false, message: "The file size must be lower than 2MB" },
-        fileType: {
-            value: false,
-            message: "The file type must be .png or .jpg",
-        },
+        size: { value: false, message: `The file size must be lower than ${MAX_FILE_SIZE}MB`},
     });
 
-    const socialMedias = [
-        { name: "instagram", color: "text-purple-500" },
-        { name: "facebook", color: "text-blue-700" },
-        { name: "x", color: "text-gray-900" },
-        { name: "snapchat", color: "text-amber-400" },
-    ];
 
-    const { data, setData, errors, patch, processing, recentlySuccessful } =
+    const { data, setData, errors, post, processing, recentlySuccessful } =
         useForm({
             name: user.name,
             email: user.email,
@@ -42,8 +36,10 @@ export default function UpdateProfileInformation({
 
     const submit = (e) => {
         e.preventDefault();
-
-        patch(route("profile.update"));
+        post(route("profile.update"), {
+            preserveScroll: true,
+            preserveState: false,
+        });
     };
 
     const deleteSocial = (e, socialMediaName) => {
@@ -62,41 +58,34 @@ export default function UpdateProfileInformation({
     };
 
 
-    // Repair storing avatar (webp)
-    const setNewAvatar = (file) => {
-        const maxSize = 1024 * 1024 * 2; // 2MB
+    const setPreviewAvatar = () => {
+        const file = fileInputRef.current.files[0];
 
-        if (
-            file.size < maxSize &&
-            (file.type === "image/png" || file.type === "image/jpg")
-        ) {
+        if (file.size > MAX_FILE_SIZE) {
             setAvatarErrors((prev) => ({
-                fileType: { ...prev.fileType, value: false },
-                size: { ...prev.fileType, value: false },
-            }));
-            let image = URL.createObjectURL(file);
-            setData("avatar", image);
-        } else if (file.size > maxSize) {
-            setAvatarErrors((prev) => ({
-                ...prev,
-                size: { ...prev.size, value: true },
+                size: {
+                    ...prev.size,
+                    value: true
+                },
             }));
         } else {
             setAvatarErrors((prev) => ({
-                ...prev,
-                fileType: { ...prev.fileType, value: true },
+                size: {
+                    ...prev.size,
+                    value: false
+                },
             }));
         }
-    };
+
+        // store image file in form
+        setData('avatar', file);
+
+        const image = URL.createObjectURL(file);
+        setTemporaryAvatar(image);
+    }
 
     let fileInputRef = useRef();
     let avatarRef = useRef();
-
-    useEffect(() => {
-        if (fileInputRef.current.files.length > 0) {
-            setNewAvatar(fileInputRef.current.files[0]);
-        }
-    }, [fileInputRef.current?.files]);
 
     return (
         <>
@@ -114,7 +103,7 @@ export default function UpdateProfileInformation({
                 <form onSubmit={submit} className="relative space-y-4">
                     <div
                         className={
-                            "relative flex md:flex-row flex-col-reverse md:w-2/3 w-full gap-2 justify-between"
+                            "relative flex md:flex-row flex-col-reverse md:w-3/4 w-full gap-2 justify-between"
                         }
                     >
                         <div
@@ -131,7 +120,7 @@ export default function UpdateProfileInformation({
 
                                 <TextInput
                                     id="name"
-                                    className="mt-1 block"
+                                    className="mt-1 block w-full"
                                     value={data.name}
                                     onChange={(e) =>
                                         setData("name", e.target.value)
@@ -226,6 +215,7 @@ export default function UpdateProfileInformation({
                                         if (typeof value === "string") {
                                             return (
                                                 <SocialButton
+                                                    key={key}
                                                     usedInForm={false}
                                                     element={socialMedias.find(
                                                         (element) =>
@@ -251,11 +241,16 @@ export default function UpdateProfileInformation({
                             />
 
                             <input
+                                accept={'image/*'}
                                 ref={(element) =>
                                     (fileInputRef.current = element)
                                 }
                                 type="file"
-                                onChange={() => setNewAvatar()}
+                                onChange={() => {
+                                    setUserChangedAvatar(true);
+                                    setPreviewAvatar()
+                                }
+                            }
                                 className={"hidden"}
                             />
 
@@ -279,13 +274,20 @@ export default function UpdateProfileInformation({
                                     ref={(element) =>
                                         (avatarRef.current = element)
                                     }
-                                    src={data.avatar}
+                                    src={!userChangedAvatar ? `storage/users_avatars/${data.avatar}` : temporaryAvatar}
                                     className={
                                         "rounded-full w-[12rem] aspect-square "
                                     }
                                     alt=""
                                 />
+
                             </div>
+                            {errors.avatar &&
+                                <InputError
+                                    className="mt-2 max-w-[15rem]"
+                                    message={errors.avatar}
+                                />
+                            }
                         </div>
                     </div>
 
@@ -293,10 +295,13 @@ export default function UpdateProfileInformation({
                         {Object.values(avatarErrors).map(
                             (element, index) =>
                                 element.value && (
-                                    <InputError
-                                        className="mt-2"
-                                        message={element.message}
-                                    />
+                                    <>
+                                        <InputError
+                                            className="mt-2"
+                                            message={element.message}
+                                        />
+
+                                    </>
                                 ),
                         )}
                     </div>
@@ -321,12 +326,7 @@ export default function UpdateProfileInformation({
                     </div>
                 </form>
             </section>
-            <SocialsPopUp
-                userSocialMedias={user.social_media_links}
-                modalId={"socials"}
-                header={"Social media"}
-                socialMedias={socialMedias}
-            />
+
         </>
     );
 }

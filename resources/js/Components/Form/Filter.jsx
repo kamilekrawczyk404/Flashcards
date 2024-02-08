@@ -2,6 +2,7 @@ import { button } from "@material-tailwind/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Animation from "@/Pages/Animation.js";
 import { act } from "react-dom/test-utils";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const Filter = ({
     isSearching,
@@ -55,7 +56,7 @@ export const Filter = ({
                 <div className={isSearching ? "md:w-1/5 w-full" : "w-0"}>
                     <div
                         className={
-                            "bg-gray-100 rounded-t-md p-2 self-start text-gray-700 transition-[width] flex flex-col relative "
+                            "bg-gray-100 rounded-t-md p-2 self-start text-gray-700 transition-[width] flex flex-col relative"
                         }
                     >
                         <button
@@ -70,7 +71,7 @@ export const Filter = ({
                                     "flex items-center p-2 bg-white rounded-sm"
                                 }
                             >
-                                <i className="fa-solid fa-filter text-xl text-indigo-500 mr-2"></i>
+                                <FontAwesomeIcon icon="fa-solid fa-filter" className={'text-xl text-indigo-500 mr-2'}/>
                                 <span>Filters</span>
                             </p>
                             <span
@@ -79,16 +80,12 @@ export const Filter = ({
                                     (!isHide ? "rotate-[540deg]" : "rotate-0")
                                 }
                             >
-                                <i
-                                    className={
-                                        "fa-solid fa-arrow-up  text-xl text-indigo-500"
-                                    }
-                                ></i>
+                                <FontAwesomeIcon icon="fa-solid fa-arrow-up" className={'text-xl text-indigo-500'}/>
                             </span>
                         </button>
                         <span
                             className={
-                                "absolute left-0 -bottom-1 bg-indigo-500 h-[.25rem] transition-width " +
+                                "absolute left-0 -bottom-[.1rem] bg-indigo-500 h-[.25rem] transition-width z-10 " +
                                 (isSearching ? "w-full" : "w-0")
                             }
                         ></span>
@@ -97,7 +94,7 @@ export const Filter = ({
                     <div
                         ref={fieldsRef}
                         className={
-                            "polygon-from-top opacity-0 bg-gray-100 p-2 mt-1 rounded-b-md"
+                            "polygon-from-top opacity-0 bg-gray-100 p-2 rounded-b-md"
                         }
                     >
                         <div className={"flex flex-col gap-2"}>

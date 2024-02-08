@@ -2,6 +2,7 @@ import React, { forwardRef } from "react";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const TranslationForm = forwardRef(
     (
@@ -47,7 +48,7 @@ export const TranslationForm = forwardRef(
                                 }, 800);
                             }}
                         >
-                            <i className="fa-regular fa-trash-can hover:text-red-500 transition text-gray-700 text-lg"></i>
+                            <FontAwesomeIcon icon="fa-solid fa-trash" className={'hover:text-red-500 transition text-gray-700 text-lg'}/>
                         </button>
                     )}
                 </div>

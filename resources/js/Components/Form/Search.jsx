@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useRef } from "react";
 import { button } from "@material-tailwind/react";
 import Animation from "@/Pages/Animation.js";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const Search = forwardRef(
     (
@@ -60,7 +61,7 @@ export const Search = forwardRef(
                             }, TIMEOUT);
                         }}
                     >
-                        <i className="fa-solid fa-magnifying-glass text-lg text-indigo-500"></i>
+                        <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" className={'text-lg text-indigo-500'}/>
                     </button>
                     <input
                         placeholder={isSearching ? "Search..." : ""}
@@ -86,10 +87,10 @@ export const Search = forwardRef(
                                 }, TIMEOUT);
                             }}
                             className={
-                                "bg-indigo-500 rounded-md text-gray-100 pt-[.3rem] px-[.7rem]"
+                                "bg-indigo-500 rounded-md text-gray-100 px-2"
                             }
                         >
-                            <i className="fa-solid fa-xmark text-2xl font-bold"></i>
+                            <FontAwesomeIcon icon="fa-solid fa-xmark" className={'font-bold text-2xl'}/>
                         </button>
                     )}
                 </div>
@@ -111,7 +112,7 @@ export const Search = forwardRef(
                             <p className={"text-indigo-500"}>Last searches</p>
                             <div
                                 className={
-                                    "flex gap-2 flex-wrap rounded-full max-h-[2rem]"
+                                    "flex gap-2 flex-wrap rounded-full max-h-[2rem] "
                                 }
                             >
                                 {previousSearches.reverse().map(
@@ -151,7 +152,7 @@ export const Search = forwardRef(
                                                         );
                                                     }}
                                                 >
-                                                    <i className="fa-solid fa-xmark text-lg px-2 font-bold text-gray-100"></i>
+                                                    <FontAwesomeIcon icon="fa-solid fa-xmark" className={'text-md px-2 font-bold text-gray-100'}/>
                                                 </button>
                                             </div>
                                         ),

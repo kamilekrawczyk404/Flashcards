@@ -7,6 +7,7 @@ import { OptionCard } from "@/Components/OptionCard.jsx";
 import Animation from "@/Pages/Animation.js";
 import { AllSets } from "@/Pages/Flashcards/AllSets.jsx";
 import { Explore } from "@/Pages/Flashcards/Explore.jsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export default function Home({
     auth,
@@ -41,7 +42,7 @@ export default function Home({
     };
 
     const write = () => {
-        if (index <= sentences[currentIndex].length && animatedText.current) {
+        if (index <= sentences[currentIndex].length) {
             animatedText.current.innerHTML += sentences[currentIndex].at(index);
             setIndex((prev) => {
                 if (prev + 1 === sentences[currentIndex].length) {
@@ -93,7 +94,7 @@ export default function Home({
     };
 
     useEffect(() => {
-        if (!auth.user) {
+        if (animatedText.current && !auth.user) {
             let textAnimation = setInterval(() => {
                 setIsShowedUp((prev) => !prev);
             }, 500);
@@ -169,7 +170,7 @@ export default function Home({
                             <img
                                 className={"max-w-[55%]"}
                                 src={
-                                    "https://img.freepik.com/free-vector/happy-women-learning-language-online-isolated-flat-vector-illustration-cartoon-female-characters-taking-individual-lessons-through-messenger-education-digital-technology-concept_74855-10088.jpg?w=2000&t=st=1706271781~exp=1706272381~hmac=0d829188f62b24d0b9382fef7bca4c7e427e9584fb2524673d0144ad7224ce7b"
+                                    'storage/images/home_unauthenticated.jpg'
                                 }
                                 alt="Study Image"
                             />
@@ -227,13 +228,13 @@ export default function Home({
                                         }
                                     >
                                         Learn
-                                        <i className="text-amber-500 fa-solid fa-graduation-cap ml-2"></i>
+                                        <FontAwesomeIcon icon="fa-solid fa-graduation-cap" className={'text-amber-500 ml-2'}/>
                                     </h1>
                                     <img
                                         className={
                                             "xl:max-w-[30rem] lg:max-w-[23rem] max-w-[16rem] rounded-md self-center"
                                         }
-                                        src="https://img.freepik.com/free-vector/online-certification-illustration_23-2148575636.jpg?w=1380&t=st=1706516299~exp=1706516899~hmac=3c044c1ff557f48496fbcc2b00eb1121776ae20b39fb1620d1c14024af0026f6"
+                                        src="storage/images/learn.jpg"
                                         alt="learning image"
                                     />
                                 </OptionCard>
@@ -249,14 +250,14 @@ export default function Home({
                                         }
                                     >
                                         Explore
-                                        <i className="text-amber-500 fa-solid fa-magnifying-glass ml-2"></i>
+                                        <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" className={'text-amber-500 ml-2'}/>
                                     </span>
                                     <img
                                         className={
                                             "xl:max-w-[30rem] lg:max-w-[25rem] max-w-[16rem] w-full rounded-md self-center xl:mt-20 lg:mt-12 mt-8"
                                         }
-                                        src="https://img.freepik.com/free-vector/people-using-search-box-query-engine-giving-result_74855-11000.jpg?w=2000&t=st=1706516315~exp=1706516915~hmac=e53a6eaa13974a19947b5e937100930794d5f564d2e78399964d586c29f100d5"
-                                        alt=""
+                                        src="storage/images/searching.jpg"
+                                        alt="explore"
                                     />
                                 </OptionCard>
                             </div>
