@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Flashcards;
 
 use App\Http\Controllers\Controller;
 use App\Models\Translations;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,19 +12,22 @@ use Illuminate\Support\Facades\Redirect;
 
 class TranslationsController extends Controller
 {
-    public function update(int $id, string $title, Request $request) {
+    public function update(int $id, int $translation_id, string $title, Request $request): RedirectResponse{
+        $translation = $request->translation;
         $data = [];
 
-        foreach ($request->translation as $element) {
-
-            match((array_keys($element)[0])) {
-                'definition' => $data['definition'] = Translations::makeSingle($element['definition']['word'],
-                    $element['definition']['language']),
-                'term' => $data['term'] = Translations::makeSingle($element['term']['word'], $element['term']['language'])
+        foreach($translation as $key => $item) {
+            match($key) {
+                'definition' => $data['definition'] = Translations::makeSingle($translation['definition']['word'],
+                    $translation['definition']['language']),
+                'term' => $data['term'] = Translations::makeSingle($translation['term']['word'], $translation['term']['language']),
+                default => ""
             };
         }
 
-        DB::connection('mysql')->table($title)->where(['id' => $id])->update($data);
+        DB::connection('mysql')->table($title)->where(['id' => $translation_id])->update($data);
+
+        return redirect()->route('flashcards.showSet', ['id' => $id, 'title' => $title])->with('success', "Translation has been updated successfully");
     }
     public function delete($id, $title): void {
         DB::table($title)->where('id', $id)->delete();
@@ -38,10 +42,10 @@ class TranslationsController extends Controller
         }
     }
 
-    public function updateOnlyFavourite(int $id, string $title): void {
-        $isFavourite = DB::table($title)->where('id', $id)->value('isFavourite');
+    public function updateOnlyFavourite(int $id, int $translation_id, string $title): void {
+        $isFavourite = DB::table($title)->where('id', $translation_id)->value('isFavourite');
 
-        DB::table($title)->where('id', $id)->update([
+        DB::connection('mysql')->table($title)->where('id', $translation_id)->update([
             'isFavourite' => !$isFavourite
         ]);
     }

@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateSetRequest;
 use App\Http\Resources\DictionaryResource;
 use App\Models\FlashcardSets;
 use App\Models\Translations;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -84,7 +85,7 @@ class SetController extends Controller
             }
         }
 
-        return to_route('flashcards.showSet', [DB::table('flashcard_sets')->where('title', $title)->value('id'), $title]);
+        return to_route('flashcards.showSet', [DB::table('flashcard_sets')->where('title', $title)->value('id'), $title])->with('success', "Your set has been created successfully");
     }
 
     public static function getUserSets(int $id): array {
@@ -98,37 +99,28 @@ class SetController extends Controller
 
     public function update(int $id, string $title, UpdateSetRequest $request)
     {
-        $request->session()->put('isSetBeingUpdated', true);
-
-        $newTitle = str_replace(' ', '_', $request->title);
-        if ($title !== $newTitle) {
-            DB::connection('mysql')->statement("RENAME TABLE $title TO $newTitle");
-        }
-
-        FlashcardSets::where('id', $id)->update([
-            'title' => $newTitle,
-            'description' => $request->description
-        ]);
-
         foreach ($request->translations as $translation) {
             $term = Translations::makeSingle($translation['term']['word'], $translation['term']['language']);
             $definition = Translations::makeSingle($translation['definition']['word'], $translation['definition']['language']);
 
             if (in_array('isNew', $translation)) {
-                DB::table($title)->insert([
-                    'term' => $term,
-                    'definition' => $definition
-                ]);
+                DB::table($title)->insert(['term' => $term, 'definition' => $definition]);
             } else {
-                DB::table($title)->where('id', $translation['id'])->update([
-                    'term' => $term,
-                    'definition' => $definition
-                ]);
+                DB::table($title)->where('id', $translation['id'])->update(['term' => $term, 'definition' => $definition]);
             }
         }
 
-        $request->session()->put('isSetBeingUpdated', false);
-        return redirect()->route('flashcards.showSet', ['id' => $id, 'title' => $newTitle]);
+        $newTitle = str_replace(' ', '_', $request->title);
+        if ($title !== $newTitle) {
+            FlashcardSets::where('title', $title)->update([
+                'title' => $newTitle
+            ]);
+            DB::connection('mysql')->statement("RENAME TABLE $title TO $newTitle");
+        }
+
+        FlashcardSets::where('id', $id)->update(['title' => $newTitle, 'description' => $request->description]);
+
+        return redirect()->route('flashcards.showSet', ['id' => $id, 'title' => $newTitle])->with('success', 'Your set has been updated successfully');
     }
 
     public function deleteSet(int $id, string $title): RedirectResponse
@@ -137,6 +129,6 @@ class SetController extends Controller
 
         Schema::dropIfExists($title);
 
-        return Redirect::route('flashcards.showAllSets');
+        return redirect()->route('home')->with('success', 'Set has been removed successfully');
     }
 }

@@ -1,5 +1,6 @@
 import { button } from "@material-tailwind/react";
 import { useState } from "react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const SoundButton = ({ className = "", audioPath, ...props }) => {
     const [isGettingData, setIsGettingData] = useState(false);
@@ -30,7 +31,7 @@ export const SoundButton = ({ className = "", audioPath, ...props }) => {
                         {...props}
                         disabled={isGettingData}
                     >
-                        <i className="fa-solid fa-headphones"></i>
+                        <FontAwesomeIcon icon="fa-solid fa-headphones-simple" />
                     </button>
                 </>
             )}

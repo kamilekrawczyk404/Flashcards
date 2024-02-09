@@ -45,8 +45,8 @@ class HandleInertiaRequests extends Middleware
                 'canEdit' => Auth::id() === FlashcardSets::where(['user_id' => Auth::id(), 'id' => $request->id])->value('user_id')
             ],
             'feedback' => [
-                'setUpdatedSuccessfully' => fn () => $request->session()->get('setUpdatedSuccessfully') ?? ""
-            ]
+                'success' => fn () => $request->session()->get('success') ?? false
+            ],
         ];
     }
 }

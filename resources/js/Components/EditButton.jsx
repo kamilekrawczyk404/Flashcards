@@ -1,9 +1,10 @@
 import React from "react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const EditButton = ({ className = "", ...props }) => {
     return (
         <button type={"button"} {...props} className={"text-2xl " + className}>
-            <i className={"fa-regular fa-pen-to-square"}></i>
+            <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
         </button>
     );
 };
