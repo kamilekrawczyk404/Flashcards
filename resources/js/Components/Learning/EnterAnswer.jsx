@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import TextInput from "../Form/TextInput.jsx";
 import { CurrentIndexIndicator } from "@/Components/Translations/CurrentIndexIndicator.jsx";
 import TranslationsData from "@/TranslationsData.js";
+import Animation from "@/Pages/Animation.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const EnterAnswer = ({
   className = "",
@@ -22,11 +24,20 @@ export const EnterAnswer = ({
   const [userDefinition, setUserDefinition] = useState("");
   const [userTranslation, setUserTranslation] = useState("");
 
-  console.log(translation);
+  const hintRef = useRef(null);
+  const correctAnswerRef = useRef(null);
+
+  useLayoutEffect(() => {
+    let hintAnimation = new Animation([hintRef.current]);
+    let correctAnswerAnimation = new Animation([correctAnswerRef.current]);
+    if (isHintShown) hintAnimation.animateAll("<-.2", "", "");
+    if (isSeen) correctAnswerAnimation.animateAll("<-.1", "", "<+.1");
+  }, [isHintShown, isSeen]);
 
   const showHint = (data) => {
-    return data[0] + data.slice(1).replaceAll(/[a-z]/gi, "_");
+    return data[0] + data.slice(1).replaceAll(/[A-z]/gi, "_");
   };
+
   return (
     <div {...props} className={"relative " + className} id={componentIndex}>
       {isTest && (
@@ -42,13 +53,16 @@ export const EnterAnswer = ({
         disabled={isHintShown || isEnd}
       >
         Hint
-        <i className="fa-solid fa-paintbrush ml-2"></i>
+        <FontAwesomeIcon icon="fa-solid fa-paintbrush" className={"ml-2"} />
       </button>
-      {isHintShown && (
-        <p className="text-gray-700 mt-2 tracking-widest font-medium">
-          {showHint(translation.definition.word)}
-        </p>
-      )}
+
+      <p
+        className="text-gray-700 mt-2 tracking-widest font-medium polygon-from-top -translate-y-6 opacity-0 bg-lime-500 w-fit bg-opacity-60 rounded-md px-2 py-1"
+        ref={hintRef}
+      >
+        {showHint(translation.definition.word)}
+      </p>
+      <div className={"bg-indigo-500 h-[.25rem] w-[100vw] -ml-4 mt-2 "}></div>
       <div className="flex flex-col mt-12">
         <span className="text-2xl text-indigo-500 font-semibold">
           {translation.term.word}
@@ -114,7 +128,10 @@ export const EnterAnswer = ({
           />
         </form>
         {!isCorrect && isSeen && (
-          <div className="mt-4 bg-lime-500 md:w-1/2 w-full bg-opacity-60 rounded-md px-4 py-2">
+          <div
+            ref={correctAnswerRef}
+            className="mt-2 bg-lime-500 md:w-1/2 w-full bg-opacity-60 rounded-md px-4 py-2 opacity-0 polygon-from-top -translate-y-12"
+          >
             {translation.definition.word}
           </div>
         )}

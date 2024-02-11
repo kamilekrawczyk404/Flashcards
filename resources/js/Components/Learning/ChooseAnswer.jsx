@@ -45,9 +45,10 @@ export const ChooseAnswer = ({
             Wrong! You'll get it next time!
           </p>
         )}
-        <div className="grid md:grid-cols-2 md:grid-rows-2 grid-cols-1 gap-2 mt-2">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-2 mt-2">
           {buttons.map((element, index) => (
             <button
+              type={"button"}
               className={
                 styling +
                 (isTest

@@ -8,7 +8,7 @@ const GamesNavigation = ({
   ...props
 }) => {
   return (
-    <div className="bg-white border-b-2 flex justify-between py-6 md:px-40 sm:px-20 px-6">
+    <div className="bg-white border-b-2 flex justify-between items-center py-6 md:px-40 sm:px-20 px-6">
       <h2 className="font-semibold text-xl text-gray-800 leading-tight">
         {children}
       </h2>
