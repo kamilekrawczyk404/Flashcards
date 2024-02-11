@@ -22,20 +22,14 @@ class SetTest extends TestCase
         }
     }
 
-    public function test_user_can_delete_set(): void {
-        $user = User::factory()->create();
-        $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
-
-        $response = $this->actingAs($user)->delete('/delete/set/' . $set->id . '/' . $set->title);
-
-        $response->assertOk();
-    }
-
     public function test_edit_set_rendered(): void {
         $user = User::factory()->create();
         $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user)->get('/edit-set/' . $set->id . '/' . $set->title);
+        $response = $this->actingAs($user)->get(route('flashcards.showEdit', [
+            'id' => $set->id,
+            'title' => $set->title
+        ]));
 
         $response->assertOk();
     }
@@ -56,15 +50,15 @@ class SetTest extends TestCase
         }
 
         $title = implode('_', fake()->unique()->words());
-        $response = $this->actingAs($user)->post('/create-set', [
+        $response = $this->actingAs($user)->post(route('flashcards.storeNewSet', [
             'title' => $title,
             'description' => fake()->realText(),
             'languages' => ['source' => fake()->unique()->randomElement($languages), 'target' => fake()
                 ->unique()->randomElement($languages)],
             'translations' => $translations
-        ]);
+        ]));
 
-        $response->assertRedirectToRoute('flashcards.showSet', ['id' => DB::table('flashcard_sets')->where('title', $title)->value('id'), 'title' => $title]);
+        $response->assertRedirectToRoute('flashcards.showSet', ['id' => DB::table('flashcard_sets')->where('title', $title)->value('id'), 'title' => $title])->assertSessionHas('success');
     }
 
     public function test_user_can_update_set(): void {
@@ -85,19 +79,34 @@ class SetTest extends TestCase
             'isNew' => true
         ];
 
-        $response = $this->actingAs($user)->put('/update-set/' . $set->id . '/' . $set->title, [
-            'title' => $set->title,
-            'description' => fake()->realText(),
-            'translations' => $translations,
-            'isTitleDirty' => false,
-            'isDescriptionDirty' => true,
-            'isDataFromDictionary' => [
-                'term' => $languages->source === 'English',
-                'definition' => $languages->target === 'English'
-            ],
-            'isTranslationDirty' => false
+        $response = $this->actingAs($user)->put(route('flashcards.update', [
+            'id' => $set->id,
+            'title' => $set->title
+            ]), [
+                'title' => $set->title,
+                'description' => fake()->realText(),
+                'translations' => $translations,
+                'isTitleDirty' => false,
+                'isDescriptionDirty' => true,
+                'isDataFromDictionary' => [
+                    'term' => $languages->source === 'English',
+                    'definition' => $languages->target === 'English'
+                ],
+                'isTranslationDirty' => false
         ]);
 
-        $response->assertRedirectToRoute('flashcards.showSet', ['id' => $set->id, 'title' => $set->title]);
+        $response->assertRedirectToRoute('flashcards.showSet', ['id' => $set->id, 'title' => $set->title])->assertSessionHas('success');
+    }
+
+    public function test_user_can_delete_set(): void {
+        $user = User::factory()->create();
+        $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user)->delete(route('flashcards.deleteSet', [
+            'id' => $set->id,
+            'title' => $set->title
+        ]));
+
+        $response->assertRedirectToRoute('home')->assertSessionHas('success');
     }
 }

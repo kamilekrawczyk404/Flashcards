@@ -25,8 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/get-user-sets/{id}', function (int $id) {
     return SetController::getUserSets($id);
-});
+})->name('getUserSets');
 
 Route::get('/search-in-sets/', function (Request $request) {
     return SetController::getFoundSets($request->currentPage, $request->searching, $request->filters);
-});
+})->name('searchInSets');

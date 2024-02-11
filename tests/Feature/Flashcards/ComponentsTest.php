@@ -14,7 +14,10 @@ class ComponentsTest extends TestCase
         $user = User::factory()->create();
         $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user)->get('/set/' . $set->id . '/' . $set->title . '/learn');
+        $response = $this->actingAs($user)->get(route('flashcards.learn', [
+            'id' => $set->id,
+            'title' => $set->title
+        ]));
 
         $response->assertOk();
     }
@@ -23,7 +26,10 @@ class ComponentsTest extends TestCase
         $user = User::factory()->create();
         $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user)->get('/set/' . $set->id . '/' . $set->title . '/test');
+        $response = $this->actingAs($user)->get(route('flashcards.test', [
+            'id' => $set->id,
+            'title' => $set->title
+        ]));
 
         $response->assertOk();
     }
@@ -32,7 +38,10 @@ class ComponentsTest extends TestCase
         $user = User::factory()->create();
         $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user)->get('/set/' . $set->id . '/' . $set->title . '/match');
+        $response = $this->actingAs($user)->get(route('flashcards.match', [
+            'id' => $set->id,
+            'title' => $set->title
+        ]));
 
         $response->assertOk();
     }
@@ -41,7 +50,9 @@ class ComponentsTest extends TestCase
         $user = User::factory()->create();
         $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user)->post('/store_new_match_time/' . $set->id, [
+        $response = $this->actingAs($user)->post(route('flashcards.match.store', [
+            'id' => $set->id
+        ]), [
             'score' => rand(10,100)
         ]);
 
