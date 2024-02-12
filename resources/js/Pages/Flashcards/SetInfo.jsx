@@ -24,7 +24,6 @@ export default function SetInfo({
   permissions,
   feedback,
 }) {
-  console.log(feedback);
   const [fetchedTranslations, setFetchedTranslations] = useState(
     translations.map((translation) => {
       return new TranslationsData(translation);

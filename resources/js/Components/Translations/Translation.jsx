@@ -21,6 +21,8 @@ export const Translation = ({
     );
   };
 
+  console.log(translation);
+
   return (
     <form
       onSubmit={submit}
@@ -29,7 +31,7 @@ export const Translation = ({
       }
     >
       <div className={"relative font-bold flex flex-col"}>
-        <div className={"flex gap-2"}>
+        <div className={"flex gap-2 items-center"}>
           <span className={"text-lg text-gray-700 "}>Term</span>
           <SoundButton audioPath={translation.term.audioPath} />
         </div>

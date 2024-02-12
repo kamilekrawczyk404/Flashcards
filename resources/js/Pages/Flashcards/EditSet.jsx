@@ -86,7 +86,9 @@ export default function EditSet({
   const deleteTranslation = (translationId, title, currentTranslationIndex) => {
     remove(currentTranslationIndex);
 
-    router.delete(`set/${set.id}/delete/translation/${translationId}/${title}`);
+    router.delete(
+      `/set/${set.id}/delete/translation/${translationId}/${title}`,
+    );
   };
 
   const appendField = () => {

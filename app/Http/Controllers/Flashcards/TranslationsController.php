@@ -29,8 +29,8 @@ class TranslationsController extends Controller
 
         return redirect()->route('flashcards.showSet', ['id' => $id, 'title' => $title])->with('success', "Translation has been updated successfully");
     }
-    public function delete($id, $title): void {
-        DB::table($title)->where('id', $id)->delete();
+    public function delete($id, $translation_id, $title): void {
+        DB::table($title)->where('id', $translation_id)->delete();
     }
 
     public static function updateHardTranslations(string $title, Request $request): void

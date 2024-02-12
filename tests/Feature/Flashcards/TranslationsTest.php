@@ -13,25 +13,33 @@ use Tests\TestCase;
 
 class TranslationsTest extends TestCase
 {
-    public function test_are_hard_translations_updated(): void
+    public function test_update_hard_translations(): void
     {
         $user = User::factory()->create();
         $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
         $answers = [];
+        $translations = DB::connection('mysql')->table($set->title)->get();
 
-        foreach(DB::connection('mysql')->table($set->title)->get() as $translation) {
+        foreach ($translations as $translation) {
             $term = json_decode($translation->term);
             $definition = json_decode($translation->definition);
 
             $answers[] = [
-                'index' => $translation->id,
-                'term' => ['word' => $term->word ?? $term->{0}->word],
-                'definition' => ['word' => $definition->word ?? $definition->{0}->word],
+                'id' => $translation->id,
+                'term' => ['word' => $term->word],
+                'definition' => ['word' => $definition->word],
             ];
         }
-        $response = $this->actingAs($user)->put('/set/' . $set->title . '/updateHardTranslations', [
-            'incorrect' => ['translations' => $answers]
-        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->put(route('flashcards.updateHardTranslations', [
+                'title' => $set->title
+            ]), [
+                'incorrect' => [
+                    'translations' => $answers
+                ]
+            ]);
 
         $response->assertOk();
     }
@@ -39,30 +47,51 @@ class TranslationsTest extends TestCase
     public function test_user_can_update_single_translation() {
         $user = User::factory()->create();
         $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
-
         $translation = DB::connection('mysql')->table($set->title)->first();
 
-        $updated = [
+        $newTranslation = [
             'term' => [
                 'word' => Translations::randomWord('English'),
-                'language' => 'en'
+                'language' => Translations::getLanguageShortcut('English')
             ],
             'definition' => [
                 'word' => Translations::randomWord('Polish'),
-                'language' => 'pl'
+                'language' => Translations::getLanguageShortcut('Polish')
             ]
         ];
 
-        $response = $this->actingAs($user)->put('/set/update-translation/' . $translation->id . '/' . $set->title, ['translation' => ['0' => $updated]]);
+        $response = $this
+            ->actingAs($user)
+            ->put(route('flashcards.updateTranslation', [
+                'id' => $set->id,
+                'translation_id' => $translation->id,
+                'title' => $set->title
+        ]),
+            ['translation' => $newTranslation]
+        );
 
-        $response->assertOk();
+        $response
+            ->assertRedirectToRoute('flashcards.showSet', [
+                'id' => $set->id,
+                'title' => $set->title
+            ])
+            ->assertSessionHas('success');
     }
 
     public function test_user_can_delete_single_translation(): void {
         $user = User::factory()->create();
         $set = FlashcardSets::factory()->create(['user_id' => $user->id]);
+        $translation = DB::connection('mysql')->table($set->title)->first();
 
-        $response = $this->actingAs($user)->delete('/delete/translation/1/' . $set->title);
+
+        $response = $this
+            ->actingAs($user)
+            ->delete(route('flashcards.deleteTranslation', [
+                'id' => $set->id,
+                'translation_id' => $translation->id,
+                'title' => $set->title
+            ])
+        );
 
         $response->assertOk();
     }
