@@ -38,6 +38,10 @@ class FlashcardSets extends Model
         return $this->hasMany(SetsSearchIndex::class);
     }
 
+    public function setsProgress() {
+        return $this->hasMany(FlashcardsSetsProgress::class);
+    }
+
     public static function getUserSets(int $id): array
     {
         $final = [];

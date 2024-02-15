@@ -17,7 +17,7 @@ export const ProgressModal = ({
         inProgress && (
           <div
             className={
-              "absolute top-0 left-0 w-full h-full bg-gray-100 z-[200]"
+              "absolute top-0 left-0 w-full h-screen bg-gray-100 z-[200]"
             }
           >
             <div
@@ -27,7 +27,7 @@ export const ProgressModal = ({
             >
               <FontAwesomeIcon
                 icon="fa-solid fa-hourglass-start"
-                className={"animate-hourglass text-2xl mr-4"}
+                className={"animate-hourglass text-2xl mr-4 text-gray-700"}
               />
               <p className={"text-2xl text-gray-700"}>
                 <span className={"font-bold"}>Wait a second</span>. {text}

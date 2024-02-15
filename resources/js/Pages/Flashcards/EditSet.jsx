@@ -169,123 +169,125 @@ export default function EditSet({
     >
       <Head title={`Editing set - ${set.title}`} />
 
-      <Container className="bg-white">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="p-2 text-gray-900 flex gap-4 flex-col"
-        >
-          <div
-            className="bg-gradient-to-br from-indigo-600 to-indigo-400 rounded-md shadow-md p-4 polygon-start opacity-0 translate-y-12"
-            ref={(element) => (mainInputsRefs.current[0] = element)}
+      {!isSetBeingUpdated && (
+        <Container>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="p-2 text-gray-900 flex gap-4 flex-col"
           >
-            <div className={"flex items-center justify-between gap-4"}>
-              <div className={"shadow-lg w-full self-start"}>
-                <InputLabel htmlFor={"title"} className={"text-white"}>
-                  Title
-                </InputLabel>
-                <TextInput
-                  id={"title"}
-                  placeholder={"Enter a title"}
-                  className="w-full"
-                  name="title"
-                  {...register("title", {
-                    required: {
-                      value: true,
-                      message: "Field title is required",
-                    },
-                  })}
-                />
-              </div>
-              <div className="shadow-lg w-full">
-                <InputLabel htmlFor={"description"} className={"text-white"}>
-                  Description
-                </InputLabel>
-                <Textarea
-                  placeholder="Add a description"
-                  name="description"
-                  {...register("description", {
-                    required: {
-                      value: true,
-                      message: "Field description is required",
-                    },
-                  })}
-                />
-              </div>
-            </div>
-            <div className={"space-y-4"}>
-              {errors.title && <InputError message={errors.title.message} />}
-              {errors.description && (
-                <InputError
-                  message={errors.description.message}
-                  className="mt-4"
-                />
-              )}
-              {errorsFromController.title && (
-                <InputError message={errorsFromController.title} />
-              )}
-              {errors.translations && (
-                <InputError message="Fields in translations must be filled" />
-              )}
-              {errorsFromController.translations && (
-                <InputError message={errorsFromController.translations} />
-              )}
-            </div>
-          </div>
-
-          <div className={"overflow-y-scroll max-h-[50vh] space-y-4"}>
-            {fields.map((field, index) => (
-              <TranslationForm
-                key={index}
-                index={index}
-                ref={(element) => (translationsRefs.current[index] = element)}
-                title={title}
-                handleDeleteTranslation={deleteTranslation}
-                handleIsDeletedAnyTranslation={setIsAnyTranslationDeleted}
-                termRegister={register(`translations.${index}.term.word`, {
-                  required: {
-                    value: true,
-                    message: "Field term is required",
-                  },
-                })}
-                definitionRegister={register(
-                  `translations.${index}.definition.word`,
-                  {
-                    required: {
-                      value: true,
-                      message: "Field definition is required",
-                    },
-                  },
-                )}
-                handleRemovingAnimation={removingAnimation}
-                translationId={getValues(`translations.${index}.id`)}
-              />
-            ))}
-          </div>
-
-          <AddTranslationButton
-            ref={(element) => (mainInputsRefs.current[1] = element)}
-            handleAppendField={appendField}
-          />
-          <div
-            className="flex justify-end polygon-start opacity-0 translate-y-12"
-            ref={(element) => {
-              mainInputsRefs.current[2] = element;
-            }}
-          >
-            <MainButton
-              isRedirect={isAnyTranslationDeleted}
-              href={
-                isAnyTranslationDeleted
-                  ? route("flashcards.showSet", [set.id, set.title])
-                  : ""
-              }
-              className="inline-block py-2 px-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md transition"
+            <div
+              className="bg-gradient-to-br from-indigo-600 to-indigo-400 rounded-md shadow-md p-4 polygon-start opacity-0 translate-y-12"
+              ref={(element) => (mainInputsRefs.current[0] = element)}
             >
-              Update
-            </MainButton>
-          </div>
-        </form>
-      </Container>
+              <div className={"flex items-center justify-between gap-4"}>
+                <div className={"shadow-lg w-full self-start"}>
+                  <InputLabel htmlFor={"title"} className={"text-white"}>
+                    Title
+                  </InputLabel>
+                  <TextInput
+                    id={"title"}
+                    placeholder={"Enter a title"}
+                    className="w-full"
+                    name="title"
+                    {...register("title", {
+                      required: {
+                        value: true,
+                        message: "Field title is required",
+                      },
+                    })}
+                  />
+                </div>
+                <div className="shadow-lg w-full">
+                  <InputLabel htmlFor={"description"} className={"text-white"}>
+                    Description
+                  </InputLabel>
+                  <Textarea
+                    placeholder="Add a description"
+                    name="description"
+                    {...register("description", {
+                      required: {
+                        value: true,
+                        message: "Field description is required",
+                      },
+                    })}
+                  />
+                </div>
+              </div>
+              <div className={"space-y-4"}>
+                {errors.title && <InputError message={errors.title.message} />}
+                {errors.description && (
+                  <InputError
+                    message={errors.description.message}
+                    className="mt-4"
+                  />
+                )}
+                {errorsFromController.title && (
+                  <InputError message={errorsFromController.title} />
+                )}
+                {errors.translations && (
+                  <InputError message="Fields in translations must be filled" />
+                )}
+                {errorsFromController.translations && (
+                  <InputError message={errorsFromController.translations} />
+                )}
+              </div>
+            </div>
+
+            <div className={"overflow-y-scroll max-h-[50vh] space-y-4"}>
+              {fields.map((field, index) => (
+                <TranslationForm
+                  key={index}
+                  index={index}
+                  ref={(element) => (translationsRefs.current[index] = element)}
+                  title={title}
+                  handleDeleteTranslation={deleteTranslation}
+                  handleIsDeletedAnyTranslation={setIsAnyTranslationDeleted}
+                  termRegister={register(`translations.${index}.term.word`, {
+                    required: {
+                      value: true,
+                      message: "Field term is required",
+                    },
+                  })}
+                  definitionRegister={register(
+                    `translations.${index}.definition.word`,
+                    {
+                      required: {
+                        value: true,
+                        message: "Field definition is required",
+                      },
+                    },
+                  )}
+                  handleRemovingAnimation={removingAnimation}
+                  translationId={getValues(`translations.${index}.id`)}
+                />
+              ))}
+            </div>
+
+            <AddTranslationButton
+              ref={(element) => (mainInputsRefs.current[1] = element)}
+              handleAppendField={appendField}
+            />
+            <div
+              className="flex justify-end polygon-start opacity-0 translate-y-12"
+              ref={(element) => {
+                mainInputsRefs.current[2] = element;
+              }}
+            >
+              <MainButton
+                isRedirect={isAnyTranslationDeleted}
+                href={
+                  isAnyTranslationDeleted
+                    ? route("flashcards.showSet", [set.id, set.title])
+                    : ""
+                }
+                className="inline-block py-2 px-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md transition"
+              >
+                Update
+              </MainButton>
+            </div>
+          </form>
+        </Container>
+      )}
 
       <ProgressModal
         errors={serverErrors}

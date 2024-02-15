@@ -60,12 +60,12 @@ export const Feedback = ({
     <>
       <div
         ref={feedbackRef}
-        className="rounded-md bg-gray-100 flex flex-col z-10 p-2 polygon-from-top opacity-0 -translate-y-12"
+        className="rounded-md bg-gray-100 flex flex-col z-10 p-4 polygon-from-top opacity-0 -translate-y-12"
       >
         <p className="font-semibold text-xl text-gray-700 whitespace-pre-line">
           {infoAboutResults[selectedIndex]}
         </p>
-        <span className="mt-8 font-semibold text-gray-600">
+        <span className="mt-8 font-semibold text-gray-500">
           {answersResults.correct} / {length} terms
           {finishedTime && (
             <span className="text-indigo-500 ml-2 font-bold">
@@ -73,50 +73,49 @@ export const Feedback = ({
             </span>
           )}
         </span>
-        <div className="w-full rounded-full my-2 border-white p-[.25rem] border-4">
+        <div className="w-full rounded-full my-2 p-[.3rem] bg-white">
           <div
             style={{ "--barWidth": `${barWidth}%` }}
             className={`bg-indigo-500 h-4 rounded-3xl animate-result-bar transition`}
           ></div>
         </div>
       </div>
-      {bestResult === -1 ||
-        (answersResults.incorrect.count === 0 && (
-          <div className={"bg-white p-4 rounded-md relative"}>
-            <div
-              className={
-                "text-xl font-semibold text-gray-700 flex gap-2 flex-col"
-              }
-            >
-              <div className={"flex items-center relative mb-4"}>
-                {"Congratulations!".split("").map((element, index) => {
-                  return (
-                    <span
-                      ref={(letter) => {
-                        letterRefs.current[index] = letter;
-                      }}
-                      className={
-                        "text-2xl font-bold text-lime-500 transform transition-transform"
-                      }
-                    >
-                      {element}
-                    </span>
-                  );
-                })}
-                <FontAwesomeIcon
-                  icon="fa-solid fa-flag-checkered"
-                  className={
-                    "text-md transform animate-waving-flag text-2xl ml-2 text-indigo-500"
-                  }
-                />
-              </div>
-              <p>You've finished test with no mistakes!</p>
-              {bestResult.matchingTime > finishedTime && (
-                <p>It's your best time!</p>
-              )}
+      {answersResults.incorrect.count === 0 && (
+        <div className={"bg-gray-100 p-4 mt-4 rounded-md relative"}>
+          <div
+            className={
+              "text-xl font-semibold text-gray-700 flex gap-2 flex-col"
+            }
+          >
+            <div className={"flex items-center relative mb-4"}>
+              {"Congratulations!".split("").map((element, index) => {
+                return (
+                  <span
+                    ref={(letter) => {
+                      letterRefs.current[index] = letter;
+                    }}
+                    className={
+                      "text-2xl font-bold text-lime-500 transform transition-transform"
+                    }
+                  >
+                    {element}
+                  </span>
+                );
+              })}
+              <FontAwesomeIcon
+                icon="fa-solid fa-flag-checkered"
+                className={
+                  "text-md transform animate-waving-flag text-2xl ml-2 text-indigo-500"
+                }
+              />
             </div>
+            <p>You've finished test with no mistakes!</p>
+            {bestResult.matchingTime > finishedTime && (
+              <p>It's your best time!</p>
+            )}
           </div>
-        ))}
+        </div>
+      )}
       {answersResults.incorrect.count !== 0 && (
         <Table
           isPresentingTranslations={true}

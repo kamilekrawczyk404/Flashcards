@@ -35,12 +35,13 @@ const Match = ({
       translations: [],
     },
   });
+
   const refs = useRef([]);
   const cardRefs = useRef([]);
   const additionalSeconds = 10;
   const SECONDS = 500;
   const styling =
-    "aspect-square text-center text-xl font-medium shadow-md transition rounded-md text-gray-700 polygon-y-start hover:scale-[1.05] hover:bg-indigo-500 bg-white";
+    "aspect-square text-center text-xl font-medium shadow-md transition rounded-md text-gray-700 polygon-y-start hover:scale-[1.05] hover:bg-indigo-500 bg-gray-100 ";
 
   useEffect(() => {
     let timer;
@@ -128,9 +129,12 @@ const Match = ({
       );
       cardRefs.current[secondCard.refId].classList.replace(
         "!bg-red-500",
-        "bg-white",
+        "bg-gray-100",
       );
-      cardRefs.current[refIndex].classList.replace("!bg-red-500", "bg-white");
+      cardRefs.current[refIndex].classList.replace(
+        "!bg-red-500",
+        "bg-gray-100",
+      );
     }, SECONDS);
   };
 
@@ -161,7 +165,10 @@ const Match = ({
       "bg-indigo-500",
       "bg-lime-500",
     );
-    cardRefs.current[card.refId].classList.replace("bg-white", "bg-lime-500");
+    cardRefs.current[card.refId].classList.replace(
+      "bg-gray-100",
+      "bg-lime-500",
+    );
     cardRefs.current[card.refId].classList.add("text-white");
     cardRefs.current[card.refId].classList.remove("hover:bg-indigo-500");
     cardRefs.current[refIndex].classList.remove("hover:bg-indigo-500");
@@ -182,7 +189,7 @@ const Match = ({
   const checkCards = (currentCard, index) => {
     if (isFirstCard) {
       cardRefs.current[currentCard.refId].classList.replace(
-        "bg-white",
+        "bg-gray-100",
         "bg-indigo-500",
       );
       cardRefs.current[currentCard.refId].classList.add("text-white");
@@ -243,7 +250,7 @@ const Match = ({
             <div>
               <RankingList rankings={rankingList} />
             </div>
-            <span className="text-2xl text-indigo-500 font-bold bg-white p-2 rounded-md">
+            <span className="text-2xl text-indigo-500 font-bold bg-gray-100 p-2 rounded-md">
               Ready to play?
             </span>
             <span className="text-gray-700 text-xl md:max-w-[35%] text-center border-b-4 border-gray-300 pb-2">

@@ -21,8 +21,6 @@ export const Translation = ({
     );
   };
 
-  console.log(translation);
-
   return (
     <form
       onSubmit={submit}

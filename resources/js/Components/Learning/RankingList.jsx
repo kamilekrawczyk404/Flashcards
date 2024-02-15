@@ -4,7 +4,7 @@ export const RankingList = ({ className = "", rankings, ...props }) => {
   const stageStyling = ["text-amber-500", "text-gray-300", "text-amber-700"];
 
   return (
-    <div className={"bg-white p-4 rounded-md min-w-[20rem] " + className}>
+    <div className={"bg-gray-100 p-4 rounded-md min-w-[20rem] " + className}>
       <div
         className={
           "flex flex-col items-center font-bold text-indigo-500 text-xl mb-4"
@@ -22,7 +22,7 @@ export const RankingList = ({ className = "", rankings, ...props }) => {
             <p>Nobody has finished this game yet.</p>
             <p
               className={
-                "bg-gray-100 p-2 text-indigo-500 w-fit mx-auto rounded-sm shadow-sm font-bold"
+                "bg-white p-2 text-indigo-500 w-fit mx-auto rounded-sm shadow-sm font-bold"
               }
             >
               Become a new leader!
@@ -33,7 +33,7 @@ export const RankingList = ({ className = "", rankings, ...props }) => {
           <div
             key={index}
             className={
-              "bg-gray-100 p-2 flex gap-4 items-center rounded-md shadow-sm"
+              "bg-white p-2 flex gap-4 items-center rounded-md shadow-sm"
             }
           >
             {stageStyling[index] && (
@@ -44,7 +44,7 @@ export const RankingList = ({ className = "", rankings, ...props }) => {
             )}
             <span className={""}>{ranking.name}</span>
             <span
-              className={"bg-white px-1 rounded-md text-gray-700 font-bold"}
+              className={"bg-gray-100 px-1 rounded-md text-gray-700 font-bold"}
             >
               {ranking.matchingTime}s
             </span>

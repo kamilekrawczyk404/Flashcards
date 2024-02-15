@@ -41,7 +41,7 @@ export default class Animation {
     this.sliding.to(
       this.elements[0],
       {
-        y: "-10rem",
+        y: "-7rem",
         onComplete: () => {
           setTimeout(() => {
             this.sliding.reverse();

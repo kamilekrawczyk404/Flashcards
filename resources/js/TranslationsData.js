@@ -1,6 +1,5 @@
 export default class TranslationsData {
   getAudioPath(translation, type) {
-    console.log(translation);
     switch (type) {
       case "term":
         return translation.term.hasOwnProperty("phonetics")

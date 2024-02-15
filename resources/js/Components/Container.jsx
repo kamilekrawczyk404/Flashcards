@@ -1,12 +1,12 @@
-export const Container = (props) => {
+export const Container = ({ className, children }) => {
   return (
     <div
       className={
-        "relative mt-8 overflow-hidden max-w-[76rem] mx-auto p-4 bg-gray-100 shadow-sm sm:rounded-md " +
-        props.className
+        "relative overflow-hidden md:max-w-[62rem] max-w-[76rem] p-4 shadow-sm rounded-md lg:mx-auto bg-white lg:m-8 m-4 " +
+        className
       }
     >
-      {props.children}
+      {children}
     </div>
   );
 };

@@ -57,7 +57,7 @@ export const PopUpEdit = ({
         data-micromodal-close={modalId}
       >
         <div
-          className="modal__container flex gap-6 flex-col bg-white md:w-1/2 w-full md:m-0 m-4 p-4 rounded-md overflow-y-auto border-b relative z-10"
+          className="modal__container flex gap-6 flex-col bg-white lg:max-w-[62rem] w-full m-6 p-4 rounded-md overflow-y-auto border-b relative z-10"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-1-title"
@@ -80,8 +80,8 @@ export const PopUpEdit = ({
             onSubmit={handleSubmit(onSubmit)}
           >
             <GradientAndLines className={"p-4"}>
-              <div className="flex md:flex-row flex-col gap-4">
-                <div className="md:w-1/2 w-full">
+              <div className="flex flex-col gap-4">
+                <div className="w-full">
                   <span className={"text-gray-100 text-xl font-semibold"}>
                     Term
                   </span>
@@ -99,7 +99,7 @@ export const PopUpEdit = ({
                     />
                   )}
                 </div>
-                <div className="md:w-1/2 w-full">
+                <div className="w-full">
                   <span className={"text-gray-100 text-xl font-semibold"}>
                     Definition
                   </span>

@@ -64,6 +64,9 @@ class User extends Authenticatable
     public function matchScores(): HasMany {
         return $this->hasMany(MatchScores::class);
     }
+    public function setsProgress() {
+        return $this->hasMany(FlashcardsSetsProgress::class);
+    }
 
     public static function getAvatarName() {
         return User::where('id', Auth::id())->value('avatar');
