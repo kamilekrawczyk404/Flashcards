@@ -11,7 +11,7 @@ else
     echo "env file exists."
 fi
 
-php artisan migrate
+php artisan migrate --seed
 php artisan key:generate
 php artisan cache:clear
 php artisan config:clear

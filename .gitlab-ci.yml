@@ -11,8 +11,8 @@ build:
     - if: $CI_PIPELINE_SOURCE == "web"
 
   before_script:
-    - echo $HARBOR_URL_ -u "$HARBOR_USERNAME_" -p \'$HARBOR_PASSWORD_\'
-    - docker login $HARBOR_URL_ -u "$HARBOR_USERNAME_" -p "$HARBOR_PASSWORD_"
+    - echo $HARBOR_URL -u "$HARBOR_USERNAME" -p \'$HARBOR_PASSWORD\'
+    - docker login $HARBOR_URL -u "$HARBOR_USERNAME" -p "$HARBOR_PASSWORD"
     - apk add openssh-client git
     - echo "deployer" > /etc/hostname
 
@@ -21,16 +21,16 @@ build:
 
   script:
 
-    - git clone https://gitlab-ci-token:$CI_JOB_TOKEN_@gitlab.jomal.pl/jomal/FLASHCARDS.git ./src
+    - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.jomal.pl/jomal/flashcards.git ./src
     - mkdir FLASHCARDS
     - mv compose.yaml ./
 
     - docker build --pull -t "$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA" .
 
-    - docker tag docker.io/library/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA  $HARBOR_HOST/$HARBOR_PROJECT_/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
-    - docker tag docker.io/library/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA  $HARBOR_HOST/$HARBOR_PROJECT_/$CI_COMMIT_REF_NAME:latest
-    - docker push $HARBOR_HOST/$HARBOR_PROJECT_/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
-    - docker push $HARBOR_HOST/$HARBOR_PROJECT_/$CI_COMMIT_REF_NAME:latest
+    - docker tag docker.io/library/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA  $HARBOR_HOST/$HARBOR_PROJECT/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+    - docker tag docker.io/library/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA $HARBOR_HOST/$HARBOR_PROJECT/$CI_COMMIT_REF_NAME:latest
+    - docker push $HARBOR_HOST/$HARBOR_PROJECT/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+    - docker push $HARBOR_HOST/$HARBOR_PROJECT/$CI_COMMIT_REF_NAME:latest
     - mkdir ~/.ssh
     - eval $(ssh-agent -s)
     - ssh-keyscan -p $DEPLOY_PORT $DEPLOY_IP > ~/.ssh/known_hosts

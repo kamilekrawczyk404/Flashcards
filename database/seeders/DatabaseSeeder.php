@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         //TODO: generate also matching scores
 
         User::factory(1)->create()->each(function ($user) {
-            $user->sets()->saveMany(FlashcardSets::factory(1)->create()->each(function($set) {
+            $user->sets()->saveMany(FlashcardSets::factory(2)->create()->each(function($set) {
                 SetsSearchTerm::insertNewTitle($set->title);
                 SetsSearchIndex::insertNewValuesForSet($set->id, $set->title);
             }));
