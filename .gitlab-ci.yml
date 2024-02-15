@@ -5,6 +5,7 @@ build:
   services:
     - docker:24.0.5-dind
   stage: build
+  when: manual
 
   rules:
     - if: $CI_PIPELINE_SOURCE == "trigger"

@@ -19,10 +19,12 @@ class UserFactory extends Factory
     {
 //        $userName = fake()->name();
         $userName = "user";
+        $userEmail = "user@gmail.com";
 
         return [
             'name' => $userName,
-            'email' => fake()->unique()->safeEmail(),
+//            'email' => fake()->unique()->safeEmail(),
+            'email' => $userEmail,
             'email_verified_at' => now(),
             'password' => 'qwerty',
             'avatar' => 'default.png',

@@ -51,22 +51,27 @@ export default function Login({ status, canResetPassword }) {
           </div>
         )}
 
-        <ApplicationLogo
-          ref={(element) => (logoRef.current = element)}
-          className={"text-[4rem] translate-y-12 opacity-0 polygon-start"}
-        />
-        <InputError
-          message={
-            <>
-              <p>
-                login: <span>user</span>
-              </p>
-              <p>
-                <b>pass</b>: <b>qwerty</b>
-              </p>
-            </>
+        <div
+          className={
+            " translate-y-12 opacity-0 polygon-start flex items-center flex-col p-1"
           }
-        />
+          ref={(element) => (logoRef.current = element)}
+        >
+          <ApplicationLogo className={"text-[4rem]"}></ApplicationLogo>
+          <InputError
+            className={"shadow-none"}
+            message={
+              <>
+                <p>
+                  login: <span>user</span>
+                </p>
+                <p>
+                  <b>pass</b>: <b>qwerty</b>
+                </p>
+              </>
+            }
+          />
+        </div>
 
         <GradientAndLines
           ref={formRef}
