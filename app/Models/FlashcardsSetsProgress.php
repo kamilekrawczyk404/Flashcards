@@ -19,6 +19,11 @@ class FlashcardsSetsProgress extends Model
 
     protected $primaryKey = 'id';
 
+    protected $attributes = [
+        'status' => 'unknown',
+        'isFavourite' => false
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
@@ -27,15 +32,18 @@ class FlashcardsSetsProgress extends Model
         return $this->belongsTo(FlashcardSets::class);
     }
 
-    public static function getSetProgress($set_id): array {
-        $translations = json_decode(FlashcardsSetsProgress::where('flashcard_sets_id', $set_id)->value('translations'));
+    public static function getSetProgress(int $set_id, int $user_id): array {
+        $translations = FlashcardsSetsProgress::where([
+            'flashcard_sets_id' => $set_id,
+            'user_id' => $user_id
+        ])->get()->toArray();
 
         $known = 0;
         $unknown = 0;
         $difficult = 0;
 
         foreach ($translations as $translation) {
-            match ($translation->status) {
+            match ($translation['status']) {
                 'known' => $known += 1,
                 'unknown' => $unknown += 1,
                 'difficult' => $difficult += 1

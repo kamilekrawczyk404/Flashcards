@@ -17,7 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(FlashcardSets::class);
-            $table->json('translations');
+            $table->integer('translation_id');
+            $table->string('status');
+            $table->string('isFavourite');
         });
     }
 

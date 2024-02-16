@@ -63,10 +63,10 @@ export default function Login({ status, canResetPassword }) {
             message={
               <>
                 <p>
-                  login: <span>user</span>
+                  login: <span>user@gmail.com</span>
                 </p>
                 <p>
-                  <b>pass</b>: <b>qwerty</b>
+                  pass: <b>qwerty</b>
                 </p>
               </>
             }

@@ -28,7 +28,7 @@ class SetController extends Controller
         return Inertia::render('Flashcards/SetInfo', [
             'set' => FlashcardSets::find($id),
             'translations' => FlashcardSets::getAllTranslations($title),
-//            'progressionOfSet' => FlashcardsSetsProgress::getSetProgress($id),
+            'progression' => FlashcardsSetsProgress::getSetProgress($id, Auth::id()),
             'author' => FlashcardSets::getAuthorName($id),
             'translationsCount' => FlashcardSets::countTranslations($title)
         ]);
@@ -79,12 +79,6 @@ class SetController extends Controller
 
             foreach($request->translations as $key => $translation) {
 
-                $translationsWithStatuses[] = [
-                    'id' => $key + 1,
-                    'status' => 'unknown',
-                    'isFavourite' => false
-                ];
-
                 $term = Translations::makeSingle($translation['term'], Translations::getLanguageShortcut
                 ($languages['source']));
                 $definition = Translations::makeSingle($translation['definition'], Translations::getLanguageShortcut
@@ -94,14 +88,16 @@ class SetController extends Controller
                     'term' => $term,
                     'definition' => $definition,
                 ]);
+
+                $setProgress = new FlashcardsSetsProgress;
+                $setProgress->flashcard_sets_id = FlashcardSets::orderBy('id', 'desc')->first()->id;
+                $setProgress->translation_id = $key + 1;
+                $setProgress->status = 'unknown';
+                $setProgress->isFavourite = false;
+
+                $user->setsProgress()->save($setProgress);
             }
         }
-
-        $setProgress = new FlashcardsSetsProgress;
-        $setProgress->translations = json_encode($translationsWithStatuses);
-        $setProgress->flashcard_sets_id = FlashcardSets::orderBy('id', 'desc')->first()->id;
-        $setProgress->user_id = Auth::id();
-        $setProgress->save();
 
         return to_route('flashcards.showSet', [DB::table('flashcard_sets')->where('title', $title)->value('id'), $title])->with('success', "Your set has been created successfully");
     }

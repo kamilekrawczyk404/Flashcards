@@ -21,7 +21,6 @@ build:
     DOCKER_TLS_CERTDIR: "/certs"
 
   script:
-
     - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.jomal.pl/jomal/flashcards.git ./src
     - mkdir FLASHCARDS
     - mv compose.yaml ./

@@ -98,6 +98,7 @@ export default function CreateSet({ auth, errorsFromController }) {
     translationsAnimation.animateAll("", "", "<+.1");
   }, [fields]);
 
+  console.log(serverErrors);
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -106,7 +107,7 @@ export default function CreateSet({ auth, errorsFromController }) {
     >
       <Head title={`Creating a new set`} />
 
-      {!isBeingCreated && (
+      {(!isBeingCreated || Object.values(serverErrors).length !== 0) && (
         <Container>
           <form
             onSubmit={handleSubmit(onSubmit)}
