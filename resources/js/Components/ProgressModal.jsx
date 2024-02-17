@@ -8,7 +8,6 @@ export const ProgressModal = ({
 }) => {
   // Progress bar based on progress from CreateInertiaApp
 
-  console.log(errors);
   return (
     <>
       {Object.values(errors).every(

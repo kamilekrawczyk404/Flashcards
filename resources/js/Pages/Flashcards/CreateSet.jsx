@@ -6,27 +6,40 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router } from "@inertiajs/react";
 import { Container } from "@/Components/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import gsap from "gsap/all";
 import { Select } from "@/Components/Form/Select.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
-import { TranslationForm } from "@/Components/Translations/TranslationForm.jsx";
-import { AddTranslationButton } from "@/Components/Translations/AddTranslationButton.jsx";
 import Animation from "@/Pages/Animation.js";
 import { ProgressModal } from "@/Components/ProgressModal.jsx";
+import GroupsFieldArray from "@/Components/Form/GroupsFieldArray.jsx";
 
 export default function CreateSet({ auth, errorsFromController }) {
   const selectOptions = ["English", "Polish", "Spanish", "German"];
   const [source, setSource] = useState(selectOptions.at(0));
   const [isBeingCreated, setIsBeingCreated] = useState(false);
   const [serverErrors, setServerErrors] = useState({});
+  const [groupNames, setGroupNames] = useState([]);
 
   let refs = useRef([]);
   let fieldsRef = useRef([]);
 
-  const emptyFields = {
-    term: "",
-    definition: "",
+  const defaultValues = {
+    groups: [
+      {
+        name: "Group 1",
+        translations: [
+          {
+            term: "",
+            definition: "",
+          },
+          {
+            term: "",
+            definition: "",
+          },
+        ],
+      },
+    ],
   };
 
   const {
@@ -35,6 +48,7 @@ export default function CreateSet({ auth, errorsFromController }) {
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
   } = useForm({
     title: "",
     description: "",
@@ -42,53 +56,44 @@ export default function CreateSet({ auth, errorsFromController }) {
       source: source,
       target: selectOptions[1],
     },
-    translations: [
-      {
-        emptyFields,
-      },
-    ],
+    defaultValues,
   });
-
-  const { fields, append, remove } = useFieldArray({
-    name: "translations",
-    control,
-  });
-
-  const removingAnimation = (index) => {
-    let removeTl = gsap.timeline();
-
-    removeTl.to(fieldsRef.current[index], {
-      duration: 1,
-      opacity: 0,
-      clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-      y: "-1rem",
-    });
-  };
 
   const deleteTranslation = (translationId, title, index) => {
     remove(index);
   };
 
-  const appendField = () => {
-    append({
-      emptyFields,
+  const hasUniqueGroupNames = () => {
+    setGroupNames([]);
+    getValues().groups.forEach((group) => {
+      setGroupNames((prev) => [...prev, group.name]);
     });
+
+    return new Set(groupNames).size === groupNames.length;
   };
 
   const onSubmit = (data) => {
-    router.post("/create-set", data);
+    if (hasUniqueGroupNames()) console.log(data);
+    // router.post("/create-set", data);
 
-    setServerErrors({});
-    setIsBeingCreated(true);
+    // setServerErrors({});
+    // setIsBeingCreated(true);
   };
-
-  useEffect(() => {
-    append([emptyFields, emptyFields]);
-  }, []);
 
   useEffect(() => {
     setServerErrors(errorsFromController);
   }, [errorsFromController]);
+
+  // useEffect(() => {
+  //   if (errors.hasOwnProperty("groups")) {
+  //     errors.groups.forEach((group) => {
+  //       console.log(group);
+  //       // group.name.ref.current.appendChild(
+  //       //   <InputError message={group.name.message} />,
+  //       // );
+  //     });
+  //   }
+  // }, [errors]);
 
   useLayoutEffect(() => {
     const mainFieldsAnimation = new Animation(refs.current);
@@ -96,15 +101,10 @@ export default function CreateSet({ auth, errorsFromController }) {
 
     mainFieldsAnimation.animateAll("", "", "<+.2");
     translationsAnimation.animateAll("", "", "<+.1");
-  }, [fields]);
+  }, []);
 
-  console.log(serverErrors);
   return (
-    <AuthenticatedLayout
-      user={auth.user}
-      header={"Create a new set"}
-      // fullScreen={true}
-    >
+    <AuthenticatedLayout user={auth.user} header={"Create a new set"}>
       <Head title={`Creating a new set`} />
 
       {(!isBeingCreated || Object.values(serverErrors).length !== 0) && (
@@ -210,8 +210,8 @@ export default function CreateSet({ auth, errorsFromController }) {
                 {errors.description && (
                   <InputError message={errors.description.message} />
                 )}
-                {errors.translations && (
-                  <InputError message="Fields in translations must be filled" />
+                {errors.groups && (
+                  <InputError message={errors.groups.message} />
                 )}
                 {errorsFromController.translations && (
                   <InputError message={errorsFromController.translations} />
@@ -219,36 +219,19 @@ export default function CreateSet({ auth, errorsFromController }) {
               </div>
             </div>
 
-            <div className={"overflow-y-scroll max-h-[40vh] space-y-4"}>
-              {fields.map((field, index) => (
-                <TranslationForm
-                  key={index}
-                  index={index}
-                  ref={(element) => (fieldsRef.current[index] = element)}
-                  handleRemovingAnimation={removingAnimation}
-                  handleDeleteTranslation={deleteTranslation}
-                  definitionRegister={register(
-                    `translations.${index}.definition`,
-                    {
-                      required: {
-                        value: true,
-                        message: "Field definition is required",
-                      },
-                    },
-                  )}
-                  termRegister={register(`translations.${index}.term`, {
-                    required: {
-                      value: true,
-                      message: "Field term is required",
-                    },
-                  })}
-                />
-              ))}
+            <div className={"space-y-4"}>
+              <GroupsFieldArray
+                {...{
+                  control,
+                  register,
+                  setValue,
+                  getValues,
+                  errors,
+                  defaultValues,
+                }}
+              />
             </div>
-            <AddTranslationButton
-              ref={(element) => (refs.current[1] = element)}
-              handleAppendField={appendField}
-            />
+
             <div
               className="flex justify-end opacity-0 polygon-start translate-y-12"
               ref={(element) => (refs.current[2] = element)}

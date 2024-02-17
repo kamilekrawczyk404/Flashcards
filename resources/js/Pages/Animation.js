@@ -69,7 +69,7 @@ export default class Animation {
     this.inReversingMode = inReversingMode;
 
     // before was 4rem?
-    this.startingY = "0";
+    this.startingY = "-3rem"; //-translate-y-12
 
     this.sliding = gsap.timeline({
       onComplete: () => onComplete(),
@@ -97,6 +97,7 @@ export default class Animation {
         clipPath: this.inReversingMode
           ? "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"
           : "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        height: this.inReversingMode ? "0" : "auto",
       },
     });
 

@@ -11,7 +11,7 @@ import gsap from "gsap/all";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import TranslationsData from "@/TranslationsData.js";
 import { TranslationForm } from "@/Components/Translations/TranslationForm.jsx";
-import { AddTranslationButton } from "@/Components/Translations/AddTranslationButton.jsx";
+import { AddButton } from "@/Components/Form/AddButton.jsx";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProgressModal } from "@/Components/ProgressModal.jsx";
@@ -263,7 +263,7 @@ export default function EditSet({
               ))}
             </div>
 
-            <AddTranslationButton
+            <AddButton
               ref={(element) => (mainInputsRefs.current[1] = element)}
               handleAppendField={appendField}
             />
