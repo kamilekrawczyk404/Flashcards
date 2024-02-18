@@ -42,7 +42,7 @@ class Translations extends Model
             'word' => $word
         ])->get('{+endpoint}/{page}/{version}/{directory}/{language}/{word}');
 
-        if($response->ok()) {
+        if ($response->ok()) {
             return $response->json();
         }
 
@@ -68,16 +68,23 @@ class Translations extends Model
         };
     }
 
-    public static function makeSingle(string $word, string $languageShortcut): string {
+    public static function makeSingle(string $word, string $languageShortcut): array {
         // Generate single data from dictionary when user updates data in the translations table
-        $data = Translations::getDataFromDictionary($languageShortcut, $word);
+        $dictionary = Translations::getDataFromDictionary($languageShortcut, $word);
+        $data = [];
 
-        if (array_key_exists( 0, $data)) {
+        if (array_key_exists( 0, $dictionary)) {
             // Extract data from dictionary hidden under '0' index
-            $data = $data['0'];
+            $dictionary = $dictionary['0'];
+            $phonetics = array_filter($dictionary['phonetics'], fn ($phonetic) => str_contains($phonetic['audio'], ".mp3"));
+
+            $data['phonetic'] = $dictionary['phonetic'];
+            $data['audioPath'] = reset($phonetics)['audio'];
         }
+
+        $data['word'] = $dictionary['word'];
         $data['language'] = $languageShortcut;
 
-        return json_encode($data);
+        return $data;
     }
 }

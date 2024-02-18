@@ -20,6 +20,12 @@ export default function CreateSet({ auth, errorsFromController }) {
   const [isBeingCreated, setIsBeingCreated] = useState(false);
   const [serverErrors, setServerErrors] = useState({});
   const [groupNames, setGroupNames] = useState([]);
+  const [customErrors, setCustomErros] = useState({
+    uniqueGroupName: {
+      value: false,
+      message: "Group names must be unique",
+    },
+  });
 
   let refs = useRef([]);
   let fieldsRef = useRef([]);
@@ -49,6 +55,7 @@ export default function CreateSet({ auth, errorsFromController }) {
     formState: { errors },
     setValue,
     getValues,
+    watch,
   } = useForm({
     title: "",
     description: "",
@@ -64,36 +71,37 @@ export default function CreateSet({ auth, errorsFromController }) {
   };
 
   const hasUniqueGroupNames = () => {
+    return new Set(groupNames).size === groupNames.length;
+  };
+
+  useEffect(() => {
     setGroupNames([]);
     getValues().groups.forEach((group) => {
       setGroupNames((prev) => [...prev, group.name]);
     });
-
-    return new Set(groupNames).size === groupNames.length;
-  };
+  }, [watch()]);
 
   const onSubmit = (data) => {
-    if (hasUniqueGroupNames()) console.log(data);
-    // router.post("/create-set", data);
+    setCustomErros((prev) => ({
+      ...prev,
+      uniqueGroupName: { ...prev.uniqueGroupName, value: false },
+    }));
 
-    // setServerErrors({});
-    // setIsBeingCreated(true);
+    if (hasUniqueGroupNames()) {
+      router.post("/create-set", data);
+      setServerErrors({});
+      setIsBeingCreated(true);
+    } else {
+      setCustomErros((prev) => ({
+        ...prev,
+        uniqueGroupName: { ...prev.uniqueGroupName, value: true },
+      }));
+    }
   };
 
   useEffect(() => {
     setServerErrors(errorsFromController);
   }, [errorsFromController]);
-
-  // useEffect(() => {
-  //   if (errors.hasOwnProperty("groups")) {
-  //     errors.groups.forEach((group) => {
-  //       console.log(group);
-  //       // group.name.ref.current.appendChild(
-  //       //   <InputError message={group.name.message} />,
-  //       // );
-  //     });
-  //   }
-  // }, [errors]);
 
   useLayoutEffect(() => {
     const mainFieldsAnimation = new Animation(refs.current);
@@ -210,11 +218,11 @@ export default function CreateSet({ auth, errorsFromController }) {
                 {errors.description && (
                   <InputError message={errors.description.message} />
                 )}
-                {errors.groups && (
-                  <InputError message={errors.groups.message} />
-                )}
                 {errorsFromController.translations && (
                   <InputError message={errorsFromController.translations} />
+                )}
+                {customErrors.uniqueGroupName.value && (
+                  <InputError message={customErrors.uniqueGroupName.message} />
                 )}
               </div>
             </div>

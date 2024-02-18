@@ -32,7 +32,7 @@ class FlashcardsSetsProgress extends Model
         return $this->belongsTo(FlashcardSets::class);
     }
 
-    public static function getSetProgress(int $set_id, int $user_id): array {
+    public static function getSetProgress(int $user_id, int $set_id): array {
         $translations = FlashcardsSetsProgress::where([
             'flashcard_sets_id' => $set_id,
             'user_id' => $user_id

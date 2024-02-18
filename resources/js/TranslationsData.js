@@ -52,12 +52,14 @@ export default class TranslationsData {
   }
 
   constructor(translation) {
+    console.log(translation);
     const data = this.getData(translation);
 
     this.id = translation.id;
     this.term = data.term;
     this.definition = data.definition;
     this.isFavourite = translation.isFavourite;
+    this.status = translation.status;
 
     if (translation.hasOwnProperty("answers"))
       this.answers = translation.answers;

@@ -15,31 +15,28 @@ import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
 import { ProgressBars } from "@/Pages/Flashcards/Partials/ProgressBars.jsx";
+import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
 
 export default function SetInfo({
   auth,
   set,
-  translations,
+  groups,
   progression,
   author,
   translationsCount,
   permissions,
   feedback,
 }) {
-  const [fetchedTranslations, setFetchedTranslations] = useState(
-    translations.map((translation) => {
-      return new TranslationsData(translation);
-    }),
-  );
-
   const [cards, setCards] = useState(
-    new Array(translations.length).fill({ isRotated: false }),
+    new Array(translationsCount).fill({ isRotated: false }),
   );
 
   const [isCardFlippedOnce, setIsCardFlippedOnce] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [chosenIndex, setChosenIndex] = useState(null);
+  const [chosenTranslation, setChosenTranslation] = useState({
+    groupIndex: 0, // index from map
+    translationIndex: 1, // index from the database
+  });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
 
   const progressBars = [
@@ -54,7 +51,8 @@ export default function SetInfo({
 
   let mainRefs = useRef([]);
   let translationsRefs = useRef([]);
-  let progressRefs = useRef([]);
+  let groupsRefs = useRef([]);
+  let progressionRefs = useRef([]);
 
   const checkCurrentWindowWidth = () => {
     if (window.innerWidth <= 640) {
@@ -75,6 +73,8 @@ export default function SetInfo({
   useLayoutEffect(() => {
     const mainAnimation = new Animation(mainRefs.current);
     const translationsAnimation = new Animation(translationsRefs.current);
+    const groupsAnimation = new Animation(groupsRefs.current);
+    const progressionAnimation = new Animation(progressionRefs.current);
 
     // Nav
     for (let i = 0; i < 4; i++) {
@@ -101,8 +101,14 @@ export default function SetInfo({
       .to(mainRefs.current[5], {}, "<+.5")
       .to(mainRefs.current[6], {}, "<+.3");
 
+    // Progression
+    progressionAnimation.animateAll("<", "<+.2", "<+.3");
+
+    // Groups
+    groupsAnimation.animateAll("", "+.2", "+.3");
+
     // Translations
-    translationsAnimation.animateAll("", "", "<+.1");
+    translationsAnimation.animateAll("+.3", "+.4", "+.6");
   }, []);
 
   const toggle = (index) => {
@@ -121,18 +127,24 @@ export default function SetInfo({
     setIsEditing(false);
   };
 
-  const fetchTranslations = () => {
-    setFetchedTranslations(
-      translations.map((translation) => {
-        return new TranslationsData(translation);
-      }),
-    );
-  };
+  // const fetchTranslations = () => {
+  //   setFetchedGroups(
+  //     fetchedGroups.groups.map((group) => {
+  //       return {
+  //         name: group.name,
+  //         translations: group.translations.map((translation) => {
+  //           return new TranslationsData(translation);
+  //         }),
+  //       };
+  //     }),
+  //   );
+  // };
+
+  // console.log(fetchedGroups);
 
   return (
     <>
       <AuthenticatedLayout
-        fullScreen={true}
         user={auth.user}
         header={
           <h2 className="font-semibold text-xl text-indigo-500 leading-tight">
@@ -149,14 +161,14 @@ export default function SetInfo({
         >
           <div className={"bg-white rounded-md h-fit p-4 flex flex-col gap-2"}>
             <span className={"text-lg text-indigo-500 font-bold"}>
-              Progress of this set
+              Progression of this set
             </span>
 
             {progressBars.map((bar, index) => (
               <ProgressBars
-                ref={(element) => (progressRefs.current[index] = element)}
+                ref={(element) => (progressionRefs.current[index] = element)}
                 length={Object.values(progression).at(index)}
-                translationsLength={translations.length}
+                translationsLength={translationsCount}
                 bar={bar}
               />
             ))}
@@ -183,7 +195,7 @@ export default function SetInfo({
                 ref={(element) => {
                   mainRefs.current[1] = element;
                 }}
-                href={route("flashcards.learn", [set.id, set.title])}
+                href={route("flashcards.learn", [set.id])}
               >
                 <FontAwesomeIcon
                   icon="fa-solid fa-book"
@@ -196,7 +208,7 @@ export default function SetInfo({
                 ref={(element) => {
                   mainRefs.current[2] = element;
                 }}
-                href={route("flashcards.test", [set.id, set.title])}
+                href={route("flashcards.test", [set.id])}
               >
                 <FontAwesomeIcon
                   icon="fa-solid fa-chalkboard-user"
@@ -209,7 +221,7 @@ export default function SetInfo({
                 ref={(element) => {
                   mainRefs.current[3] = element;
                 }}
-                href={route("flashcards.match", [set.id, set.title])}
+                href={route("flashcards.match", [set.id])}
               >
                 <FontAwesomeIcon
                   icon="fa-solid fa-copy"
@@ -231,60 +243,59 @@ export default function SetInfo({
               slide={!isEditing}
               leftControl={isMobile}
               rightControl={isMobile}
-              indicators={!isMobile}
-              onSlideChange={(index) => setCurrentIndex(index)}
+              indicators={isMobile}
             >
-              {fetchedTranslations.map((translation, index) => (
-                <>
-                  <div
-                    key={index}
-                    className="perspective-[1000px] relative w-full h-[16rem] rounded-md"
-                  >
+              {groups.map((group) => {
+                return group.translations.map(
+                  (translation, translationIndex) => (
                     <div
-                      className={
-                        "flip-card-inner relative mx-auto w-full h-full transition ease-in-out duration-[1s] flex items-center text-3xl break-keep text-gray-600 font-bold sm:bg-white bg-gray-100 " +
-                        (cards.at(index).isRotated
-                          ? "rotate-x-0"
-                          : "rotate-x-180")
-                      }
+                      key={translationIndex}
+                      className="perspective-[1000px] relative w-full h-[16rem] rounded-md"
                     >
-                      <RotatingCard
-                        permissions={permissions}
-                        isFront={true}
-                        handleSetEditing={setIsEditing}
-                        translation={{
-                          ...translation,
-                          type: "term",
-                        }}
-                        onClick={() => {
-                          toggle(index);
-                        }}
+                      <div
+                        className={
+                          "flip-card-inner relative mx-auto w-full h-full transition ease-in-out duration-[1s] flex items-center text-3xl break-keep text-gray-600 font-bold sm:bg-white bg-gray-100 " +
+                          (cards.at(translationIndex).isRotated
+                            ? "rotate-x-0"
+                            : "rotate-x-180")
+                        }
                       >
-                        {!isCardFlippedOnce && (
-                          <div
-                            className={
-                              "absolute bottom-0 text-lg bg-amber-400 w-full"
-                            }
-                          >
-                            Click the card to flip it!
-                          </div>
-                        )}
-                      </RotatingCard>
-                      <RotatingCard
-                        permissions={permissions}
-                        handleSetEditing={setIsEditing}
-                        translation={{
-                          ...translation,
-                          type: "definition",
-                        }}
-                        onClick={() => {
-                          toggle(index);
-                        }}
-                      />
+                        <RotatingCard
+                          isFront={true}
+                          handleSetEditing={setIsEditing}
+                          translation={{
+                            ...translation,
+                            type: "term",
+                          }}
+                          onClick={() => {
+                            toggle(translationIndex);
+                          }}
+                        >
+                          {!isCardFlippedOnce && (
+                            <div
+                              className={
+                                "absolute bottom-0 text-lg bg-amber-400 w-full"
+                              }
+                            >
+                              Click the card to flip it!
+                            </div>
+                          )}
+                        </RotatingCard>
+                        <RotatingCard
+                          handleSetEditing={setIsEditing}
+                          translation={{
+                            ...translation,
+                            type: "definition",
+                          }}
+                          onClick={() => {
+                            toggle(translationIndex);
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </>
-              ))}
+                  ),
+                );
+              })}
             </Carousel>
           </div>
 
@@ -319,25 +330,48 @@ export default function SetInfo({
               </div>
             </div>
 
-            <div
-              className={
-                "grid md:grid-cols-2 grid-cols-1 gap-2 sm:max-h-[40vh] max-h-[50vh] overflow-y-scroll shadow-lg rounded-md bg-gray-100"
-              }
-            >
-              {fetchedTranslations.map((translation, index) => (
-                <div
-                  className={"polygon-start opacity-0 translate-y-12"}
-                  ref={(element) => (translationsRefs.current[index] = element)}
-                >
-                  <Translation
-                    permissions={permissions}
-                    set={set}
-                    translation={translation}
-                    handleSetChosenIndex={setChosenIndex}
-                  />
-                </div>
-              ))}
-            </div>
+            <section className={"space-y-2"}>
+              {groups.map((group, groupIndex) => {
+                return (
+                  <div
+                    key={groupIndex}
+                    className={
+                      "flex flex-col gap-2 shadow-lg rounded-md polygon-start opacity-0 translate-y-12"
+                    }
+                    ref={(element) =>
+                      (groupsRefs.current[groupIndex] = element)
+                    }
+                  >
+                    <GradientAndLines
+                      className={"px-2 py-1"}
+                      from={"from-amber-500"}
+                      to={"to-amber-300"}
+                    >
+                      <span className={"text-gray-700 font-bold text-xl"}>
+                        {group.name}
+                      </span>
+                    </GradientAndLines>
+                    {group.translations.map((translation, translationIndex) => (
+                      <div
+                        key={translationIndex}
+                        className={"polygon-start opacity-0 translate-y-12"}
+                        ref={(element) =>
+                          (translationsRefs.current[translationIndex] = element)
+                        }
+                      >
+                        <Translation
+                          permissions={permissions}
+                          set={set}
+                          translation={translation}
+                          groupIndex={groupIndex}
+                          handleSetChosenTranslation={setChosenTranslation}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </section>
           </div>
 
           {permissions.canEdit && (
@@ -346,7 +380,7 @@ export default function SetInfo({
               ref={(element) => (mainRefs.current[6] = element)}
             >
               <MainButton
-                href={route("flashcards.showEdit", [set.id, set.title])}
+                href={route("flashcards.showEdit", [set.id])}
                 isRedirect={true}
                 className={"bg-indigo-500 text-gray-100 hover:bg-indigo-600"}
               >
@@ -357,18 +391,18 @@ export default function SetInfo({
         </Container>
       </AuthenticatedLayout>
       <PopUpEdit
-        modalId={"modal-1"}
-        translation={fetchedTranslations.at(currentIndex)}
+        modalId={"modal-edit-translation"}
+        translation={
+          groups
+            .at(chosenTranslation.groupIndex)
+            .translations.filter(
+              (translation) =>
+                translation.id === chosenTranslation.translationIndex,
+            )[0]
+        }
         set={set}
         cancelEditing={cancelEditing}
-        handleFetchTranslations={fetchTranslations}
-      />
-      <PopUpEdit
-        modalId={"modal-2"}
-        translation={fetchedTranslations.at(chosenIndex)}
-        set={set}
-        cancelEditing={cancelEditing}
-        handleFetchTranslations={fetchTranslations}
+        // handleFetchTranslations={fetchTranslations}
       />
       <SuccessModal feedback={feedback} />
     </>

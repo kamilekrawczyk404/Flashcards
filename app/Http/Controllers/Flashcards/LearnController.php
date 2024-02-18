@@ -11,7 +11,7 @@ class LearnController extends Controller
 {
     public function show(int $id, string $title): Response
     {
-        $translations = FlashcardSets::getAllTranslations($title);
+        $translations = FlashcardSets::getGroups($title);
         $definitions = [];
         $terms = [];
 

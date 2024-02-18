@@ -20,7 +20,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->string('title');
             $table->string('description');
-            $table->json('languages');
+            $table->string('source_language');
+            $table->string('target_language');
             $table->timestamps();
         });
     }

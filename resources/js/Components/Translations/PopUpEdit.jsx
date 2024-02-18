@@ -22,28 +22,28 @@ export const PopUpEdit = ({
     reset,
   } = useForm({
     defaultValues: {
-      term: translation.term.word,
-      definition: translation.definition.word,
+      term: translation.term,
+      definition: translation.definition,
     },
   });
 
-  useEffect(() => {
-    reset(translation);
-  }, [translation]);
-
   const onSubmit = (data) => {
     router.put(
-      `/set/${set.id}/update-translation/${translation.id}/${set.title}`,
+      `/set/${set.id}/update-translation/${translation.id}`,
       { translation: data },
       {
         preserveScroll: true,
         preserveState: false,
         onFinish: () => {
-          handleFetchTranslations();
+          // handleFetchTranslations();
         },
       },
     );
   };
+
+  useEffect(() => {
+    reset(translation);
+  }, [translation]);
 
   return (
     <div
@@ -79,7 +79,13 @@ export const PopUpEdit = ({
             className={"flex gap-6 flex-col"}
             onSubmit={handleSubmit(onSubmit)}
           >
-            <GradientAndLines className={"p-4"}>
+            <GradientAndLines
+              className={"p-4"}
+              from={"from-indigo-600"}
+              to={"to-indigo-400"}
+              hasLines={true}
+              linesColor={"bg-gray-100"}
+            >
               <div className="flex flex-col gap-4">
                 <div className="w-full">
                   <span className={"text-gray-100 text-xl font-semibold"}>
@@ -88,7 +94,7 @@ export const PopUpEdit = ({
                   <TextInput
                     placeholder="Term"
                     className="w-full text-lg mt-2"
-                    {...register("term.word", {
+                    {...register("term", {
                       required: "This field is required",
                     })}
                   />
@@ -106,7 +112,7 @@ export const PopUpEdit = ({
                   <TextInput
                     placeholder="Definition"
                     className="w-full text-lg mt-2"
-                    {...register("definition.word", {
+                    {...register("definition", {
                       required: "This field is required",
                     })}
                   />

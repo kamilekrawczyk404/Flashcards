@@ -5,7 +5,6 @@ import React from "react";
 import { Phonetics } from "@/Components/Translations/Phonetics.jsx";
 
 export const RotatingCard = ({
-  permissions,
   className = "",
   isFront = false,
   handleSetEditing,
@@ -21,34 +20,30 @@ export const RotatingCard = ({
         (isFront ? "front rotate-x-180 " : "back " + className)
       }
     >
-      <div className={"absolute top-2 right-2 flex gap-3 z-100"}>
-        {translation.type === "term" ? (
-          <SoundButton audioPath={translation.term.audioPath} />
-        ) : (
-          <SoundButton audioPath={translation.definition.audioPath} />
-        )}
-
-        {permissions.canEdit && (
-          <EditButton
-            onClick={(e) => {
-              e.stopPropagation();
-
-              handleSetEditing(true);
-              MicroModal.show("modal-1");
-            }}
-          />
-        )}
+      <div
+        className={
+          "absolute top-0 px-2 flex justify-between items-center gap-3 z-100 w-full"
+        }
+      >
+        <p className={"text-lg"}>Group: {translation.group_name}</p>
+        <div className={"space-x-3"}>
+          {translation.type === "term" ? (
+            <SoundButton audioPath={translation.term_audio} />
+          ) : (
+            <SoundButton audioPath={translation.definition_audio} />
+          )}
+        </div>
       </div>
       <div className={"flex flex-col items-center [&:has(span)]:mt-4"}>
         {translation.type === "term" ? (
           <>
-            {translation.term.word}
-            <Phonetics text={translation.term.phonetics} />
+            {translation.term}
+            <Phonetics text={translation.term_phonetic} />
           </>
         ) : (
           <>
-            {translation.definition.word}
-            <Phonetics text={translation.definition.phonetics} />
+            {translation.definition}
+            <Phonetics text={translation.definition_phonetic} />
           </>
         )}
         {children}

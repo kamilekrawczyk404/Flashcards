@@ -60,7 +60,7 @@ class MatchController extends Controller
     {
         return Inertia::render('Flashcards/Match', [
             'set' => FlashcardSets::find($id),
-            'onlyTranslations' => $this->leaveOnlyTermsAndDefinitions(FlashcardSets::getAllTranslations($title)),
+            'onlyTranslations' => $this->leaveOnlyTermsAndDefinitions(FlashcardSets::getGroups($title)),
             'setsPerPage' => $this->translationsSetPerOnePage,
             'bestResult' => MatchScores::getBestResult($id),
             'rankingList' => MatchScores::getTopFiveRankings($id)

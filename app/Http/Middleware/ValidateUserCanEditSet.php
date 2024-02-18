@@ -18,8 +18,11 @@ class ValidateUserCanEditSet
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::id() === FlashcardSets::where(['user_id' => Auth::id(), 'id' => $request->id])->value('user_id'))
+//        dd($request->set_id);
+
+        if (Auth::id() === FlashcardSets::where(['user_id' => Auth::id(), 'id' => $request->set_id])->value('user_id'))
             return $next($request);
+
         return redirect(RouteServiceProvider::HOME);
     }
 }

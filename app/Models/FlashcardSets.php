@@ -15,7 +15,7 @@ class FlashcardSets extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'title', 'description', 'languages'
+        'user_id', 'title', 'description', 'source_language', 'target_language'
     ];
 
     protected $guarded = [];
@@ -23,7 +23,8 @@ class FlashcardSets extends Model
     protected $casts = [
         'title' => 'string',
         'description' => 'string',
-        'languages' => 'string'
+        'source_language' => 'string',
+        'target_language' => 'string'
     ];
 
     public function user(): BelongsTo {
@@ -42,13 +43,13 @@ class FlashcardSets extends Model
         return $this->hasMany(FlashcardsSetsProgress::class);
     }
 
-    public static function getUserSets(int $id): array
+    public static function getUserSets(int $user_id): array
     {
         $final = [];
-        $sets = FlashcardSets::where('user_id', $id)->get()->toArray();
+        $sets = FlashcardSets::where('user_id', $user_id)->get()->toArray();
 
         foreach ($sets as $set) {
-            $count = ['count' => FlashcardSets::countTranslations($set['title'])];
+            $count = ['count' => FlashcardSets::countTranslations($set['id'])];
             $final[] = array_merge($set, $count);
         }
 
@@ -120,31 +121,49 @@ class FlashcardSets extends Model
         return $final;
     }
 
-    public static function getAllTranslations($title) {
-        $toSend = [];
-        $data = DB::table($title)->get(['id', 'term', 'definition', 'isFavourite']);
-        foreach ($data as $row) {
-            $toSend[] = collect([
-                'id' => $row->id,
-                'term' => json_decode($row->term),
-                'definition' => json_decode($row->definition),
-                'isFavourite' => $row->isFavourite
-            ]);
+    public static function getGroups($user_id, $set_id) {
+        $data = [];
+        $translationTableName = FlashcardSets::getTitle($set_id);
+
+        $groups =
+            DB::table($translationTableName)
+                ->distinct()
+                ->get('group_name')
+                ->toArray();
+
+        foreach($groups as $group) {
+            $translationsBelongToGroup =
+                DB::table($translationTableName . ' AS t')
+                    ->join('flashcards_sets_progress AS f', 'f.translation_id', '=','t.id')
+                    ->where( 't.group_name', $group->group_name)
+                    ->select('t.*', 'f.isFavourite', 'f.status')
+                    ->distinct()
+                    ->get()
+                    ->toArray();
+
+            $data[] = [
+                'name' => $group->group_name,
+                'translations' => $translationsBelongToGroup
+            ];
         }
 
-        return collect($toSend);
-
+        return $data;
     }
 
-    public static function countTranslations($title): int {
-        return DB::table($title)->select(DB::raw('count(*) as count'))->value('count');
+    public static function countTranslations($set_id): int {
+        return DB::table(
+            FlashcardSets::getTitle($set_id))->select(DB::raw('count(*) as count'))->value('count');
     }
 
-    public static function getAuthorName($id): string {
-        return User::where('id', FlashcardSets::find($id)->value('user_id'))->value('name');
+    public static function getAuthorName($set_id): string {
+        return User::where('id', FlashcardSets::find($set_id)->value('user_id'))->value('name');
     }
 
-    public static function getLanguages($id) {
-        return json_decode(FlashcardSets::where(['id' => $id])->value('languages'));
+    public static function getLanguages($set_id): array {
+        return FlashcardSets::where(['id' => $set_id])->value(['source_language', 'target_language']);
+    }
+
+    public static function getTitle($set_id): string {
+        return FlashcardSets::where('id', $set_id)->value('title');
     }
 }

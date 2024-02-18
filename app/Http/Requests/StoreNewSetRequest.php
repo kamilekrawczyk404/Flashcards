@@ -25,7 +25,8 @@ class StoreNewSetRequest extends FormRequest
             'title' => 'required|unique:flashcard_sets|min:6|max:100',
             'description' => 'required',
             'languages' => 'required',
-            'translations' => 'array|min:2'
+            'groups' => 'array|min:1',
+            'groups.translations' => 'array|min:2'
         ];
     }
 

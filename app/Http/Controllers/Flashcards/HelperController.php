@@ -79,7 +79,7 @@ class HelperController extends Controller
     }
 
     public static function prepareForTest($title): array {
-        $shuffledTranslations = FlashcardSets::getAllTranslations($title)->toArray();
+        $shuffledTranslations = FlashcardSets::getGroups($title)->toArray();
         $definitions = [];
         $terms = [];
 

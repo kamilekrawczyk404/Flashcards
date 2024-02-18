@@ -51,10 +51,8 @@ class FlashcardSetsFactory extends Factory
         return [
             'title' => $title,
             'description' => fake()->realText(),
-            'languages' => json_encode([
-                'source' => $randomLanguages[0],
-                'target' => $randomLanguages[1],
-            ])
+            'source_language' => $randomLanguages[0],
+            'target_language' =>  $randomLanguages[1]
         ];
     }
 }

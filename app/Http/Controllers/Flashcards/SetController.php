@@ -23,22 +23,22 @@ use Inertia\Response;
 
 class SetController extends Controller
 {
-    public function showSet(int $id, string $title): Response
+    public function showSet(int $set_id): Response
     {
         return Inertia::render('Flashcards/SetInfo', [
-            'set' => FlashcardSets::find($id),
-            'translations' => FlashcardSets::getAllTranslations($title),
-            'progression' => FlashcardsSetsProgress::getSetProgress($id, Auth::id()),
-            'author' => FlashcardSets::getAuthorName($id),
-            'translationsCount' => FlashcardSets::countTranslations($title)
+            'set' => FlashcardSets::find($set_id),
+            'groups' => FlashcardSets::getGroups(Auth::id(), $set_id),
+            'progression' => FlashcardsSetsProgress::getSetProgress(Auth::id(), $set_id),
+            'author' => FlashcardSets::getAuthorName($set_id),
+            'translationsCount' => FlashcardSets::countTranslations($set_id)
         ]);
     }
 
-    public function showEdit(int $id, string $title): Response
+    public function showEdit(int $set_id): Response
     {
         return Inertia::render('Flashcards/EditSet', [
-            'set' => FlashcardSets::find($id),
-            'translations' => FlashcardSets::getAllTranslations($title)
+            'set' => FlashcardSets::find($set_id),
+            'translations' => FlashcardSets::getGroups(Auth::id(), FlashcardSets::getTitle($set_id)),
         ]);
     }
 
@@ -50,65 +50,74 @@ class SetController extends Controller
     }
 
     public function store(StoreNewSetRequest $request): RedirectResponse {
+//        dd($request->all());
         // Store new set
         $flashcardSet = new FlashcardSets;
 
+        $languages = $request->languages;
         $title = trim($request->title);
         $title = str_replace(' ', '_', $title);
-        $languages = $request->languages;
-
         $flashcardSet->title = $title;
         $flashcardSet->description = trim($request->description);
-        $flashcardSet->languages = json_encode($languages);
+        $flashcardSet->source_language = $languages['source'];
+        $flashcardSet->target_language = $languages['target'];
 
         $user = Auth::user();
         $user->sets()->save($flashcardSet);
-
-        $translationsWithStatuses = [];
 
         // Create a new table storing all translations
         if (!Schema::hasTable($title)) {
             Schema::connection('mysql')->create($title, function (Blueprint $table) {
                 $table->id();
-                $table->json('term');
-                $table->json('definition');
-                $table->boolean('isHard')->default(false);
-                $table->boolean("isFavourite")->default(false);
-                $table->timestamps();
+                $table->string('group_name');
+                $table->string('term');
+                $table->string('term_phonetic');
+                $table->string('term_audio');
+                $table->string('term_language');
+                $table->string('definition');
+                $table->string('definition_phonetic');
+                $table->string('definition_audio');
+                $table->string('definition_language');
             });
 
-            foreach($request->translations as $key => $translation) {
+            foreach ($request->groups as $group) {
 
-                $term = Translations::makeSingle($translation['term'], Translations::getLanguageShortcut
-                ($languages['source']));
-                $definition = Translations::makeSingle($translation['definition'], Translations::getLanguageShortcut
-                ($languages['target']));
+                foreach ($group['translations'] as $key => $translation) {
 
-                DB::table($title)->insert([
-                    'term' => $term,
-                    'definition' => $definition,
-                ]);
+                    // Store translation in main table
+                    $term = Translations::makeSingle($translation['term'], Translations::getLanguageShortcut
+                    ($languages['source']));
 
-                $setProgress = new FlashcardsSetsProgress;
-                $setProgress->flashcard_sets_id = FlashcardSets::orderBy('id', 'desc')->first()->id;
-                $setProgress->translation_id = $key + 1;
-                $setProgress->status = 'unknown';
-                $setProgress->isFavourite = false;
+                    $definition = Translations::makeSingle($translation['definition'], Translations::getLanguageShortcut
+                    ($languages['target']));
 
-                $user->setsProgress()->save($setProgress);
+                    DB::table($title)->insert([
+                        'group_name' => $group['name'],
+                        'term' => $term['word'],
+                        'term_phonetic' => $term['phonetic'] ?? "",
+                        'term_audio' => $term['audioPath'] ?? "",
+                        'term_language' => $term['language'],
+                        'definition' => $definition['word'],
+                        'definition_phonetic' => $definition['phonetic'] ?? "",
+                        'definition_audio' => $definition['audioPath'] ?? "",
+                        'definition_language' => $definition['language'],
+                    ]);
+
+                    // Store data for an individual user
+
+                    $setProgress = new FlashcardsSetsProgress;
+
+                    $setProgress->flashcard_sets_id = FlashcardSets::orderBy('id', 'desc')->first()->id;
+                    $setProgress->translation_id = $key + 1;
+                    $setProgress->status = 'unknown';
+                    $setProgress->isFavourite = false;
+
+                    $user->setsProgress()->save($setProgress);
+                }
             }
         }
 
-        return to_route('flashcards.showSet', [DB::table('flashcard_sets')->where('title', $title)->value('id'), $title])->with('success', "Your set has been created successfully");
-    }
-
-    public static function getUserSets(int $id): array {
-        return FlashcardSets::getUserSets($id);
-    }
-
-    public static function getFoundSets(int $currentPage, string $searching, $filters): array {
-
-        return FlashcardSets::getFoundSets($currentPage, $searching, $filters);
+        return to_route('flashcards.showSet', [FlashcardSets::orderBy('id', 'desc')->first()->id])->with('success', "Your set has been created successfully");
     }
 
     public function update(int $id, string $title, UpdateSetRequest $request)
@@ -137,12 +146,21 @@ class SetController extends Controller
         return redirect()->route('flashcards.showSet', ['id' => $id, 'title' => $newTitle])->with('success', 'Your set has been updated successfully');
     }
 
-    public function deleteSet(int $id, string $title): RedirectResponse
+    public function deleteSet(int $set_id): RedirectResponse
     {
-        FlashcardSets::where('id', $id)->delete();
+        FlashcardSets::find($set_id)->delete();
 
-        Schema::dropIfExists($title);
+        Schema::dropIfExists(FlashcardSets::getTitle($set_id));
 
         return redirect()->route('home')->with('success', 'Set has been removed successfully');
+    }
+
+    public static function getUserSets(): array {
+        return FlashcardSets::getUserSets(Auth::id());
+    }
+
+    public static function getFoundSets(int $currentPage, string $searching, $filters): array {
+
+        return FlashcardSets::getFoundSets($currentPage, $searching, $filters);
     }
 }
