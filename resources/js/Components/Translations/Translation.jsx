@@ -26,7 +26,7 @@ export const Translation = ({
     <form
       onSubmit={submit}
       className={
-        "bg-gradient-to-tl from-indigo-600 to-indigo-400 p-3 rounded-md flex justify-between relative overflow-hidden gap-2"
+        "bg-gradient-to-tl from-indigo-600 to-indigo-400 p-3 rounded-md flex justify-between relative overflow-hidden gap-2 w-[calc(100%-2rem)]"
       }
     >
       <div className={"relative w-1/2 font-bold flex flex-col"}>

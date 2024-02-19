@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(FlashcardSets::class, 'set_id');
-            $table->integer('matchingTime');
+            $table->float('matching_time');
             $table->timestamps();
         });
     }

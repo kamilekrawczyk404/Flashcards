@@ -49,6 +49,7 @@ export default function SetInfo({
     },
   ];
 
+  console.log(groups);
   let mainRefs = useRef([]);
   let translationsRefs = useRef([]);
   let groupsRefs = useRef([]);
@@ -156,7 +157,7 @@ export default function SetInfo({
 
         <section
           className={
-            "fixed left-[calc((100vw-62rem)/4)] transform -translate-x-1/2"
+            "fixed top-1/2 -translate-y-1/2 left-[calc((100vw-62rem)/4)] transform -translate-x-1/2 w-fit"
           }
         >
           <div className={"bg-white rounded-md h-fit p-4 flex flex-col gap-2"}>
@@ -174,6 +175,7 @@ export default function SetInfo({
             ))}
           </div>
         </section>
+
         <Container>
           <div className="bg-white overflow-hidden sm:rounded-md">
             <div className="flex gap-4 text-md md:flex-row flex-col relative">
@@ -354,10 +356,12 @@ export default function SetInfo({
                     {group.translations.map((translation, translationIndex) => (
                       <div
                         key={translationIndex}
-                        className={"polygon-start opacity-0 translate-y-12"}
-                        ref={(element) =>
-                          (translationsRefs.current[translationIndex] = element)
+                        className={
+                          "polygon-start opacity-0 translate-y-12 flex justify-center "
                         }
+                        ref={(element) => {
+                          translationsRefs.current.push(element);
+                        }}
                       >
                         <Translation
                           permissions={permissions}
@@ -390,6 +394,8 @@ export default function SetInfo({
           )}
         </Container>
       </AuthenticatedLayout>
+      <SuccessModal feedback={feedback} />
+
       <PopUpEdit
         modalId={"modal-edit-translation"}
         translation={
@@ -404,7 +410,6 @@ export default function SetInfo({
         cancelEditing={cancelEditing}
         // handleFetchTranslations={fetchTranslations}
       />
-      <SuccessModal feedback={feedback} />
     </>
   );
 }

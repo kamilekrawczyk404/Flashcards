@@ -6,7 +6,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router } from "@inertiajs/react";
 import { Container } from "@/Components/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import gsap from "gsap/all";
 import { Select } from "@/Components/Form/Select.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
@@ -20,7 +20,7 @@ export default function CreateSet({ auth, errorsFromController }) {
   const [isBeingCreated, setIsBeingCreated] = useState(false);
   const [serverErrors, setServerErrors] = useState({});
   const [groupNames, setGroupNames] = useState([]);
-  const [customErrors, setCustomErros] = useState({
+  const [customErrors, setCustomErrors] = useState({
     uniqueGroupName: {
       value: false,
       message: "Group names must be unique",
@@ -28,7 +28,6 @@ export default function CreateSet({ auth, errorsFromController }) {
   });
 
   let refs = useRef([]);
-  let fieldsRef = useRef([]);
 
   const defaultValues = {
     groups: [
@@ -55,7 +54,6 @@ export default function CreateSet({ auth, errorsFromController }) {
     formState: { errors },
     setValue,
     getValues,
-    watch,
   } = useForm({
     title: "",
     description: "",
@@ -66,36 +64,17 @@ export default function CreateSet({ auth, errorsFromController }) {
     defaultValues,
   });
 
-  const deleteTranslation = (translationId, title, index) => {
-    remove(index);
-  };
+  const listener = useWatch({ control, name: "groups" });
 
   const hasUniqueGroupNames = () => {
     return new Set(groupNames).size === groupNames.length;
   };
 
-  useEffect(() => {
-    setGroupNames([]);
-    getValues().groups.forEach((group) => {
-      setGroupNames((prev) => [...prev, group.name]);
-    });
-  }, [watch()]);
-
   const onSubmit = (data) => {
-    setCustomErros((prev) => ({
-      ...prev,
-      uniqueGroupName: { ...prev.uniqueGroupName, value: false },
-    }));
-
-    if (hasUniqueGroupNames()) {
+    if (!customErrors.uniqueGroupName.value) {
       router.post("/create-set", data);
       setServerErrors({});
       setIsBeingCreated(true);
-    } else {
-      setCustomErros((prev) => ({
-        ...prev,
-        uniqueGroupName: { ...prev.uniqueGroupName, value: true },
-      }));
     }
   };
 
@@ -103,13 +82,26 @@ export default function CreateSet({ auth, errorsFromController }) {
     setServerErrors(errorsFromController);
   }, [errorsFromController]);
 
+  useEffect(() => {
+    const names = getValues().groups.map((group) => group.name.trim());
+
+    if (new Set(names).size !== names.length)
+      setCustomErrors((prev) => ({
+        ...prev,
+        uniqueGroupName: { ...prev.uniqueGroupName, value: true },
+      }));
+    else
+      setCustomErrors((prev) => ({
+        ...prev,
+        uniqueGroupName: { ...prev.uniqueGroupName, value: false },
+      }));
+  }, [listener]);
+
   useLayoutEffect(() => {
     const mainFieldsAnimation = new Animation(refs.current);
-    const translationsAnimation = new Animation(fieldsRef.current);
 
     mainFieldsAnimation.animateAll("", "", "<+.2");
-    translationsAnimation.animateAll("", "", "<+.1");
-  }, []);
+  }, [serverErrors]);
 
   return (
     <AuthenticatedLayout user={auth.user} header={"Create a new set"}>

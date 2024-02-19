@@ -78,8 +78,8 @@ class Translations extends Model
             $dictionary = $dictionary['0'];
             $phonetics = array_filter($dictionary['phonetics'], fn ($phonetic) => str_contains($phonetic['audio'], ".mp3"));
 
-            $data['phonetic'] = $dictionary['phonetic'];
-            $data['audioPath'] = reset($phonetics)['audio'];
+            $data['phonetic'] = $dictionary['phonetic'] ?? "";
+            $data['audioPath'] = reset($phonetics)['audio'] ?? "";
         }
 
         $data['word'] = $dictionary['word'];

@@ -7,7 +7,15 @@ import { error } from "@splidejs/splide/src/js/utils";
 
 export default forwardRef(
   (
-    { translationIndex, control, register, getValues, errors, className },
+    {
+      translationIndex,
+      control,
+      register,
+      getValues,
+      errors,
+      className = "",
+      editingMode = false,
+    },
     ref,
   ) => {
     const { fields, remove, append } = useFieldArray({
@@ -34,7 +42,7 @@ export default forwardRef(
       <div
         ref={ref}
         className={
-          "space-y-2 transform opacity-0 polygon-start translate-y-12 " +
+          "space-y-2 transform opacity-0 polygon-start translate-y-12 flex flex-col " +
           className
         }
       >
@@ -67,10 +75,18 @@ export default forwardRef(
         ))}
         <AddButton
           onClick={() =>
-            append({
-              term: "",
-              definition: "",
-            })
+            append(
+              editingMode
+                ? {
+                    term: "",
+                    definition: "",
+                    isNew: true,
+                  }
+                : {
+                    term: "",
+                    definition: "",
+                  },
+            )
           }
           text={"Add translation"}
           className={"py-4"}

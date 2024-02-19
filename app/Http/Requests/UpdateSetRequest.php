@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FlashcardSets;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateSetRequest extends FormRequest
 {
@@ -22,9 +25,10 @@ class UpdateSetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|min:6|max:64' . ($this->isTitleDirty ? '|unique:flashcard_sets' : ''),
-            'description' => $this->isDescriptionDirty ? 'required' : '',
-            'translations' => ($this->isTranslationDirty ? 'array' : '')
+            'title' => ['required', 'min:6', 'max:64',Rule::unique(FlashcardSets::class)->ignore($this->set_id) ],
+            'description' => 'required',
+            'groups' => 'array|min:1',
+            'groups.translations' => 'array|min:2'
         ];
     }
 

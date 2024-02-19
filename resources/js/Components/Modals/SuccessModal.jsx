@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { forwardRef, useLayoutEffect, useRef } from "react";
 import Animation from "@/Pages/Animation.js";
 
-export const SuccessModal = ({ feedback = false, text = "" }) => {
+export const SuccessModal = ({ feedback = {}, text = "" }) => {
   let modalRef = useRef(null);
 
   useLayoutEffect(() => {
@@ -18,7 +18,7 @@ export const SuccessModal = ({ feedback = false, text = "" }) => {
         <div
           ref={modalRef}
           className={
-            "fixed transform right-1/2 translate-x-1/2 md:right-[2rem] md:translate-x-0 translate-y-0 p-6 w-auto bg-white items-center gap-4 rounded-md shadow-xl opacity-0 hidden"
+            "fixed top-[100vh] transform right-1/2 translate-x-1/2 md:right-[2rem] md:translate-x-0 translate-y-0 p-6 w-auto bg-white items-center gap-4 rounded-md shadow-xl opacity-0 hidden"
           }
         >
           <FontAwesomeIcon

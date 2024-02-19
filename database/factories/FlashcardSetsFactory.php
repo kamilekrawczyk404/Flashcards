@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\FlashcardSets;
+use App\Models\FlashcardsSetsProgress;
 use App\Models\Translations;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
@@ -25,27 +27,44 @@ class FlashcardSetsFactory extends Factory
 
         Schema::connection('mysql')->create($title, function (Blueprint $table) {
             $table->id();
-            $table->json('term');
-            $table->json('definition');
-            $table->boolean('isHard');
-            $table->boolean('isFavourite');
+            $table->string('group_name');
+            $table->string('term');
+            $table->string('term_phonetic');
+            $table->string('term_audio');
+            $table->string('term_language');
+            $table->string('definition');
+            $table->string('definition_phonetic');
+            $table->string('definition_audio');
+            $table->string('definition_language');
         });
 
-        for ($i = 0; $i < random_int(4,20); $i++) {
-            $term = Translations::randomWord($randomLanguages[0]);
-            $definition = Translations::getTranslation(Translations::getLanguageShortcut($randomLanguages[1], true), $term);
+        for ($groupCount = 0; $groupCount < 1; $groupCount++) {
 
-            $term = Translations::makeSingle($term, Translations::getLanguageShortcut
-            ($randomLanguages[0]));
-            $definition = Translations::makeSingle($definition, Translations::getLanguageShortcut
-            ($randomLanguages[1]));
+            $group_name = fake()->unique()->words(1);
+            for ($i = 0; $i < random_int(4,20); $i++) {
 
-            DB::table($title)->insert([
-                'term' => $term,
-                'definition' => $definition,
-                'isHard' => false,
-                'isFavourite' => rand(0, 1),
-            ]);
+                // Store translation in main table
+
+                $randomTerm = Translations::randomWord($randomLanguages[0]);
+                $randomDefinition = Translations::getTranslation(Translations::getLanguageShortcut($randomLanguages[1], true), $randomTerm);
+
+                $term = Translations::makeSingle($randomTerm, Translations::getLanguageShortcut
+                ($randomLanguages[0]));
+                $definition = Translations::makeSingle($randomDefinition, Translations::getLanguageShortcut
+                ($randomLanguages[1]));
+
+                DB::table($title)->insert([
+                    'group_name' => reset($group_name),
+                    'term' => $term['word'],
+                    'term_phonetic' => $term['phonetic'] ?? "",
+                    'term_audio' => $term['audioPath'] ?? "",
+                    'term_language' => $term['language'],
+                    'definition' => $definition['word'],
+                    'definition_phonetic' => $definition['phonetic'] ?? "",
+                    'definition_audio' => $definition['audioPath'] ?? "",
+                    'definition_language' => $definition['language'],
+                ]);
+            }
         }
 
         return [

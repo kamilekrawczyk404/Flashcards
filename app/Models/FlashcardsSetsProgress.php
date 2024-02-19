@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class FlashcardsSetsProgress extends Model
 {
@@ -55,5 +56,18 @@ class FlashcardsSetsProgress extends Model
             'unknown' => $unknown,
             'difficult' => $difficult,
         ];
+    }
+
+    public static function insertNewValues(int $user_id, int $set_id) {
+        $translations = DB::table(FlashcardSets::getTitle($set_id))->get()->toArray();
+
+        foreach($translations as $translation) {
+            FlashcardsSetsProgress::create([
+                'user_id' => $user_id,
+                'translation_id' => $translation->id,
+                'flashcard_sets_id' => $set_id,
+                'isFavourite' => rand(0, 1),
+            ]);
+        }
     }
 }

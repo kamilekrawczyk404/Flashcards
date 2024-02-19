@@ -3,7 +3,7 @@ import { Head, Link, router } from "@inertiajs/react";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import Textarea from "@/Components/Form/Textarea.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Container } from "@/Components/Container";
 import { MainButton } from "@/Components/MainButton.jsx";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -15,36 +15,25 @@ import { AddButton } from "@/Components/Form/AddButton.jsx";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProgressModal } from "@/Components/ProgressModal.jsx";
+import GroupsFieldArray from "@/Components/Form/GroupsFieldArray.jsx";
+import PrimaryButton from "@/Components/PrimaryButton.jsx";
 
-export default function EditSet({
-  auth,
-  set,
-  translations,
-  errorsFromController,
-}) {
+export default function EditSet({ auth, set, groups, errorsFromController }) {
   const mainInputsRefs = useRef([]);
-  const translationsRefs = useRef([]);
-
+  console.log(errorsFromController);
   // validation on client side will prevent submitting form if occur errors on client side,
   // but we must prevent showing up LoadProgress if there occur some errors form server,
   // so we need to them in state and refresh it after each submission
   const [serverErrors, setServerErrors] = useState({});
-  const [isAnyTranslationDeleted, setIsAnyTranslationDeleted] = useState(false);
   const [isSetBeingUpdated, setIsSetBeingUpdated] = useState(false);
+  const [customErrors, setCustomErrors] = useState({
+    uniqueGroupName: {
+      value: false,
+      message: "Group names must be unique",
+    },
+  });
 
   const { title, description } = set;
-
-  const [fetchedTranslations] = useState(
-    translations.map((translation) => {
-      return new TranslationsData(translation);
-    }),
-  );
-
-  const [oldTranslations] = useState(
-    translations.map((translation) => {
-      return new TranslationsData(translation);
-    }),
-  );
 
   const {
     control,
@@ -52,103 +41,61 @@ export default function EditSet({
     handleSubmit,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm({
     defaultValues: {
       title: title.replaceAll("_", " "),
       description: description,
-      translations: fetchedTranslations,
+      groups: groups,
     },
   });
 
   const { fields, append, remove } = useFieldArray({
-    name: "translations",
+    name: "groups",
     control,
   });
 
-  const isDataFromDictionary = {
-    term: Object.keys(translations[0].term).some((element) => element === "0"),
-    definition: Object.keys(translations[0].definition).some(
-      (element) => element === "0",
-    ),
-  };
-
-  const removingAnimation = (index) => {
-    let removeTl = gsap.timeline();
-
-    removeTl.to(translationsRefs.current[index], {
-      duration: 1,
-      opacity: 0,
-      clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-      y: "-1rem",
-    });
-  };
+  const listener = useWatch({ control, name: "groups" });
 
   const deleteTranslation = (translationId, title, currentTranslationIndex) => {
     remove(currentTranslationIndex);
 
-    router.delete(
-      `/set/${set.id}/delete/translation/${translationId}/${title}`,
-    );
-  };
-
-  const appendField = () => {
-    append({
-      term: {
-        word: "",
-        language: fetchedTranslations[0].term.language,
-      },
-      definition: {
-        word: "",
-        language: fetchedTranslations[0].definition.language,
-      },
-      isNew: true,
-    });
+    router.delete(`/set/${set.id}/delete/translation/${translationId}`);
   };
 
   const onSubmit = (data) => {
-    // Check which translations have been changed by the user
-    const filteredData = data.translations.filter((translation, index) => {
-      return (
-        "isNew" in translation ||
-        translation.term.word !== oldTranslations[index].term.word ||
-        translation.definition.word !== oldTranslations[index].definition.word
-      );
-    });
-
-    data.translations = filteredData;
-
-    //Remove unnecessary fields
-    data.title !== title.replaceAll("_", " ")
-      ? (data.isTitleDirty = true)
-      : (data.isTitleDirty = false);
-
-    data.description !== set.description
-      ? (data.isDescriptionDirty = true)
-      : (data.isDescriptionDirty = false);
-
-    filteredData.length > 0
-      ? (data.isTranslationDirty = true)
-      : (data.isTranslationDirty = false);
-
-    data.isDataFromDictionary = isDataFromDictionary;
-
-    router.put(`/update-set/${set.id}/${set.title}`, data);
-
-    setServerErrors({});
-    setIsSetBeingUpdated(true);
+    if (!customErrors.uniqueGroupName.value) {
+      data.set_id = set.id;
+      router.put(`/update-set/${set.id}`, data);
+      setServerErrors({});
+      setIsSetBeingUpdated(true);
+    }
   };
 
   useEffect(() => {
     setServerErrors(errorsFromController);
   }, [errorsFromController]);
 
+  useEffect(() => {
+    const names = getValues().groups.map((group) => group.name.trim());
+
+    if (new Set(names).size !== names.length)
+      setCustomErrors((prev) => ({
+        ...prev,
+        uniqueGroupName: { ...prev.uniqueGroupName, value: true },
+      }));
+    else
+      setCustomErrors((prev) => ({
+        ...prev,
+        uniqueGroupName: { ...prev.uniqueGroupName, value: false },
+      }));
+  }, [listener]);
+
   useLayoutEffect(() => {
     const mainFieldsAnimation = new Animation(mainInputsRefs.current);
-    const translationsAnimation = new Animation(translationsRefs.current);
 
     mainFieldsAnimation.animateAll("", "", "<+.2");
-    translationsAnimation.animateAll("", "", "<+.1");
-  }, [fields]);
+  }, [serverErrors]);
 
   return (
     <AuthenticatedLayout
@@ -169,7 +116,7 @@ export default function EditSet({
     >
       <Head title={`Editing set - ${set.title}`} />
 
-      {!isSetBeingUpdated && (
+      {(!isSetBeingUpdated || Object.values(serverErrors).length !== 0) && (
         <Container>
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -222,68 +169,35 @@ export default function EditSet({
                   />
                 )}
                 {errorsFromController.title && (
-                  <InputError message={errorsFromController.title} />
+                  <InputError message={serverErrors.title} />
                 )}
-                {errors.translations && (
-                  <InputError message="Fields in translations must be filled" />
-                )}
-                {errorsFromController.translations && (
-                  <InputError message={errorsFromController.translations} />
+                {customErrors.uniqueGroupName.value && (
+                  <InputError message={customErrors.uniqueGroupName.message} />
                 )}
               </div>
             </div>
 
-            <div className={"overflow-y-scroll max-h-[50vh] space-y-4"}>
-              {fields.map((field, index) => (
-                <TranslationForm
-                  key={index}
-                  index={index}
-                  ref={(element) => (translationsRefs.current[index] = element)}
-                  title={title}
-                  handleDeleteTranslation={deleteTranslation}
-                  handleIsDeletedAnyTranslation={setIsAnyTranslationDeleted}
-                  termRegister={register(`translations.${index}.term.word`, {
-                    required: {
-                      value: true,
-                      message: "Field term is required",
-                    },
-                  })}
-                  definitionRegister={register(
-                    `translations.${index}.definition.word`,
-                    {
-                      required: {
-                        value: true,
-                        message: "Field definition is required",
-                      },
-                    },
-                  )}
-                  handleRemovingAnimation={removingAnimation}
-                  translationId={getValues(`translations.${index}.id`)}
-                />
-              ))}
+            <div className={"space-y-4"}>
+              <GroupsFieldArray
+                editingMode={true}
+                {...{
+                  control,
+                  register,
+                  setValue,
+                  getValues,
+                  errors,
+                  groups,
+                }}
+              />
             </div>
 
-            <AddButton
-              ref={(element) => (mainInputsRefs.current[1] = element)}
-              handleAppendField={appendField}
-            />
             <div
-              className="flex justify-end polygon-start opacity-0 translate-y-12"
-              ref={(element) => {
-                mainInputsRefs.current[2] = element;
-              }}
+              className="flex justify-end opacity-0 polygon-start translate-y-12"
+              ref={(element) => (mainInputsRefs.current[1] = element)}
             >
-              <MainButton
-                isRedirect={isAnyTranslationDeleted}
-                href={
-                  isAnyTranslationDeleted
-                    ? route("flashcards.showSet", [set.id, set.title])
-                    : ""
-                }
-                className="inline-block py-2 px-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md transition"
-              >
+              <PrimaryButton className="inline-block py-2 px-4 bg-indigo-500 hover:bg-indigo-600 hover:shadow-lg text-white rounded-md transition shadow-md">
                 Update
-              </MainButton>
+              </PrimaryButton>
             </div>
           </form>
         </Container>

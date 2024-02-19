@@ -11,7 +11,14 @@ import gsap from "gsap/all";
 import InputError from "@/Components/Form/InputError.jsx";
 import { error } from "@splidejs/splide/src/js/utils";
 
-export default function ({ control, register, setValue, getValues, errors }) {
+export default function ({
+  control,
+  register,
+  setValue,
+  getValues,
+  errors,
+  editingMode = false,
+}) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "groups",
@@ -36,16 +43,23 @@ export default function ({ control, register, setValue, getValues, errors }) {
   };
 
   const appendGroup = () => {
-    setValue("groups", [
-      ...getValues().groups,
-      {
-        name: `Group ${lastGroupIndex + 1}`,
-        translations: [
-          { term: "", definition: "" },
-          { term: "", definition: "" },
-        ],
-      },
-    ]);
+    append(
+      editingMode
+        ? {
+            name: `Group ${lastGroupIndex + 1}`,
+            translations: [
+              { term: "", definition: "", isNew: true },
+              { term: "", definition: "", isNew: true },
+            ],
+          }
+        : {
+            name: `Group ${lastGroupIndex + 1}`,
+            translations: [
+              { term: "", definition: "" },
+              { term: "", definition: "" },
+            ],
+          },
+    );
   };
 
   useLayoutEffect(() => {
@@ -84,9 +98,11 @@ export default function ({ control, register, setValue, getValues, errors }) {
         >
           <GradientAndLines
             className={"p-4 flex justify-between items-center gap-2"}
+            from={"from-amber-500"}
+            to={"to-amber-300"}
           >
             <div className={"w-1/2"}>
-              <InputLabel value={"Group name"} />
+              <InputLabel value={"Group name"} className={"text-gray-700"} />
               <TextInput
                 className={"w-full"}
                 type="text"
@@ -160,6 +176,7 @@ export default function ({ control, register, setValue, getValues, errors }) {
 
           <TranslationsFieldArray
             ref={(element) => (translationsRef.current[index] = element)}
+            editingMode={true}
             translationIndex={index}
             {...{
               control,
