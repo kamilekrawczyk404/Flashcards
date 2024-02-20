@@ -3,11 +3,12 @@ import { Table } from "@/Components/Table";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Animation from "@/Pages/Animation.js";
+import { Container } from "@/Components/Container.jsx";
 
 export const Feedback = ({
   answersResults,
   length,
-  barWidth,
+  barWidth = 0,
   set,
   routeName,
   finishedTime = null,
@@ -29,10 +30,12 @@ export const Feedback = ({
   else selectedIndex = 2;
 
   const letterAnimation = (index, delay) => {
-    letterRefs.current[index].classList.add("-translate-y-2");
-    setTimeout(() => {
-      letterRefs.current[index].classList.remove("-translate-y-2");
-    }, delay);
+    if (barWidth !== 0) {
+      letterRefs.current[index].classList.add("-translate-y-2");
+      setTimeout(() => {
+        letterRefs.current[index].classList.remove("-translate-y-2");
+      }, delay);
+    }
   };
 
   const animationTimer = setInterval(() => {
@@ -57,7 +60,7 @@ export const Feedback = ({
   }, [finishedTime]);
 
   return (
-    <>
+    <Container>
       <div
         ref={feedbackRef}
         className="rounded-md bg-gray-100 flex flex-col z-10 p-4 polygon-from-top opacity-0 -translate-y-12"
@@ -66,7 +69,7 @@ export const Feedback = ({
           {infoAboutResults[selectedIndex]}
         </p>
         <span className="mt-8 font-semibold text-gray-500">
-          {answersResults.correct} / {length} terms
+          {answersResults.correct} / {length} (correct answers)
           {finishedTime && (
             <span className="text-indigo-500 ml-2 font-bold">
               ({finishedTime} sec)
@@ -81,10 +84,19 @@ export const Feedback = ({
         </div>
       </div>
       {answersResults.incorrect.count === 0 && (
-        <div className={"bg-gray-100 p-4 mt-4 rounded-md relative"}>
+        <div
+          className={
+            "bg-white mt-4 relative flex sm:flex-row flex-col-reverse items-center justify-evenly"
+          }
+        >
+          <img
+            className={"w-[25rem]"}
+            src="http://127.0.0.1:8000/storage/images/success.jpg"
+            alt="success"
+          />
           <div
             className={
-              "text-xl font-semibold text-gray-700 flex gap-2 flex-col"
+              "text-xl bg-gray-100 p-4 rounded-md font-semibold text-gray-700 flex gap-2 flex-col sm:w-fit w-full"
             }
           >
             <div className={"flex items-center relative mb-4"}>
@@ -126,23 +138,23 @@ export const Feedback = ({
       )}
 
       {!isTest && (
-        <div className="flex justify-center items-center mx-auto  left-0 right-0 gap-4 transition fixed animate-show-from-bottom">
+        <div className="flex justify-center items-center mx-auto left-0 right-0 gap-4 transition fixed animate-show-from-bottom">
           <MainButton
             className={"bg-indigo-500 hover:bg-indigo-600 text-gray-100"}
             isRedirect={true}
-            href={route("flashcards.showSet", [set.id, set.title])}
+            href={route("flashcards.showSet", [set.id])}
           >
             Back to the set preview
           </MainButton>
           <MainButton
             className={"bg-indigo-500 hover:bg-indigo-600 text-gray-100"}
             isRedirect={true}
-            href={route(`flashcards.${routeName}`, [set.id, set.title])}
+            href={route(`flashcards.${routeName}`, [set.id])}
           >
             Check yourself again
           </MainButton>
         </div>
       )}
-    </>
+    </Container>
   );
 };

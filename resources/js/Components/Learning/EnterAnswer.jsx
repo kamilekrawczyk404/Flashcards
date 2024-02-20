@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import TextInput from "../Form/TextInput.jsx";
 import { CurrentIndexIndicator } from "@/Components/Translations/CurrentIndexIndicator.jsx";
-import TranslationsData from "@/TranslationsData.js";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -11,12 +10,14 @@ export const EnterAnswer = ({
   isCorrect,
   isSeen,
   translation,
+  groupIndex,
   handleOnSubmit,
   componentIndex,
   addAnswer,
   isTest = false,
   isEnd,
   length,
+  isForeignLanguage,
   ...props
 }) => {
   const [isHintShown, setIsHintShown] = useState(false);
@@ -50,7 +51,7 @@ export const EnterAnswer = ({
           "mt-2 px-4 py-2 text-white font-medium bg-indigo-500 transition rounded-md w-fit " +
           (isEnd || isHintShown ? "cursor-not-allowed" : "hover:bg-indigo-600")
         }
-        disabled={isHintShown || isEnd}
+        disabled={isHintShown || isEnd || isClicked}
       >
         Hint
         <FontAwesomeIcon icon="fa-solid fa-paintbrush" className={"ml-2"} />
@@ -60,12 +61,14 @@ export const EnterAnswer = ({
         className="text-gray-700 mt-2 tracking-widest font-medium polygon-from-top -translate-y-6 opacity-0 bg-lime-500 w-fit bg-opacity-60 rounded-md px-2 py-1"
         ref={hintRef}
       >
-        {showHint(translation.definition.word)}
+        {showHint(
+          isForeignLanguage ? translation.definition : translation.term,
+        )}
       </p>
       <div className={"bg-indigo-500 h-[.25rem] w-[100vw] -ml-4 mt-2 "}></div>
       <div className="flex flex-col mt-12">
         <span className="text-2xl text-indigo-500 font-semibold">
-          {translation.term.word}
+          {isForeignLanguage ? translation.term : translation.definition}
         </span>
         <div className="my-2">
           {!isClicked && <p className="mt-8">Your answer</p>}
@@ -94,8 +97,9 @@ export const EnterAnswer = ({
               : handleOnSubmit(
                   event,
                   userTranslation,
-                  translation.definition.word,
-                  componentIndex,
+                  isForeignLanguage ? translation.definition : translation.term,
+                  groupIndex,
+                  translation.id - 1,
                 )
           }
         >
@@ -132,7 +136,7 @@ export const EnterAnswer = ({
             ref={correctAnswerRef}
             className="mt-2 bg-lime-500 md:w-1/2 w-full bg-opacity-60 rounded-md px-4 py-2 opacity-0 polygon-from-top -translate-y-12"
           >
-            {translation.definition.word}
+            {isForeignLanguage ? translation.definition : translation.term}
           </div>
         )}
       </div>

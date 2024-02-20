@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FlashcardSets extends Model
@@ -94,15 +95,13 @@ class FlashcardSets extends Model
 
         foreach($words as $word) {
 
-            // user still can update other's sets, change sth in authentication
-
             // if user choose a language and count of all available languages not equals to total length of languages in sets
             if (count($languages) > 0 && count($languages) !== count(FlashcardSets::getAvailableLanguages())) {
 
                 $sets[] = FlashcardSets::when($languages, function($query) use ($languages) {
                     $query->where(function ($query) use ($languages) {
                         foreach($languages as $language) {
-                            $query->orWhereJsonContains('languages', ['source' => $language])->orWhereJsonContains('languages', ['target' => $language]);
+                            $query->where(['source_language' => $language, 'target_language' => $language]);
                         }
                     });
                 })->where('title', 'like', "%$word%")->skip($currentPage * $take)->take($take)->get()->toArray();
@@ -114,8 +113,14 @@ class FlashcardSets extends Model
 
 
         foreach($sets[0] as $set) {
-            $translationsCount = ['count' => FlashcardSets::countTranslations($set['title'])];
-            $final[] = array_merge($translationsCount, $set);
+            $progression = [];
+            if (Auth::id() === $set['user_id']) {
+                $progression['progression'] = [FlashcardsSetsProgress::getSetProgress(Auth::id(), $set['id'])];
+            }
+            $translationsCount = ['count' => FlashcardSets::countTranslations($set['id'])];
+            $final[] = array_merge($translationsCount, $set, $progression);
+
+//            dd($final);
         }
 
         return $final;
@@ -135,9 +140,8 @@ class FlashcardSets extends Model
             $translationsBelongToGroup =
                 DB::table($translationTableName . ' AS t')
                     ->join('flashcards_sets_progress AS f', 'f.translation_id', '=','t.id')
-                    ->where( 't.group_name', $group->group_name)
                     ->select('t.*', 'f.isFavourite', 'f.status')
-                    ->distinct()
+                    ->groupBy('t.group_name')
                     ->get()
                     ->toArray();
 

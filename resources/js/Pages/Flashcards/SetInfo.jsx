@@ -49,7 +49,6 @@ export default function SetInfo({
     },
   ];
 
-  console.log(groups);
   let mainRefs = useRef([]);
   let translationsRefs = useRef([]);
   let groupsRefs = useRef([]);
@@ -127,6 +126,8 @@ export default function SetInfo({
   const cancelEditing = () => {
     setIsEditing(false);
   };
+
+  console.log(cards);
 
   // const fetchTranslations = () => {
   //   setFetchedGroups(
@@ -257,7 +258,7 @@ export default function SetInfo({
                       <div
                         className={
                           "flip-card-inner relative mx-auto w-full h-full transition ease-in-out duration-[1s] flex items-center text-3xl break-keep text-gray-600 font-bold sm:bg-white bg-gray-100 " +
-                          (cards.at(translationIndex).isRotated
+                          (cards[translationIndex]?.isRotated
                             ? "rotate-x-0"
                             : "rotate-x-180")
                         }

@@ -58,7 +58,7 @@ class FlashcardsSetsProgress extends Model
         ];
     }
 
-    public static function insertNewValues(int $user_id, int $set_id) {
+    public static function insertNewValues(int $user_id, int $set_id): void {
         $translations = DB::table(FlashcardSets::getTitle($set_id))->get()->toArray();
 
         foreach($translations as $translation) {
@@ -69,5 +69,9 @@ class FlashcardsSetsProgress extends Model
                 'isFavourite' => rand(0, 1),
             ]);
         }
+    }
+
+    public static function updateFields($set_id): void {
+
     }
 }

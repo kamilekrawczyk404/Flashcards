@@ -1,9 +1,9 @@
 import {
-    forwardRef,
-    useCallback,
-    useLayoutEffect,
-    useRef,
-    useState,
+  forwardRef,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
 } from "react";
 import { GoBackIndicator } from "@/Components/GoBackIndicator.jsx";
 import { SingleSet } from "@/Components/SingleSet.jsx";
@@ -15,176 +15,163 @@ import Cookies from "js-cookie";
 import { Filter } from "@/Components/Form/Filter.jsx";
 
 export const Explore = forwardRef(
-    ({ auth, handleAnimateToRight, availableLanguages }, ref) => {
-        const [currentPage, setCurrentPage] = useState(0);
-        const [searching, setSearching] = useState("");
-        const [isSearching, setIsSearching] = useState(false);
-        const [previousSearch, setPreviousSearch] = useState(
-            typeof Cookies.get("previousSearch") === "undefined"
-                ? []
-                : JSON.parse(Cookies.get("previousSearch")),
-        );
-        const [filters, setFilters] = useState({
-            languages: [],
+  ({ auth, handleAnimateToRight, availableLanguages }, ref) => {
+    const [currentPage, setCurrentPage] = useState(0);
+    const [searching, setSearching] = useState("");
+    const [isSearching, setIsSearching] = useState(false);
+    const [previousSearch, setPreviousSearch] = useState(
+      typeof Cookies.get("previousSearch") === "undefined"
+        ? []
+        : JSON.parse(Cookies.get("previousSearch")),
+    );
+    const [filters, setFilters] = useState({
+      languages: [],
+    });
+
+    const { progress, hasMore, sets } = useSetsSearch(
+      searching,
+      currentPage,
+      filters,
+    );
+
+    let setsRef = useRef([]);
+    const observer = useRef();
+    const searchingRef = useRef();
+
+    const setPreviousSearching = () => {
+      const values = Cookies.get("previousSearch");
+      let newResults =
+        typeof values !== "undefined"
+          ? [...new Set([...JSON.parse(values), searching])]
+          : [searching];
+
+      Cookies.set("previousSearch", JSON.stringify(newResults), {
+        expires: 7,
+      });
+
+      setPreviousSearch((prev) => [...new Set([...prev, ...newResults])]);
+    };
+
+    const deleteCookie = (id) => {
+      let cookies = previousSearch.filter(
+        (previous) => previous !== previousSearch[id],
+      );
+
+      Cookies.set("previousSearch", JSON.stringify(cookies), {
+        expires: 7,
+      });
+
+      setPreviousSearch(cookies);
+    };
+
+    const lastSetRef = useCallback(
+      (node) => {
+        if (progress) return;
+
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting && hasMore) {
+            setCurrentPage((prev) => prev + 1);
+          }
         });
 
-        const { progress, hasMore, sets } = useSetsSearch(
-            searching,
-            currentPage,
-            filters,
-        );
+        if (node) observer.current.observe(node);
+      },
+      [progress, hasMore],
+    );
 
-        let setsRef = useRef([]);
-        const observer = useRef();
-        const searchingRef = useRef();
+    useLayoutEffect(() => {
+      if (sets.length > 0) {
+        setPreviousSearching();
+      }
 
-        const setPreviousSearching = () => {
-            const values = Cookies.get("previousSearch");
-            let newResults =
-                typeof values !== "undefined"
-                    ? [...new Set([...JSON.parse(values), searching])]
-                    : [searching];
+      let resultsAppearingAnimation = new Animation([
+        searchingRef.current,
+        ...setsRef.current,
+      ]);
 
-            Cookies.set("previousSearch", JSON.stringify(newResults), {
-                expires: 7,
-            });
+      resultsAppearingAnimation.animateAll("<-.2", "", "<-.2");
+    }, [sets]);
 
-            setPreviousSearch((prev) => [...new Set([...prev, ...newResults])]);
-        };
+    //TODO: filtering by title, created_date, desc, asc
 
-        const deleteCookie = (id) => {
-            let cookies = previousSearch.filter(
-                (previous) => previous !== previousSearch[id],
-            );
-
-            Cookies.set("previousSearch", JSON.stringify(cookies), {
-                expires: 7,
-            });
-
-            setPreviousSearch(cookies);
-        };
-
-        const lastSetRef = useCallback(
-            (node) => {
-                if (progress) return;
-
-                if (observer.current) observer.current.disconnect();
-
-                observer.current = new IntersectionObserver((entries) => {
-                    if (entries[0].isIntersecting && hasMore) {
-                        setCurrentPage((prev) => prev + 1);
-                    }
-                });
-
-                if (node) observer.current.observe(node);
-            },
-            [progress, hasMore],
-        );
-
-        useLayoutEffect(() => {
-            if (sets.length > 0) {
-                setPreviousSearching();
+    return (
+      <div
+        className={
+          "w-full absolute right-[-100%] opacity-1 h-full flex gap-4 flex-col p-4"
+        }
+        ref={ref}
+      >
+        <div
+          className={
+            "max-h-[70vh] mx-auto w-full flex gap-4 flex-col items-center justify-center"
+          }
+        >
+          <div
+            className={
+              "flex w-full justify-center gap-2 md:flex-row flex-col-reverse"
             }
-
-            let resultsAppearingAnimation = new Animation([
-                searchingRef.current,
-                ...setsRef.current,
-            ]);
-
-            resultsAppearingAnimation.animateAll("<-.2", "", "<-.2");
-        }, [sets]);
-
-        //TODO: filtering by title, created_date, desc, asc
-
-        return (
-            <div
-                className={
-                    "w-full absolute right-[-100%] opacity-1 h-full flex gap-4 flex-col p-4"
-                }
-                ref={ref}
-            >
-                <div
-                    className={
-                        "max-h-[70vh] mx-auto w-full flex gap-4 flex-col items-center justify-center"
-                    }
-                >
-                    <div
-                        className={
-                            "flex w-full justify-center gap-2 md:flex-row flex-col-reverse"
-                        }
-                    >
-                        <Filter
-                            filters={filters}
-                            handleSetFilters={setFilters}
-                            isSearching={isSearching}
-                            availableLanguages={availableLanguages}
-                        />
-                        <Search
-                            isSearching={isSearching}
-                            searching={searching}
-                            ref={searchingRef}
-                            handleSetCurrentPage={setCurrentPage}
-                            handleSetSearching={setSearching}
-                            handleSetIsSearching={setIsSearching}
-                            previousSearches={previousSearch}
-                            handleDeleteCookie={deleteCookie}
-                        />
-                    </div>
-                    {!sets.length && (
-                        <Loader
-                            className={"md:ml-[20%] ml-0"}
-                            progress={progress}
-                            hasMore={hasMore}
-                            sets={sets}
-                        />
-                    )}
-                    <div
-                        className={
-                            "overflow-y-scroll h-[90vh] w-full flex flex-col items-center gap-4 md:ml-[20%] ml-0"
-                        }
-                    >
-                        {sets.map((set, index) =>
-                            sets.length === index + 1 && sets.length !== 1 ? (
-                                <SingleSet
-                                    auth={auth}
-                                    key={index}
-                                    set={set}
-                                    ref={lastSetRef}
-                                    translationsCount={set.count}
-                                    className={
-                                        "opacity-0 polygon-start"
-                                    }
-                                />
-                            ) : (
-                                <SingleSet
-                                    auth={auth}
-                                    key={index}
-                                    set={set}
-                                    ref={(element) =>
-                                        (setsRef.current[index] = element)
-                                    }
-                                    translationsCount={set.count}
-                                    className={
-                                        "opacity-0 polygon-start"
-                                    }
-                                />
-                            ),
-                        )}
-                        {sets.length > 0 && (
-                            <Loader
-                                progress={progress}
-                                hasMore={hasMore}
-                                sets={sets}
-                            />
-                        )}
-                    </div>
-                </div>
-
-                <GoBackIndicator
-                    onRight={true}
-                    handleAnimate={handleAnimateToRight}
+          >
+            <Filter
+              filters={filters}
+              handleSetFilters={setFilters}
+              isSearching={isSearching}
+              availableLanguages={availableLanguages}
+            />
+            <Search
+              isSearching={isSearching}
+              searching={searching}
+              ref={searchingRef}
+              handleSetCurrentPage={setCurrentPage}
+              handleSetSearching={setSearching}
+              handleSetIsSearching={setIsSearching}
+              previousSearches={previousSearch}
+              handleDeleteCookie={deleteCookie}
+            />
+          </div>
+          {!sets.length && (
+            <Loader
+              className={"md:ml-[20%] ml-0"}
+              progress={progress}
+              hasMore={hasMore}
+              sets={sets}
+            />
+          )}
+          <div
+            className={
+              "overflow-y-scroll h-[90vh] w-full flex flex-col items-center gap-4 md:ml-[20.75%] ml-0"
+            }
+          >
+            {sets.map((set, index) =>
+              sets.length === index + 1 && sets.length !== 1 ? (
+                <SingleSet
+                  auth={auth}
+                  key={index}
+                  set={set}
+                  ref={lastSetRef}
+                  translationsCount={set.count}
+                  className={"opacity-0 polygon-start"}
                 />
-            </div>
-        );
-    },
+              ) : (
+                <SingleSet
+                  auth={auth}
+                  key={index}
+                  set={set}
+                  ref={(element) => (setsRef.current[index] = element)}
+                  translationsCount={set.count}
+                  className={"opacity-0 polygon-start"}
+                />
+              ),
+            )}
+            {sets.length > 0 && (
+              <Loader progress={progress} hasMore={hasMore} sets={sets} />
+            )}
+          </div>
+        </div>
+
+        <GoBackIndicator onRight={true} handleAnimate={handleAnimateToRight} />
+      </div>
+    );
+  },
 );

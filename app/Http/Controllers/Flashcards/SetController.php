@@ -183,11 +183,13 @@ class SetController extends Controller
         return redirect()->route('flashcards.showSet', ['set_id' => $set_id,])->with('success', 'Your set has been updated successfully');
     }
 
-    public function deleteSet(int $set_id): RedirectResponse
+    public function deleteSet(int $set_id)
     {
-        FlashcardSets::find($set_id)->delete();
-
         Schema::dropIfExists(FlashcardSets::getTitle($set_id));
+
+        //Remove also in set progress
+        FlashcardsSetsProgress::where(['user_id' => Auth::id(), 'flashcard_sets_id' => $set_id])->delete();
+        FlashcardSets::find($set_id)->delete();
 
         return redirect()->route('home')->with('success', 'Set has been removed successfully');
     }

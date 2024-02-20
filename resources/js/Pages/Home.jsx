@@ -8,12 +8,14 @@ import Animation from "@/Pages/Animation.js";
 import { AllSets } from "@/Pages/Flashcards/AllSets.jsx";
 import { Explore } from "@/Pages/Flashcards/Explore.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
 
 export default function Home({
   auth,
   availableLanguages,
   canLogin,
   canRegister,
+  feedback,
 }) {
   const sentences = [
     "It's totally free!",
@@ -159,7 +161,9 @@ export default function Home({
               </div>
               <img
                 className={"max-w-[55%]"}
-                src={"storage/images/home_unauthenticated.jpg"}
+                src={
+                  "http://127.0.0.1:8000/storage/images/home_unauthenticated.jpg"
+                }
                 alt="Study Image"
               />
             </div>
@@ -208,7 +212,7 @@ export default function Home({
                     className={
                       "xl:max-w-[25rem] lg:max-w-[20rem] max-w-[12rem] rounded-md self-center"
                     }
-                    src="storage/images/learn.jpg"
+                    src="http://127.0.0.1:8000/storage/images/learn.jpg"
                     alt="learning image"
                   />
                 </OptionCard>
@@ -229,7 +233,7 @@ export default function Home({
                     className={
                       "xl:max-w-[25rem] lg:max-w-[20rem] max-w-[12rem] w-full rounded-md self-center xl:mt-20 lg:mt-12 mt-8"
                     }
-                    src="storage/images/searching.jpg"
+                    src="http://127.0.0.1:8000/storage/images/searching.jpg"
                     alt="explore"
                   />
                 </OptionCard>
@@ -252,6 +256,7 @@ export default function Home({
           </SectionWithVerticalMargin>
         </Authenticated>
       )}
+      <SuccessModal feedback={feedback} />
     </>
   );
 }

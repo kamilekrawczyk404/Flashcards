@@ -27,7 +27,7 @@ export default {
             bottom: "-100%",
           },
           "100%": {
-            bottom: "5%",
+            bottom: "1rem",
             opacity: 1,
           },
         },

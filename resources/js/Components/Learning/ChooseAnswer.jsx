@@ -8,6 +8,8 @@ export const ChooseAnswer = ({
   isEnd,
   isForeignLanguage,
   translation,
+  groupIndex,
+  answers,
   onClickAnswer,
   className = "",
   addAnswer,
@@ -17,8 +19,8 @@ export const ChooseAnswer = ({
 }) => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(null);
   const buttons = isForeignLanguage
-    ? translation.answers.targetAnswers
-    : translation.answers.sourceAnswers;
+    ? answers.targetAnswers
+    : answers.sourceAnswers;
 
   const styling =
     "bg-indigo-100 h-14 rounded-md transition-all relative flex flex-col justify-center text-gray-700 " +
@@ -32,7 +34,7 @@ export const ChooseAnswer = ({
       <span className="text-sm text-gray-500 block font-semibold">Term</span>
       <div className="flex flex-col mt-12">
         <span className="text-2xl text-indigo-500 font-semibold">
-          {translation.term.word}
+          {isForeignLanguage ? translation.term : translation.definition}
         </span>
         {!isClicked && <p className="mt-8">Select the correct definition</p>}
         {isClicked && isCorrect && (
@@ -63,8 +65,8 @@ export const ChooseAnswer = ({
                     ? " hover:cursor-pointer"
                     : element ===
                         (isForeignLanguage
-                          ? translation.definition.word
-                          : translation.term.word)
+                          ? translation.definition
+                          : translation.term)
                       ? " bg-lime-500 bg-opacity-60 hover:cursor-not-allowed"
                       : " bg-red-500 bg-opacity-60 hover:cursor-not-allowed")
               }
@@ -79,10 +81,11 @@ export const ChooseAnswer = ({
                     )
                   : onClickAnswer(
                       isForeignLanguage
-                        ? translation.definition.word
-                        : translation.term.word,
+                        ? translation.definition
+                        : translation.term,
                       element,
-                      componentIndex,
+                      groupIndex,
+                      translation.id - 1,
                     );
                 setSelectedButtonIndex(index);
               }}

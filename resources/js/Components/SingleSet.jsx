@@ -1,14 +1,12 @@
-import { forwardRef, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { Link, router } from "@inertiajs/react";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ProgressBars } from "@/Pages/Flashcards/Partials/ProgressBars.jsx";
 
 export const SingleSet = forwardRef(
   ({ auth, set, index, translationsCount, className, ...props }, ref) => {
-    const deleteSet = (id, setTitle) => {
-      if (confirm("Are you sure to delete this set?"))
-        router.delete(`/delete/set/${id}/${setTitle}`);
-    };
+    useEffect(() => {});
     const [cardActive, setCardActive] = useState(false);
 
     let editComponentRef = useRef();
@@ -17,6 +15,15 @@ export const SingleSet = forwardRef(
     const animate = () => {
       animation.slideToRight();
     };
+
+    const deleteSet = (e, set_id) => {
+      e.preventDefault();
+
+      if (confirm("Are you sure to delete this set?"))
+        router.delete(`/delete/set/${set_id}`);
+    };
+
+    console.log(set);
 
     return (
       <div
@@ -58,6 +65,18 @@ export const SingleSet = forwardRef(
               </span>
             </div>
           </div>
+          {set?.progression && (
+            <div className={"flex gap-2"}>
+              {Object.keys(set.progression).map((bar, index) => (
+                <ProgressBars
+                  // ref={(element) => (progressionRefs.current[index] = element)}
+                  length={Object.values(set.progression).at(index)}
+                  translationsLength={translationsCount}
+                  bar={bar}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className={"mr-2"}>
@@ -100,12 +119,12 @@ export const SingleSet = forwardRef(
                 className={
                   "flex items-center justify-center w-full bg-gray-100 h-full hover:w-[200%] transition-[width]"
                 }
-                href={route("flashcards.showEdit", [set.id, set.title])}
+                href={route("flashcards.showEdit", [set.id])}
               >
                 <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
               </Link>
               <button
-                onClick={() => deleteSet(set.id, set.title)}
+                onClick={(e) => deleteSet(e, set.id)}
                 className={
                   "flex items-center justify-center w-full bg-red-500 h-full text-gray-700 hover:w-[200%] transition-[width]"
                 }
@@ -119,7 +138,7 @@ export const SingleSet = forwardRef(
             className={
               "flex items-center justify-center w-full bg-indigo-500 h-full rounded-r-md hover:w-[200%] transition-[width]"
             }
-            href={route("flashcards.showSet", [set.id, set.title])}
+            href={route("flashcards.showSet", [set.id])}
           >
             <FontAwesomeIcon icon="fa-solid fa-list" />
           </Link>

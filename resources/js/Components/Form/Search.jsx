@@ -44,8 +44,8 @@ export const Search = forwardRef(
           className={
             "flex relative bg-gray-100 gap-2 items-center " +
             (isSearching
-              ? "rounded-t-md sm:p-2"
-              : "p-0 rounded-md bg-transparent ")
+              ? "rounded-t-md p-2"
+              : "p-1 rounded-md bg-transparent ")
           }
         >
           <button

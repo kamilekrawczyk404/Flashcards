@@ -255,7 +255,7 @@ export default function UpdateProfileInformation({
                   ref={(element) => (avatarRef.current = element)}
                   src={
                     !userChangedAvatar
-                      ? `storage/users_avatars/${data.avatar}`
+                      ? `http://127.0.0.1:8000/storage/users_avatars/${data.avatar}`
                       : temporaryAvatar
                   }
                   className={"rounded-full w-[12rem] aspect-square "}

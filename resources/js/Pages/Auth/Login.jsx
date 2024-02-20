@@ -80,6 +80,8 @@ export default function Login({ status, canResetPassword }) {
           }
           hasLines={true}
           linesColor={"bg-gray-100"}
+          from={"from-indigo-600"}
+          to={"to-indigo-400"}
         >
           <p className={"text-white text-2xl font-bold mb-4"}>Login</p>
 

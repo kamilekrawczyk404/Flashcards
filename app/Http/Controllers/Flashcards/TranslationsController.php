@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Flashcards;
 
 use App\Http\Controllers\Controller;
+use App\Models\FlashcardsSetsProgress;
 use App\Models\Translations;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
@@ -33,11 +35,16 @@ class TranslationsController extends Controller
         DB::table($title)->where('id', $translation_id)->delete();
     }
 
-    public static function updateHardTranslations(string $title, Request $request): void
+    public static function updateHardTranslations(int $set_id, Request $request): void
     {
-        foreach ($request->incorrect['translations'] as $incorrect) {
-            DB::table($title)->where('id', $incorrect['id'])->update([
-                'isHard' => true
+        // update
+        foreach ($request->all() as $translation) {
+            FlashcardsSetsProgress::where([
+                'user_id' => Auth::id(),
+                'flashcard_sets_id' => $set_id,
+                'translation_id' => $translation['id']
+            ])->update([
+                'status' => 'difficult'
             ]);
         }
     }
