@@ -2,14 +2,10 @@ import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap/all";
 import TranslationsData from "@/TranslationsData.js";
 
-export const Table = ({
-  columns = [],
-  data = [],
-  className = "",
-  isPresentingTranslations = false,
-  ...props
-}) => {
+export const Table = ({ groups, data = [], className = "", ...props }) => {
   let refs = useRef([]);
+
+  const columns = ["Id", "Group Name", "Term", "Definition"];
 
   return (
     <div className="rounded-md max-h-[25vh] overflow-y-auto">
@@ -31,65 +27,46 @@ export const Table = ({
           </tr>
         </thead>
         <tbody>
-          {!isPresentingTranslations
-            ? columns.map((element, index) => (
-                <tr
-                  className="bg-white border-b transition"
-                  key={index}
-                  ref={(element) => {
-                    refs.current[index] = element;
-                  }}
-                >
-                  {columns.map((columnName, index) => (
+          {groups.map((group, groupIndex) =>
+            group.translations.map((translation, translationIndex) => {
+              if (translation.id === data[translationIndex])
+                return (
+                  <tr
+                    className="bg-white border-b transition"
+                    key={`${groupIndex}.${translationIndex}`}
+                    ref={(element) => {
+                      refs.current[index] = element;
+                    }}
+                  >
                     <td
-                      key={index}
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
                     >
-                      {element[columnName]}
+                      {translation.id + 1}
+                    </td>{" "}
+                    <td
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
+                    >
+                      {translation.group}
                     </td>
-                  ))}
-                </tr>
-              ))
-            : data.map((translation, index) => (
-                <tr
-                  className="bg-white border-b transition"
-                  key={index}
-                  ref={(element) => {
-                    refs.current[index] = element;
-                  }}
-                >
-                  <td
-                    key={index}
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
-                  >
-                    {translation.id + 1}
-                  </td>{" "}
-                  <td
-                    key={index}
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
-                  >
-                    {translation.group}
-                  </td>
-                  <td
-                    key={index + 1}
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
-                  >
-                    {translation.term}
-                  </td>
-                  <td
-                    key={index + 2}
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
-                  >
-                    {translation.definition}
-                    <span className={"text-right"}>fav</span>
-                  </td>
-                </tr>
-              ))}
+                    <td
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
+                    >
+                      {translation.term}
+                    </td>
+                    <td
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
+                    >
+                      {translation.definition}
+                      <span className={"text-right"}>fav</span>
+                    </td>
+                  </tr>
+                );
+            }),
+          )}
         </tbody>
       </table>
     </div>

@@ -136,12 +136,16 @@ class FlashcardSets extends Model
                 ->get('group_name')
                 ->toArray();
 
+        // working bad
         foreach($groups as $group) {
+
             $translationsBelongToGroup =
-                DB::table($translationTableName . ' AS t')
-                    ->join('flashcards_sets_progress AS f', 'f.translation_id', '=','t.id')
-                    ->select('t.*', 'f.isFavourite', 'f.status')
-                    ->groupBy('t.group_name')
+                DB::table('flashcards_sets_progress AS fsp')
+                    ->join($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
+                    ->join('flashcard_sets AS fs', 'fs.id', '=', 'fsp.flashcard_sets_id')
+                    ->where('t.group_name', $group->group_name)
+                    ->select( 't.*' ,'fsp.isFavourite', 'fsp.status')
+                    ->distinct()
                     ->get()
                     ->toArray();
 

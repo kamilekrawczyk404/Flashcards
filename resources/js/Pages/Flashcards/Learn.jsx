@@ -20,13 +20,9 @@ export default function Learn({ set, groups }) {
     translationIndex: 0,
   });
   const [kind, setKind] = useState("");
-  const [translationsCount, setTranslationCount] = useState(0);
   const [userAnswers, setUserAnswers] = useState({
-    correct: 0,
-    incorrect: {
-      count: 0,
-      translations: [],
-    },
+    correctIds: [],
+    incorrectIds: [],
   });
 
   const kinds = ["choose", "type"];
@@ -73,28 +69,26 @@ export default function Learn({ set, groups }) {
     setIsClicked(true);
 
     if (correctAnswer === userAnswer) {
-      setUserAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
+      setUserAnswers((prev) => ({
+        ...prev,
+        correctIds: [
+          ...prev.correctIds,
+          learningProperties.groups[groupIndex].translations[
+            translationIndex
+          ].id.toString(),
+        ],
+      }));
       setIsCorrect(true);
     } else {
       setIsSeen(true);
       setUserAnswers((prev) => ({
         ...prev,
-        incorrect: {
-          count: prev.incorrect.count + 1,
-          translations: [
-            ...prev.incorrect.translations,
-            {
-              id: learningProperties.groups[groupIndex].translations[
-                translationIndex
-              ].id,
-              group: groups.at(groupIndex).name,
-              term: learningProperties.groups[groupIndex].translations[
-                translationIndex
-              ].term,
-              definition: correctAnswer,
-            },
-          ],
-        },
+        incorrectIds: [
+          ...prev.incorrectIds,
+          learningProperties.groups[groupIndex].translations[
+            translationIndex
+          ].id.toString(),
+        ],
       }));
     }
   };
@@ -115,21 +109,12 @@ export default function Learn({ set, groups }) {
   };
 
   useEffect(() => {
-    learningProperties?.groups.forEach((group) =>
-      setTranslationCount((prev) => prev + group.translationsCount),
-    );
-  }, [learningProperties]);
-
-  useEffect(() => {
     if (!isChoosingGroups) {
       if (
         current.translationIndex ===
         groups[current.groupIndex].translationsCount
       ) {
-        router.put(
-          `/set/${set.id}/updateProgress`,
-          userAnswers.incorrect.translations,
-        );
+        // router.put(`/set/${set.id}/updateProgress`, userAnswers);
       }
 
       const timer = setTimeout(() => {
@@ -147,6 +132,8 @@ export default function Learn({ set, groups }) {
       };
     }
   }, [current]);
+
+  console.log(learningProperties);
 
   return (
     <>
@@ -215,17 +202,27 @@ export default function Learn({ set, groups }) {
               </Container>
             </>
           ) : (
-            <Feedback
-              set={set}
-              answersResults={userAnswers}
-              length={translationsCount}
-              barWidth={Math.round((userAnswers.correct / 12) * 100)}
-              routeName={"learn"}
-            />
+            <div></div>
+            // <Feedback
+            //   set={set}
+            //   answersResults={userAnswers}
+            //   length={translationsCount}
+            //   barWidth={Math.round(
+            //     (userAnswers.correctIds.length / userAnswers.correctIdslength +
+            //       userAnswers.incorrectIds.length) *
+            //       100,
+            //   )}
+            //   routeName={"learn"}
+            //   groups={groups}
+            // />
           )}
 
-          {current.translationIndex !==
-            groups[current.groupIndex].translationsCount && (
+          {current !==
+            {
+              groupIndex: groups.length - 1,
+              translationIndex:
+                groups[groups.length - 1].translations.length - 1,
+            } && (
             <MainButton
               className="mx-auto left-0 right-0 transition fixed opacity-0 bg-indigo-500 hover:bg-indigo-600 text-gray-100"
               isClicked={isClicked}
@@ -234,8 +231,12 @@ export default function Learn({ set, groups }) {
                 next();
               }}
             >
-              {current.translationIndex !==
-              groups[current.groupIndex].translationsCount - 1
+              {current !==
+              {
+                groupIndex: groups.length - 1,
+                translationIndex:
+                  groups[groups.length - 1].translations.length - 1,
+              }
                 ? "Move to next"
                 : "Show results"}
             </MainButton>

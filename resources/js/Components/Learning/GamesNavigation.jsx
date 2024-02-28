@@ -14,9 +14,7 @@ const GamesNavigation = ({
       </h2>
       <CancelButton
         {...props}
-        href={
-          isRedirect ? route("flashcards.showSet", [set.id, set.title]) : ""
-        }
+        href={isRedirect ? route("flashcards.showSet", [set.id]) : ""}
       />
     </div>
   );

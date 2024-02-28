@@ -14,6 +14,7 @@ export const Feedback = ({
   finishedTime = null,
   isTest = false,
   bestResult = {},
+  groups,
 }) => {
   const infoAboutResults = [
     "Awesome work! \nYou're doing this brilliantly! Easy peasy!",
@@ -83,7 +84,7 @@ export const Feedback = ({
           ></div>
         </div>
       </div>
-      {answersResults.incorrect.count === 0 && (
+      {!answersResults.incorrect.translations_id.length && (
         <div
           className={
             "bg-white mt-4 relative flex sm:flex-row flex-col-reverse items-center justify-evenly"
@@ -122,18 +123,18 @@ export const Feedback = ({
               />
             </div>
             <p>You've finished test with no mistakes!</p>
-            {bestResult.matchingTime > finishedTime && (
+            {bestResult.matching_time > finishedTime && (
               <p>It's your best time!</p>
             )}
           </div>
         </div>
       )}
-      {answersResults.incorrect.count !== 0 && (
+      {answersResults.incorrect.translations_id.length && (
         <Table
-          isPresentingTranslations={true}
           className="mt-8"
-          columns={Object.keys(answersResults.incorrect.translations[0])}
-          data={answersResults.incorrect.translations}
+          // columns={Object.keys(answersResults.incorrect.translations[0])}
+          data={answersResults.incorrect.translations_id}
+          gropus={groups}
         />
       )}
 

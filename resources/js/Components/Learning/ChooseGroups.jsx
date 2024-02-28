@@ -33,7 +33,10 @@ export const ChooseGroups = ({
     },
   });
 
+  // groups; true or false, when submit fetch data using api and display loading component
+
   const onSubmit = (data) => {
+    console.log(data);
     handleSetLearningProperties(data);
     handleSetIsChoosingGroups(false);
   };
