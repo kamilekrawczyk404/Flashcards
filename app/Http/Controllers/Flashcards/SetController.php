@@ -194,8 +194,8 @@ class SetController extends Controller
         return redirect()->route('home')->with('success', 'Set has been removed successfully');
     }
 
-    public static function getUserSets(): array {
-        return FlashcardSets::getUserSets(Auth::id());
+    public static function getUserSets(int $id): array {
+        return FlashcardSets::getUserSets($id);
     }
 
     public static function getFoundSets(int $currentPage, string $searching, $filters): array {

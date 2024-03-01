@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-export const AnimatedCheckbox = forwardRef(({ props, children }, ref) => {
+export const AnimatedCheckbox = forwardRef(({ children, ...props }, ref) => {
   return (
     <label className="relative w-12 h-6 bg-white rounded-full cursor-pointer">
       <input ref={ref} type="checkbox" className={"sr-only peer"} {...props} />

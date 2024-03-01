@@ -8,7 +8,7 @@ import {
 import { GoBackIndicator } from "@/Components/GoBackIndicator.jsx";
 import { SingleSet } from "@/Components/SingleSet.jsx";
 import { useSetsSearch } from "@/useSetsSearch.js";
-import { Loader } from "@/Components/Loader.jsx";
+import { SearchLoadingAnimation } from "@/Components/SearchLoadingAnimation.jsx";
 import Animation from "@/Pages/Animation.js";
 import { Search } from "@/Components/Form/Search.jsx";
 import Cookies from "js-cookie";
@@ -131,7 +131,7 @@ export const Explore = forwardRef(
             />
           </div>
           {!sets.length && (
-            <Loader
+            <SearchLoadingAnimation
               className={"md:ml-[20%] ml-0"}
               progress={progress}
               hasMore={hasMore}
@@ -165,7 +165,7 @@ export const Explore = forwardRef(
               ),
             )}
             {sets.length > 0 && (
-              <Loader progress={progress} hasMore={hasMore} sets={sets} />
+              <SearchLoadingAnimation progress={progress} hasMore={hasMore} sets={sets} />
             )}
           </div>
         </div>

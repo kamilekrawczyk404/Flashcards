@@ -6,6 +6,7 @@ use App\Http\Controllers\Flashcards\MatchController;
 use App\Http\Controllers\Flashcards\SetController;
 use App\Http\Controllers\Flashcards\TestController;
 use App\Http\Controllers\Flashcards\TranslationsController;
+use App\Models\FlashcardsSetsProgress;
 use Illuminate\Support\Facades\Route;
 
     Route::middleware('auth')->name('flashcards.')->group(function () {
@@ -30,7 +31,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('/set/{set_id}/test', [TestController::class, 'show'])->name('test');
 
         // TranslationsController
-        Route::put('/set/{set_id}/updateHardTranslations', [TranslationsController::class, 'updateHardTranslations'])->name('updateHardTranslations');
+        Route::put('/set/updateTranslationStatus', [FlashcardsSetsProgress::class, 'updateTranslationStatus'])->name('updateTranslationStatus');
 
     });
 

@@ -11,26 +11,24 @@ use Inertia\Response;
 
 class LearnController extends Controller
 {
-    public function show(int $set_id,): Response
+    public function show(int $set_id): Response
     {
         return Inertia::render('Flashcards/Learn', [
             'set' => FlashcardSets::find($set_id),
-            'groups' => LearnController::prepareForLearn($set_id),
+            'groupsNames' => FlashcardSets::getGroupsNames($set_id),
         ]);
     }
 
-    public static function prepareForLearn(int $set_id): array {
-        $groups = FlashcardSets::getGroups(Auth::id(), $set_id);
-        $answers = $final = $terms = $definitions = [];
+    public static function prepareForLearn(int $user_id, int $set_id, $groups): array {
+        $groups = FlashcardSets::getGroups($user_id, $set_id, $groups);
+
+        $final = [];
 
         foreach ($groups as $key => $group) {
             $translationsCount = 0;
-            $groupLearned = true;
+            $answers = $terms = $definitions = [];
 
             foreach ($group['translations'] as $translation) {
-                if ($translation->status !== 'known') {
-                    $groupLearned = false;
-                }
                 $terms[] = $translation->term;
                 $definitions[] = $translation->definition;
                 $translationsCount++;
@@ -45,8 +43,7 @@ class LearnController extends Controller
                 'name' => $group['name'],
                 'translations' => $group['translations'],
                 'answers' => $answers,
-                'isChecked' => !$groupLearned,
-                'translationsCount' => $translationsCount
+                'translationsCount' => $translationsCount,
             ];
         }
 

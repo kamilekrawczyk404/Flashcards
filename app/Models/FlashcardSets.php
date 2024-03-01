@@ -111,7 +111,6 @@ class FlashcardSets extends Model
             }
         }
 
-
         foreach($sets[0] as $set) {
             $progression = [];
             if (Auth::id() === $set['user_id']) {
@@ -119,43 +118,57 @@ class FlashcardSets extends Model
             }
             $translationsCount = ['count' => FlashcardSets::countTranslations($set['id'])];
             $final[] = array_merge($translationsCount, $set, $progression);
-
-//            dd($final);
         }
 
         return $final;
     }
 
-    public static function getGroups($user_id, $set_id) {
+    public static function getGroups($user_id, $set_id, $groups = []): array {
         $data = [];
+        $allGroups = false;
         $translationTableName = FlashcardSets::getTitle($set_id);
 
-        $groups =
-            DB::table($translationTableName)
+        // If third parameter was no declared
+        if (!count($groups)) {
+            $allGroups = true;
+            $groups = DB::table($translationTableName)
                 ->distinct()
                 ->get('group_name')
                 ->toArray();
+        }
 
-        // working bad
-        foreach($groups as $group) {
-
+        foreach($groups as $key => $value) {
             $translationsBelongToGroup =
                 DB::table('flashcards_sets_progress AS fsp')
-                    ->join($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
-                    ->join('flashcard_sets AS fs', 'fs.id', '=', 'fsp.flashcard_sets_id')
-                    ->where('t.group_name', $group->group_name)
+                    ->leftJoin($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
+//                    ->join('flashcard_sets AS fs', 'fs.id', '=', 'fsp.flashcard_sets_id')
+//                    ->join('users AS u', 'u.id', '=', 'fsp.user_id')
+                    ->where(['t.group_name' =>  $allGroups ? $value->group_name : $key, 'fsp.user_id' => $user_id])
                     ->select( 't.*' ,'fsp.isFavourite', 'fsp.status')
                     ->distinct()
                     ->get()
+                    ->unique('id')
                     ->toArray();
 
             $data[] = [
-                'name' => $group->group_name,
-                'translations' => $translationsBelongToGroup
+                'name' => $allGroups ? $value->group_name : $key,
+                'translations' => $translationsBelongToGroup,
             ];
         }
 
         return $data;
+    }
+
+    public static function getGroupsNames(int $set_id): array {
+        $groupsNames = DB::table(FlashcardSets::getTitle($set_id))->distinct()->get('group_name')->toArray();
+        $dataForForm = [];
+
+        // adding isChecked property for form default values
+        foreach($groupsNames as $groupName) {
+            $dataForForm[$groupName->group_name] = true;
+        }
+
+        return $dataForForm;
     }
 
     public static function countTranslations($set_id): int {

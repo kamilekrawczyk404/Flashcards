@@ -7,8 +7,6 @@ import { Container } from "@/Components/Container.jsx";
 
 export const Feedback = ({
   answersResults,
-  length,
-  barWidth = 0,
   set,
   routeName,
   finishedTime = null,
@@ -16,6 +14,11 @@ export const Feedback = ({
   bestResult = {},
   groups,
 }) => {
+  const barWidth = Math.round(
+    (answersResults.correctIds.length /
+      (answersResults.correctIds.length + answersResults.incorrectIds.length)) *
+      100,
+  );
   const infoAboutResults = [
     "Awesome work! \nYou're doing this brilliantly! Easy peasy!",
     "Not so bad! \nYou have to spend more time on these translations below. Keep them in mind!",
@@ -70,7 +73,10 @@ export const Feedback = ({
           {infoAboutResults[selectedIndex]}
         </p>
         <span className="mt-8 font-semibold text-gray-500">
-          {answersResults.correct} / {length} (correct answers)
+          {answersResults.correctIds.length} /{" "}
+          {answersResults.correctIds.length +
+            answersResults.incorrectIds.length}{" "}
+          (correct answers)
           {finishedTime && (
             <span className="text-indigo-500 ml-2 font-bold">
               ({finishedTime} sec)
@@ -84,7 +90,7 @@ export const Feedback = ({
           ></div>
         </div>
       </div>
-      {!answersResults.incorrect.translations_id.length && (
+      {!answersResults.incorrectIds.length && (
         <div
           className={
             "bg-white mt-4 relative flex sm:flex-row flex-col-reverse items-center justify-evenly"
@@ -104,6 +110,7 @@ export const Feedback = ({
               {"Congratulations!".split("").map((element, index) => {
                 return (
                   <span
+                    key={index}
                     ref={(letter) => {
                       letterRefs.current[index] = letter;
                     }}
@@ -129,12 +136,11 @@ export const Feedback = ({
           </div>
         </div>
       )}
-      {answersResults.incorrect.translations_id.length && (
+      {answersResults.incorrectIds.length !== 0 && (
         <Table
           className="mt-8"
-          // columns={Object.keys(answersResults.incorrect.translations[0])}
-          data={answersResults.incorrect.translations_id}
-          gropus={groups}
+          data={answersResults.incorrectIds}
+          groups={groups}
         />
       )}
 

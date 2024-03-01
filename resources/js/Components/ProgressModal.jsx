@@ -1,13 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { usePage } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 
 export const ProgressModal = ({
   inProgress = false,
   errors = {},
   text = "",
 }) => {
-  // Progress bar based on progress from CreateInertiaApp
-
   return (
     <>
       {Object.values(errors).every(

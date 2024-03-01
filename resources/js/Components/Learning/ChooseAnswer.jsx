@@ -8,7 +8,6 @@ export const ChooseAnswer = ({
   isEnd,
   isForeignLanguage,
   translation,
-  groupIndex,
   answers,
   onClickAnswer,
   className = "",
@@ -84,8 +83,6 @@ export const ChooseAnswer = ({
                         ? translation.definition
                         : translation.term,
                       element,
-                      groupIndex,
-                      translation.id - 1,
                     );
                 setSelectedButtonIndex(index);
               }}

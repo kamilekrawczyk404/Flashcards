@@ -7,19 +7,23 @@ import { MainButton } from "@/Components/MainButton";
 import { Container } from "@/Components/Container";
 import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
 import { ChooseGroups } from "@/Components/Learning/ChooseGroups.jsx";
-import { router } from "@inertiajs/react";
+import { useGetGroups } from "@/useGetGroups.js";
+import { ProgressModal } from "@/Components/ProgressModal.jsx";
+import { useFakeLoading } from "@/useFakeLoading.js";
+import { updateTranslationStatus } from "@/updateTranslationStatus.js";
+import { isTheLastTranslation } from "@/isTheLastTranslation.js";
 
-export default function Learn({ set, groups }) {
+export default function Learn({ auth, set, groupsNames }) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isSeen, setIsSeen] = useState(false);
   const [isChoosingGroups, setIsChoosingGroups] = useState(true);
-  const [learningProperties, setLearningProperties] = useState(null);
+  const [componentProperties, setComponentProperties] = useState(null);
+  const [kind, setKind] = useState("");
   const [current, setCurrent] = useState({
     groupIndex: 0,
     translationIndex: 0,
   });
-  const [kind, setKind] = useState("");
   const [userAnswers, setUserAnswers] = useState({
     correctIds: [],
     incorrectIds: [],
@@ -29,29 +33,26 @@ export default function Learn({ set, groups }) {
   const secondsToAnswer = 10000;
   const ref = useRef();
 
-  const onSubmit = (
-    event,
-    userAnswer,
-    correctAnswer,
-    groupIndex,
-    translationIndex,
-  ) => {
+  const { groups, loading } = useGetGroups(
+    set,
+    isChoosingGroups,
+    componentProperties,
+  );
+
+  const fakeLoading = useFakeLoading(loading);
+
+  const onSubmit = (event, userAnswer, correctAnswer) => {
     event.preventDefault();
-    check(userAnswer, correctAnswer, groupIndex, translationIndex);
+    check(userAnswer, correctAnswer);
   };
 
-  const onClickAnswer = (
-    userAnswer,
-    correctAnswer,
-    groupIndex,
-    translationIndex,
-  ) => {
-    check(userAnswer, correctAnswer, groupIndex, translationIndex);
+  const onClickAnswer = (userAnswer, correctAnswer) => {
+    check(userAnswer, correctAnswer);
   };
 
   const next = () => {
-    setCurrent((prev) =>
-      groups[current.groupIndex].translationsCount - 1 ===
+    setCurrent((prev) => {
+      return groups[current.groupIndex]?.translationsCount - 1 ===
         current.translationIndex && groups.length > prev.groupIndex + 1
         ? {
             groupIndex: prev.groupIndex + 1,
@@ -60,11 +61,11 @@ export default function Learn({ set, groups }) {
         : {
             groupIndex: prev.groupIndex,
             translationIndex: prev.translationIndex + 1,
-          },
-    );
+          };
+    });
   };
 
-  const check = (userAnswer, correctAnswer, groupIndex, translationIndex) => {
+  const check = (userAnswer, correctAnswer) => {
     ref.current.style.animationPlayState = "paused";
     setIsClicked(true);
 
@@ -73,31 +74,36 @@ export default function Learn({ set, groups }) {
         ...prev,
         correctIds: [
           ...prev.correctIds,
-          learningProperties.groups[groupIndex].translations[
-            translationIndex
-          ].id.toString(),
+          groups[current.groupIndex]?.translations[current.translationIndex]
+            ?.id,
         ],
       }));
       setIsCorrect(true);
     } else {
-      setIsSeen(true);
       setUserAnswers((prev) => ({
         ...prev,
         incorrectIds: [
           ...prev.incorrectIds,
-          learningProperties.groups[groupIndex].translations[
-            translationIndex
-          ].id.toString(),
+          groups[current.groupIndex]?.translations[current.translationIndex]
+            ?.id,
         ],
       }));
+      setIsSeen(true);
     }
+
+    updateTranslationStatus(
+      auth.user.id,
+      set.id,
+      groups[current.groupIndex]?.translations[current.translationIndex].id,
+      correctAnswer === userAnswer,
+    );
   };
 
   const refreshProgressAnimation = () => {
     setIsClicked(true);
 
     if (
-      current.translationIndex !== groups[current.groupIndex].translationsCount
+      current.translationIndex !== groups[current.groupIndex]?.translationsCount
     ) {
       ref.current.style.animationName = "none";
 
@@ -109,20 +115,21 @@ export default function Learn({ set, groups }) {
   };
 
   useEffect(() => {
-    if (!isChoosingGroups) {
-      if (
-        current.translationIndex ===
-        groups[current.groupIndex].translationsCount
-      ) {
-        // router.put(`/set/${set.id}/updateProgress`, userAnswers);
-      }
-
+    // the last index were causing problems
+    // (it was calling the check function even after the learning session had ended)
+    if (
+      !isChoosingGroups &&
+      current.translationIndex !== groups[groups.length - 1].translationsCount
+    ) {
       const timer = setTimeout(() => {
         setIsClicked(true);
         setIsSeen(true);
+        // If user didn't enter any answer, check two not equals strings
+        check("4", "2");
       }, secondsToAnswer);
 
       setKind(kinds[Math.floor(Math.random() * kinds.length)]);
+      setKind("choose");
       setIsClicked(false);
       setIsCorrect(false);
       setIsSeen(false);
@@ -133,30 +140,33 @@ export default function Learn({ set, groups }) {
     }
   }, [current]);
 
-  console.log(learningProperties);
-
   return (
     <>
       <GamesNavigation set={set}>
         <span className="text-indigo-500 font-bold">Learn</span>
       </GamesNavigation>
+
       {isChoosingGroups ? (
         <ChooseGroups
           set={set}
-          groups={groups}
-          handleSetLearningProperties={setLearningProperties}
+          groupsNames={groupsNames}
+          handleSetComponentProperties={setComponentProperties}
           handleSetIsChoosingGroups={setIsChoosingGroups}
+        />
+      ) : loading || fakeLoading ? (
+        <ProgressModal
+          inProgress={loading || fakeLoading}
+          text={"We're preparing your learning plan."}
         />
       ) : (
         <>
           {current.translationIndex !==
-          groups[current.groupIndex].translationsCount ? (
+          groups[current.groupIndex]?.translationsCount ? (
             <>
               <ProgressBar ref={ref} className="top-0 h-4 bg-indigo-500" />
-
               <Container>
-                {learningProperties.groups.map((group, groupIndex) =>
-                  group.translations.map((translation, translationIndex) => {
+                {groups?.map((group, groupIndex) =>
+                  group?.translations.map((translation, translationIndex) => {
                     if (
                       current.translationIndex === translationIndex &&
                       current.groupIndex === groupIndex
@@ -164,7 +174,6 @@ export default function Learn({ set, groups }) {
                       if (kind === "choose") {
                         return (
                           <ChooseAnswer
-                            groupIndex={groupIndex}
                             answers={group.answers}
                             key={translationIndex}
                             translation={translation}
@@ -173,7 +182,7 @@ export default function Learn({ set, groups }) {
                             onClickAnswer={onClickAnswer}
                             componentIndex={translationIndex}
                             isForeignLanguage={
-                              learningProperties.answersLanguage ===
+                              componentProperties.answersLanguage ===
                               set.target_language
                             }
                           />
@@ -182,7 +191,6 @@ export default function Learn({ set, groups }) {
                         return (
                           <EnterAnswer
                             key={translationIndex}
-                            groupIndex={groupIndex}
                             translation={translation}
                             isClicked={isClicked}
                             isCorrect={isCorrect}
@@ -190,7 +198,7 @@ export default function Learn({ set, groups }) {
                             handleOnSubmit={onSubmit}
                             componentIndex={translationIndex}
                             isForeignLanguage={
-                              learningProperties.answersLanguage ===
+                              componentProperties.answersLanguage ===
                               set.target_language
                             }
                           />
@@ -200,46 +208,27 @@ export default function Learn({ set, groups }) {
                   }),
                 )}
               </Container>
+              <MainButton
+                className="mx-auto left-0 right-0 transition fixed opacity-0 bg-indigo-500 hover:bg-indigo-600 text-gray-100"
+                isClicked={isClicked}
+                onClick={() => {
+                  if (!isTheLastTranslation(current, groups))
+                    refreshProgressAnimation();
+                  next();
+                }}
+              >
+                {!isTheLastTranslation(current, groups)
+                  ? "Move to next"
+                  : "Show results"}
+              </MainButton>
             </>
           ) : (
-            <div></div>
-            // <Feedback
-            //   set={set}
-            //   answersResults={userAnswers}
-            //   length={translationsCount}
-            //   barWidth={Math.round(
-            //     (userAnswers.correctIds.length / userAnswers.correctIdslength +
-            //       userAnswers.incorrectIds.length) *
-            //       100,
-            //   )}
-            //   routeName={"learn"}
-            //   groups={groups}
-            // />
-          )}
-
-          {current !==
-            {
-              groupIndex: groups.length - 1,
-              translationIndex:
-                groups[groups.length - 1].translations.length - 1,
-            } && (
-            <MainButton
-              className="mx-auto left-0 right-0 transition fixed opacity-0 bg-indigo-500 hover:bg-indigo-600 text-gray-100"
-              isClicked={isClicked}
-              onClick={() => {
-                refreshProgressAnimation();
-                next();
-              }}
-            >
-              {current !==
-              {
-                groupIndex: groups.length - 1,
-                translationIndex:
-                  groups[groups.length - 1].translations.length - 1,
-              }
-                ? "Move to next"
-                : "Show results"}
-            </MainButton>
+            <Feedback
+              set={set}
+              answersResults={userAnswers}
+              routeName={"learn"}
+              groups={groups}
+            />
           )}
         </>
       )}

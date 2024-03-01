@@ -98,8 +98,6 @@ export const EnterAnswer = ({
                   event,
                   userTranslation,
                   isForeignLanguage ? translation.definition : translation.term,
-                  groupIndex,
-                  translation.id - 1,
                 )
           }
         >

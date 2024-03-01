@@ -8,7 +8,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap/all";
 import { router } from "@inertiajs/react";
 import Animation from "@/Pages/Animation.js";
-import { FormContainer } from "@/Components/Form/FormContainer.jsx";
+import { FormChild } from "@/Components/Form/FormChild.jsx";
 
 export const TestForm = ({
   set,
@@ -19,6 +19,7 @@ export const TestForm = ({
   setComponents,
   setTestProperties,
 }) => {
+  // IF I WILL BE CHECKING THE LAST TRANSLATION IN THE TEST MAKE COMPONENT FOR CHECKING IT
   // For checking that at least one component has been checked by user
   const [isAnyOptionSelected, setIsAnyOptionSelected] = useState(true);
   const refs = useRef([]);
@@ -141,7 +142,7 @@ export const TestForm = ({
             refs.current[2] = element;
           }}
         >
-          <FormContainer>
+          <FormChild>
             <label htmlFor="questionLength">
               Questions{" "}
               <span
@@ -162,8 +163,8 @@ export const TestForm = ({
               min={1}
               {...register("questionsLength")}
             />
-          </FormContainer>
-          <FormContainer>
+          </FormChild>
+          <FormChild>
             <label htmlFor={"answersLanguage"}>Answer with</label>
 
             <Select
@@ -173,7 +174,7 @@ export const TestForm = ({
                 required: "This field is required",
               })}
             />
-          </FormContainer>
+          </FormChild>
           {errors.answersLanguage && (
             <InputError message={errors.answersLanguage.message} />
           )}
@@ -186,18 +187,18 @@ export const TestForm = ({
             refs.current[3] = element;
           }}
         >
-          <FormContainer>
+          <FormChild>
             True / false
             <AnimatedCheckbox {...register("TrueOrFalseAnswer")} />
-          </FormContainer>
-          <FormContainer>
+          </FormChild>
+          <FormChild>
             Multiple choice
             <AnimatedCheckbox {...register("ChooseAnswer")} />
-          </FormContainer>
-          <FormContainer>
+          </FormChild>
+          <FormChild>
             Written
             <AnimatedCheckbox {...register("EnterAnswer")} />
-          </FormContainer>
+          </FormChild>
           {!isAnyOptionSelected && (
             <InputError
               message={
