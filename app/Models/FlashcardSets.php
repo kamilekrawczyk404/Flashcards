@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Flashcards\TranslationsController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -137,13 +138,13 @@ class FlashcardSets extends Model
                 ->toArray();
         }
 
-        foreach($groups as $key => $value) {
+        foreach($groups as $key => $group) {
             $translationsBelongToGroup =
                 DB::table('flashcards_sets_progress AS fsp')
                     ->leftJoin($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
 //                    ->join('flashcard_sets AS fs', 'fs.id', '=', 'fsp.flashcard_sets_id')
 //                    ->join('users AS u', 'u.id', '=', 'fsp.user_id')
-                    ->where(['t.group_name' =>  $allGroups ? $value->group_name : $key, 'fsp.user_id' => $user_id])
+                    ->where(['t.group_name' =>  $allGroups ? $group->group_name : $key, 'fsp.user_id' => $user_id])
                     ->select( 't.*' ,'fsp.isFavourite', 'fsp.status')
                     ->distinct()
                     ->get()
@@ -151,27 +152,34 @@ class FlashcardSets extends Model
                     ->toArray();
 
             $data[] = [
-                'name' => $allGroups ? $value->group_name : $key,
-                'translations' => $translationsBelongToGroup,
+                'name' => $allGroups ? $group->group_name : $key,
+                // splice D:
+                'translations' => $allGroups ? $translationsBelongToGroup : array_splice($translationsBelongToGroup, $group['minValue'], $group['maxValue'] - $group['minValue']),
             ];
         }
 
         return $data;
     }
 
-    public static function getGroupsNames(int $set_id): array {
+    public static function getGroupsProperties(int $set_id): array {
         $groupsNames = DB::table(FlashcardSets::getTitle($set_id))->distinct()->get('group_name')->toArray();
         $dataForForm = [];
 
-        // adding isChecked property for form default values
-        foreach($groupsNames as $groupName) {
-            $dataForForm[$groupName->group_name] = true;
+        foreach($groupsNames as $key => $groupName) {
+            $dataForForm[$key] = [
+                // default value for a form
+                $groupName->group_name => false,
+                'group_name' => $groupName->group_name,
+                'settings_on' => false,
+                'minValue' => 1,
+                'maxValue' => TranslationsController::countTranslationsSingleGroup($set_id, $groupName->group_name)
+            ];
         }
 
         return $dataForForm;
     }
 
-    public static function countTranslations($set_id): int {
+    public static function countTranslations($set_id, ): int {
         return DB::table(
             FlashcardSets::getTitle($set_id))->select(DB::raw('count(*) as count'))->value('count');
     }

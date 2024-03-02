@@ -1,10 +1,11 @@
 import { MainButton } from "@/Components/MainButton.jsx";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Animation from "@/Pages/Animation.js";
 import { FormSection } from "@/Components/Form/FormSection.jsx";
 import { FormChild } from "@/Components/Form/FormChild.jsx";
 import { Select } from "@/Components/Form/Select.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
+import { getFormGroupsSettingsErrors } from "@/getFormGroupsSettingsErrors.js";
 
 export const PlanningForm = ({
   handleSubmit,
@@ -14,19 +15,28 @@ export const PlanningForm = ({
   handleSetIsChoosingGroups,
   register,
   errors,
+  setError,
+  clearErrors,
   children,
 }) => {
   const refs = useRef([]);
+
+  const onSubmit = (data) => {
+    const customErrors = getFormGroupsSettingsErrors(data.groupsProperties);
+    console.log(customErrors);
+
+    if (customErrors.length === 0) {
+      handleSetComponentProperties(data);
+      handleSetIsChoosingGroups(false);
+    } else {
+      setError("root.custom", ...customErrors);
+    }
+  };
 
   useLayoutEffect(() => {
     const animation = new Animation([refs.current]);
     animation.animateAll("", "", "");
   }, []);
-
-  const onSubmit = (data) => {
-    handleSetComponentProperties(data);
-    handleSetIsChoosingGroups(false);
-  };
 
   return (
     <form
@@ -62,6 +72,9 @@ export const PlanningForm = ({
 
           {errors.answersLanguage && (
             <InputError message={errors.answersLanguage.message} />
+          )}
+          {errors?.root?.custom && (
+            <InputError message={errors?.root?.custom?.message} />
           )}
         </FormSection>
       </div>

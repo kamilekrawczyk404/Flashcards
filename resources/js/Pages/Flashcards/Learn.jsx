@@ -6,14 +6,14 @@ import { EnterAnswer } from "@/Components/Learning/EnterAnswer.jsx";
 import { MainButton } from "@/Components/MainButton";
 import { Container } from "@/Components/Container";
 import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
-import { ChooseGroups } from "@/Components/Learning/ChooseGroups.jsx";
+import { LearnChooseGroups } from "@/Components/Learning/LearnChooseGroups.jsx";
 import { useGetGroups } from "@/useGetGroups.js";
 import { ProgressModal } from "@/Components/ProgressModal.jsx";
 import { useFakeLoading } from "@/useFakeLoading.js";
 import { updateTranslationStatus } from "@/updateTranslationStatus.js";
 import { isTheLastTranslation } from "@/isTheLastTranslation.js";
 
-export default function Learn({ auth, set, groupsNames }) {
+export default function Learn({ auth, set, groupsProperties }) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isSeen, setIsSeen] = useState(false);
@@ -147,9 +147,9 @@ export default function Learn({ auth, set, groupsNames }) {
       </GamesNavigation>
 
       {isChoosingGroups ? (
-        <ChooseGroups
+        <LearnChooseGroups
           set={set}
-          groupsNames={groupsNames}
+          groupsProperties={groupsProperties}
           handleSetComponentProperties={setComponentProperties}
           handleSetIsChoosingGroups={setIsChoosingGroups}
         />

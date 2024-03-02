@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Flashcards;
 
 use App\Http\Controllers\Controller;
+use App\Models\FlashcardSets;
 use App\Models\FlashcardsSetsProgress;
 use App\Models\Translations;
 use App\Providers\RouteServiceProvider;
@@ -41,5 +42,9 @@ class TranslationsController extends Controller
         DB::connection('mysql')->table($title)->where('id', $translation_id)->update([
             'isFavourite' => !$isFavourite
         ]);
+    }
+
+    public static function countTranslationsSingleGroup($set_id, $group_name) {
+        return DB::table(FlashcardSets::getTitle($set_id))->where('group_name', $group_name)->having('group_name', $group_name)->count();
     }
 }

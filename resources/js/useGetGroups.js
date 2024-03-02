@@ -16,12 +16,8 @@ export const useGetGroups = (set, isChoosingGroups, componentProperties) => {
         params: {
           user_id: auth.user.id,
           set_id: set.id,
-          // Get only groups names
-          // [group_name: ..., group_name: ..., ..., answerWith: ...]
-          groups: Object.fromEntries(
-            Object.entries(componentProperties).filter(
-              ([key, value]) => value === true,
-            ),
+          groups: componentProperties.groupsProperties.filter(
+            (property) => Object.values(property)[0] === true,
           ),
         },
       })

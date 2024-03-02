@@ -127,23 +127,6 @@ export default function SetInfo({
     setIsEditing(false);
   };
 
-  console.log(cards);
-
-  // const fetchTranslations = () => {
-  //   setFetchedGroups(
-  //     fetchedGroups.groups.map((group) => {
-  //       return {
-  //         name: group.name,
-  //         translations: group.translations.map((translation) => {
-  //           return new TranslationsData(translation);
-  //         }),
-  //       };
-  //     }),
-  //   );
-  // };
-
-  // console.log(fetchedGroups);
-
   return (
     <>
       <AuthenticatedLayout

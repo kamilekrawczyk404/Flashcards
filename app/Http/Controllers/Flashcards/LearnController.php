@@ -15,7 +15,7 @@ class LearnController extends Controller
     {
         return Inertia::render('Flashcards/Learn', [
             'set' => FlashcardSets::find($set_id),
-            'groupsNames' => FlashcardSets::getGroupsNames($set_id),
+            'groupsProperties' => FlashcardSets::getGroupsProperties($set_id),
         ]);
     }
 
