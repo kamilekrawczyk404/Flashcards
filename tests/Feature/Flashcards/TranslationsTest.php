@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Flashcards;
 
+use App\Http\Controllers\Flashcards\TranslationsController;
 use App\Models\FlashcardSets;
 use App\Models\Translations;
 use App\Models\User;
@@ -51,12 +52,12 @@ class TranslationsTest extends TestCase
 
         $newTranslation = [
             'term' => [
-                'word' => Translations::randomWord('English'),
-                'language' => Translations::getLanguageShortcut('English')
+                'word' => TranslationsController::randomWord('English'),
+                'language' => TranslationsController::getLanguageShortcut('English')
             ],
             'definition' => [
-                'word' => Translations::randomWord('Polish'),
-                'language' => Translations::getLanguageShortcut('Polish')
+                'word' => TranslationsController::randomWord('Polish'),
+                'language' => TranslationsController::getLanguageShortcut('Polish')
             ]
         ];
 

@@ -19,17 +19,15 @@ export default function Learn({ auth, set, groupsProperties }) {
   const [isSeen, setIsSeen] = useState(false);
   const [isChoosingGroups, setIsChoosingGroups] = useState(true);
   const [componentProperties, setComponentProperties] = useState(null);
-  const [kind, setKind] = useState("");
   const [current, setCurrent] = useState({
     groupIndex: 0,
-    translationIndex: 0,
+    componentIndex: 0,
   });
   const [userAnswers, setUserAnswers] = useState({
     correctIds: [],
     incorrectIds: [],
   });
 
-  const kinds = ["choose", "type"];
   const secondsToAnswer = 10000;
   const ref = useRef();
 
@@ -37,6 +35,7 @@ export default function Learn({ auth, set, groupsProperties }) {
     set,
     isChoosingGroups,
     componentProperties,
+    "/get-groups-for-learning/",
   );
 
   const fakeLoading = useFakeLoading(loading);
@@ -51,21 +50,23 @@ export default function Learn({ auth, set, groupsProperties }) {
   };
 
   const next = () => {
+    console.log("next");
     setCurrent((prev) => {
       return groups[current.groupIndex]?.translationsCount - 1 ===
-        current.translationIndex && groups.length > prev.groupIndex + 1
+        current.componentIndex && groups.length > prev.groupIndex + 1
         ? {
             groupIndex: prev.groupIndex + 1,
-            translationIndex: 0,
+            componentIndex: 0,
           }
         : {
             groupIndex: prev.groupIndex,
-            translationIndex: prev.translationIndex + 1,
+            componentIndex: prev.componentIndex + 1,
           };
     });
   };
 
   const check = (userAnswer, correctAnswer) => {
+    // console.log("xd");
     ref.current.style.animationPlayState = "paused";
     setIsClicked(true);
 
@@ -74,8 +75,8 @@ export default function Learn({ auth, set, groupsProperties }) {
         ...prev,
         correctIds: [
           ...prev.correctIds,
-          groups[current.groupIndex]?.translations[current.translationIndex]
-            ?.id,
+          groups[current.groupIndex]?.components[current.componentIndex]
+            ?.translation.id,
         ],
       }));
       setIsCorrect(true);
@@ -84,8 +85,8 @@ export default function Learn({ auth, set, groupsProperties }) {
         ...prev,
         incorrectIds: [
           ...prev.incorrectIds,
-          groups[current.groupIndex]?.translations[current.translationIndex]
-            ?.id,
+          groups[current.groupIndex]?.components[current.componentIndex]
+            ?.translation.id,
         ],
       }));
       setIsSeen(true);
@@ -94,7 +95,8 @@ export default function Learn({ auth, set, groupsProperties }) {
     updateTranslationStatus(
       auth.user.id,
       set.id,
-      groups[current.groupIndex]?.translations[current.translationIndex].id,
+      groups[current.groupIndex]?.components[current.componentIndex].translation
+        .id,
       correctAnswer === userAnswer,
     );
   };
@@ -103,7 +105,7 @@ export default function Learn({ auth, set, groupsProperties }) {
     setIsClicked(true);
 
     if (
-      current.translationIndex !== groups[current.groupIndex]?.translationsCount
+      current.componentIndex !== groups[current.groupIndex]?.translationsCount
     ) {
       ref.current.style.animationName = "none";
 
@@ -119,7 +121,7 @@ export default function Learn({ auth, set, groupsProperties }) {
     // (it was calling the check function even after the learning session had ended)
     if (
       !isChoosingGroups &&
-      current.translationIndex !== groups[groups.length - 1].translationsCount
+      current.componentIndex !== groups[groups.length - 1].translationsCount
     ) {
       const timer = setTimeout(() => {
         setIsClicked(true);
@@ -128,8 +130,6 @@ export default function Learn({ auth, set, groupsProperties }) {
         check("4", "2");
       }, secondsToAnswer);
 
-      setKind(kinds[Math.floor(Math.random() * kinds.length)]);
-      setKind("choose");
       setIsClicked(false);
       setIsCorrect(false);
       setIsSeen(false);
@@ -139,6 +139,8 @@ export default function Learn({ auth, set, groupsProperties }) {
       };
     }
   }, [current]);
+
+  // console.log(current);
 
   return (
     <>
@@ -160,27 +162,27 @@ export default function Learn({ auth, set, groupsProperties }) {
         />
       ) : (
         <>
-          {current.translationIndex !==
+          {current.componentIndex !==
           groups[current.groupIndex]?.translationsCount ? (
             <>
               <ProgressBar ref={ref} className="top-0 h-4 bg-indigo-500" />
               <Container>
                 {groups?.map((group, groupIndex) =>
-                  group?.translations.map((translation, translationIndex) => {
+                  group?.components.map((component, componentIndex) => {
                     if (
-                      current.translationIndex === translationIndex &&
+                      current.componentIndex === componentIndex &&
                       current.groupIndex === groupIndex
                     ) {
-                      if (kind === "choose") {
+                      if (component.type === "ChooseAnswer") {
                         return (
                           <ChooseAnswer
-                            answers={group.answers}
-                            key={translationIndex}
-                            translation={translation}
+                            answers={component.answers}
+                            key={componentIndex}
+                            translation={component.translation}
                             isClicked={isClicked}
                             isCorrect={isCorrect}
                             onClickAnswer={onClickAnswer}
-                            componentIndex={translationIndex}
+                            componentIndex={componentIndex}
                             isForeignLanguage={
                               componentProperties.answersLanguage ===
                               set.target_language
@@ -190,13 +192,13 @@ export default function Learn({ auth, set, groupsProperties }) {
                       } else {
                         return (
                           <EnterAnswer
-                            key={translationIndex}
-                            translation={translation}
+                            key={componentIndex}
+                            translation={component.translation}
                             isClicked={isClicked}
                             isCorrect={isCorrect}
                             isSeen={isSeen}
                             handleOnSubmit={onSubmit}
-                            componentIndex={translationIndex}
+                            componentIndex={componentIndex}
                             isForeignLanguage={
                               componentProperties.answersLanguage ===
                               set.target_language
@@ -212,8 +214,9 @@ export default function Learn({ auth, set, groupsProperties }) {
                 className="mx-auto left-0 right-0 transition fixed opacity-0 bg-indigo-500 hover:bg-indigo-600 text-gray-100"
                 isClicked={isClicked}
                 onClick={() => {
-                  if (!isTheLastTranslation(current, groups))
+                  if (!isTheLastTranslation(current, groups)) {
                     refreshProgressAnimation();
+                  }
                   next();
                 }}
               >

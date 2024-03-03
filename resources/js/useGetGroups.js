@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
 
-export const useGetGroups = (set, isChoosingGroups, componentProperties) => {
+export const useGetGroups = (
+  set,
+  isChoosingGroups,
+  componentProperties,
+  url,
+) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(false);
   const auth = usePage().props.auth;
@@ -12,12 +17,17 @@ export const useGetGroups = (set, isChoosingGroups, componentProperties) => {
 
       axios({
         method: "get",
-        url: `/get-groups-for-learning/`,
+        url: url,
         params: {
           user_id: auth.user.id,
           set_id: set.id,
           groups: componentProperties.groupsProperties.filter(
             (property) => Object.values(property)[0] === true,
+          ),
+          options: Object.fromEntries(
+            Object.entries(componentProperties).filter(
+              ([key, value]) => typeof value === "boolean",
+            ),
           ),
         },
       })

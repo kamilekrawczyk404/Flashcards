@@ -87,10 +87,10 @@ class SetController extends Controller
                 foreach ($group['translations'] as $translation) {
 
                     // Store translation in main table
-                    $term = Translations::makeSingle($translation['term'], Translations::getLanguageShortcut
+                    $term = TranslationsController::makeSingle($translation['term'], TranslationsController::getLanguageShortcut
                     ($languages['source']));
 
-                    $definition = Translations::makeSingle($translation['definition'], Translations::getLanguageShortcut
+                    $definition = TranslationsController::makeSingle($translation['definition'], TranslationsController::getLanguageShortcut
                     ($languages['target']));
 
                     DB::table($title)->insert([
@@ -134,10 +134,10 @@ class SetController extends Controller
         foreach ($request->groups as $group) {
 
             foreach($group['translations'] as $translation) {
-                $term = Translations::makeSingle($translation['term'], Translations::getLanguageShortcut
+                $term = TranslationsController::makeSingle($translation['term'], TranslationsController::getLanguageShortcut
                 ($set['source_language']));
 
-                $definition = Translations::makeSingle($translation['definition'], Translations::getLanguageShortcut
+                $definition = TranslationsController::makeSingle($translation['definition'], TranslationsController::getLanguageShortcut
                 ($set['target_language']));
 
                 $values = [

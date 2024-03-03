@@ -15,15 +15,14 @@ export const EnterAnswer = ({
   componentIndex,
   addAnswer,
   isTest = false,
-  isEnd,
+  isEnd = false,
   length,
   isForeignLanguage,
   ...props
 }) => {
   const [isHintShown, setIsHintShown] = useState(false);
-
-  const [userDefinition, setUserDefinition] = useState("");
-  const [userTranslation, setUserTranslation] = useState("");
+  const [userAnswer, setUserAnswer] = useState("");
+  // const [userTranslation, setUserTranslation] = useState("");
 
   const hintRef = useRef(null);
   const correctAnswerRef = useRef(null);
@@ -91,19 +90,19 @@ export const EnterAnswer = ({
                   componentIndex,
                   "EnterAnswer",
                   translation,
-                  userDefinition,
+                  userAnswer,
                   event,
                 )
               : handleOnSubmit(
                   event,
-                  userTranslation,
+                  userAnswer,
                   isForeignLanguage ? translation.definition : translation.term,
                 )
           }
         >
           <TextInput
             isFocused={true}
-            value={isTest ? userDefinition : userTranslation}
+            value={userAnswer}
             onChange={(event) => {
               if (isTest) {
                 addAnswer(
@@ -113,9 +112,9 @@ export const EnterAnswer = ({
                   event.target.value,
                   event,
                 );
-                setUserDefinition(event.target.value);
+                // setUserAnswer(event.target.value);
               } else {
-                setUserTranslation(event.target.value);
+                setUserAnswer(event.target.value);
               }
             }}
             disabled={isTest ? isEnd : isClicked}

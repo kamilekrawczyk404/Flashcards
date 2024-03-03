@@ -8,330 +8,329 @@ import { Feedback } from "@/Pages/Flashcards/Feedback.jsx";
 import { Container } from "@/Components/Container.jsx";
 import TranslationsData from "@/TranslationsData.js";
 import { TestForm } from "@/Components/Learning/TestForm.jsx";
-const Test = ({ set, translations, shuffledTranslations, trueOrFalseData }) => {
+import { ProgressModal } from "@/Components/ProgressModal.jsx";
+import { useGetGroups } from "@/useGetGroups.js";
+import { useFakeLoading } from "@/useFakeLoading.js";
+import { TestChooseGroups } from "@/Components/Learning/TestChooseGroups.jsx";
+const Test = ({ set, groupsProperties }) => {
   const [unfilledArray, setUnfilledArray] = useState([]);
-  const [isStarted, setIsStarted] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
   const [wasCheckedOnce, setWasCheckedOnce] = useState(false);
-  const [components, setComponents] = useState([]);
+
+  const [isChoosingGroups, setIsChoosingGroups] = useState(true);
+  const [componentProperties, setComponentProperties] = useState(null);
   const anchors = useRef([]);
-  const [testProperties, setTestProperties] = useState({
-    isForeignLanguage: true,
-    testTypes: ["TrueOrFalse", "ChooseAnswer", "EnterAnswer"],
-    testLength: translations.length,
-  });
 
-  const [answerResults, setAnswerResults] = useState({
-    correct: 0,
-    incorrect: {
-      count: 0,
-      translations: [],
-    },
-  });
-
-  const [fetchedTranslations] = useState(
-    translations.map((translation) => new TranslationsData(translation)),
+  const { groups, loading } = useGetGroups(
+    set,
+    isChoosingGroups,
+    componentProperties,
+    "/get-groups-for-test/",
   );
 
-  useEffect(() => {
-    if (!isStarted) {
-      setUnfilledArray(new Array(testProperties?.testLength).fill(0));
-    }
-  }, [testProperties]);
+  const fakeLoading = useFakeLoading(loading);
 
-  const checkAnswers = () => {
-    anchors.current[0].scrollIntoView({
-      behavior: "smooth",
-    });
-    setWasCheckedOnce(true);
-    let copy = [...components];
+  // const [testProperties, setTestProperties] = useState({
+  //   isForeignLanguage: true,
+  //   testTypes: ["TrueOrFalse", "ChooseAnswer", "EnterAnswer"],
+  //   testLength: translations.length,
+  // });
 
-    // user hasn't filled all fields so scroll his view to the first unfilled field in the test
-    if (userAnswers.length < testProperties.testLength) {
-      // move user to first unfilled component
-      if (!isEnd)
-        anchors.current[unfilledArray.indexOf(0)].scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
+  // const [answerResults, setAnswerResults] = useState({
+  //   correct: 0,
+  //   incorrect: {
+  //     count: 0,
+  //     translations: [],
+  //   },
+  // });
 
-      userAnswers.forEach((userAnswer) => {
-        let seekingIndex = components.findIndex(
-          (component) => component.data.id === userAnswer.id,
-        );
-        copy.splice(
-          components.findIndex(
-            (component) => component.data.id === userAnswer.id,
-          ),
-          1,
-          {
-            name: components[seekingIndex].name,
-            data: userAnswer,
-            isFilled: true,
-          },
-        );
-        setComponents(copy);
-      });
-    } else {
-      setIsEnd(true);
+  // useEffect(() => {
+  //   if (!isStarted) {
+  //     setUnfilledArray(new Array(testProperties?.testLength).fill(0));
+  //   }
+  // }, [testProperties]);
 
-      userAnswers.forEach((userAnswer, index) => {
-        let seekingIndex = components.findIndex(
-          (component) => component.data.id === userAnswer.id,
-        );
-        let data = new TranslationsData(userAnswer);
+  // const checkAnswers = () => {
+  //   anchors.current[0].scrollIntoView({
+  //     behavior: "smooth",
+  //   });
+  //   setWasCheckedOnce(true);
+  //   let copy = [...components];
+  //
+  //   // user hasn't filled all fields so scroll his view to the first unfilled field in the test
+  //   if (userAnswers.length < testProperties.testLength) {
+  //     // move user to first unfilled component
+  //     if (!isEnd)
+  //       anchors.current[unfilledArray.indexOf(0)].scrollIntoView({
+  //         behavior: "smooth",
+  //         block: "center",
+  //       });
+  //
+  //     userAnswers.forEach((userAnswer) => {
+  //       let seekingIndex = components.findIndex(
+  //         (component) => component.data.id === userAnswer.id,
+  //       );
+  //       copy.splice(
+  //         components.findIndex(
+  //           (component) => component.data.id === userAnswer.id,
+  //         ),
+  //         1,
+  //         {
+  //           name: components[seekingIndex].name,
+  //           data: userAnswer,
+  //           isFilled: true,
+  //         },
+  //       );
+  //       setComponents(copy);
+  //     });
+  //   } else {
+  //     setIsEnd(true);
+  //
+  //     userAnswers.forEach((userAnswer, index) => {
+  //       let seekingIndex = components.findIndex(
+  //         (component) => component.data.id === userAnswer.id,
+  //       );
+  //       let data = new TranslationsData(userAnswer);
+  //
+  //       copy.splice(
+  //         components.findIndex(
+  //           (component) => component.data.id === userAnswer.id,
+  //         ),
+  //         1,
+  //         {
+  //           name: components[seekingIndex].name,
+  //           data: userAnswer,
+  //           isFilled: true,
+  //           isCorrect:
+  //             userAnswer.answer === data.definition.word ||
+  //             components[index].data.answer === userAnswer.answer,
+  //           isDisabled: true,
+  //         },
+  //       );
+  //
+  //       setComponents(copy);
+  //       fillAnswersResults(userAnswer, index);
+  //     });
+  //   }
+  // };
 
-        copy.splice(
-          components.findIndex(
-            (component) => component.data.id === userAnswer.id,
-          ),
-          1,
-          {
-            name: components[seekingIndex].name,
-            data: userAnswer,
-            isFilled: true,
-            isCorrect:
-              userAnswer.answer === data.definition.word ||
-              components[index].data.answer === userAnswer.answer,
-            isDisabled: true,
-          },
-        );
+  // const fillAnswersResults = (userAnswer, index, count) => {
+  //   const correct = new TranslationsData(
+  //     shuffledTranslations
+  //       .filter((translation) => translation.id === userAnswer.id)
+  //       .at(0),
+  //   );
+  //   const data = new TranslationsData(userAnswer);
+  //
+  //   if (
+  //     userAnswer.answer === data.definition.word ||
+  //     userAnswer.answer === components[index].data.answer
+  //   ) {
+  //     setAnswerResults((prev) => ({
+  //       ...prev,
+  //       correct: prev.correct + 1,
+  //     }));
+  //   } else {
+  //     setAnswerResults((prev) => ({
+  //       ...prev,
+  //       incorrect: {
+  //         count: prev.incorrect.count + 1,
+  //         translations: [
+  //           ...prev.incorrect.translations,
+  //           {
+  //             id: index + 1,
+  //             term: {
+  //               word: data.term.word,
+  //             },
+  //             definition: {
+  //               word: testProperties.isForeignLanguage
+  //                 ? correct.definition.word
+  //                 : correct.term.word,
+  //             },
+  //           },
+  //         ],
+  //       },
+  //     }));
+  //   }
+  // };
 
-        setComponents(copy);
-        fillAnswersResults(userAnswer, index);
-      });
-    }
-  };
+  // const addAnswer = (
+  //   componentIndex,
+  //   componentType,
+  //   data,
+  //   answerFromComponent,
+  //   event,
+  // ) => {
+  //   if (event) event.preventDefault();
+  //
+  //   if (userAnswers.length !== testProperties.testLength) {
+  //     let copyOfUnfilled = [...unfilledArray];
+  //     copyOfUnfilled.splice(componentIndex, 1, 1);
+  //     setUnfilledArray(copyOfUnfilled);
+  //   }
+  //
+  //   let copy = [...userAnswers];
+  //
+  //   if (copy.some((element) => element.id === data.id)) {
+  //     copy.splice(
+  //       copy.findIndex((userAnswer) => userAnswer.index === data.id),
+  //       1,
+  //       {
+  //         id: data.id,
+  //         term: data.term,
+  //         definition: data.definition,
+  //         answers: data.answers,
+  //         answer: answerFromComponent,
+  //       },
+  //     );
+  //     setUserAnswers(copy);
+  //   } else {
+  //     setUserAnswers((prev) => {
+  //       return [
+  //         ...prev,
+  //         {
+  //           id: data.id,
+  //           term: data.term,
+  //           definition: data.definition,
+  //           answers: data.answers,
+  //           answer: answerFromComponent,
+  //         },
+  //       ];
+  //     });
+  //   }
+  // };
 
-  const fillAnswersResults = (userAnswer, index, count) => {
-    const correct = new TranslationsData(
-      shuffledTranslations
-        .filter((translation) => translation.id === userAnswer.id)
-        .at(0),
-    );
-    const data = new TranslationsData(userAnswer);
-
-    if (
-      userAnswer.answer === data.definition.word ||
-      userAnswer.answer === components[index].data.answer
-    ) {
-      setAnswerResults((prev) => ({
-        ...prev,
-        correct: prev.correct + 1,
-      }));
-    } else {
-      setAnswerResults((prev) => ({
-        ...prev,
-        incorrect: {
-          count: prev.incorrect.count + 1,
-          translations: [
-            ...prev.incorrect.translations,
-            {
-              id: index + 1,
-              term: {
-                word: data.term.word,
-              },
-              definition: {
-                word: testProperties.isForeignLanguage
-                  ? correct.definition.word
-                  : correct.term.word,
-              },
-            },
-          ],
-        },
-      }));
-    }
-  };
-
-  const addAnswer = (
-    componentIndex,
-    componentType,
-    data,
-    answerFromComponent,
-    event,
-  ) => {
-    if (event) event.preventDefault();
-
-    if (userAnswers.length !== testProperties.testLength) {
-      let copyOfUnfilled = [...unfilledArray];
-      copyOfUnfilled.splice(componentIndex, 1, 1);
-      setUnfilledArray(copyOfUnfilled);
-    }
-
-    let copy = [...userAnswers];
-
-    if (copy.some((element) => element.id === data.id)) {
-      copy.splice(
-        copy.findIndex((userAnswer) => userAnswer.index === data.id),
-        1,
-        {
-          id: data.id,
-          term: data.term,
-          definition: data.definition,
-          answers: data.answers,
-          answer: answerFromComponent,
-        },
-      );
-      setUserAnswers(copy);
-    } else {
-      setUserAnswers((prev) => {
-        return [
-          ...prev,
-          {
-            id: data.id,
-            term: data.term,
-            definition: data.definition,
-            answers: data.answers,
-            answer: answerFromComponent,
-          },
-        ];
-      });
-    }
-  };
+  // groups.map((group) => group.map(translation));
 
   return (
     <>
       <GamesNavigation set={set}>
         <span className="text-indigo-500 font-bold">Test</span>
       </GamesNavigation>
-      {!isStarted && (
-        <TestForm
-          trueOrFalseData={trueOrFalseData}
-          shuffledTranslations={shuffledTranslations.map(
-            (translation) => new TranslationsData(translation),
-          )}
-          set={set}
-          translations={fetchedTranslations}
-          wasCheckedOnce={wasCheckedOnce}
-          setIsStarted={setIsStarted}
-          setComponents={setComponents}
-          setTestProperties={setTestProperties}
-        />
-      )}
-      <div
-        ref={(element) => {
-          anchors.current[0] = element;
-        }}
-        className={"!scroll-smooth"}
-      ></div>
-      {isEnd && (
-        <Container>
-          <Feedback
-            length={testProperties.testLength}
-            set={set}
-            routeName={"test"}
-            answersResults={answerResults}
-            barWidth={Math.round(
-              (answerResults.correct / testProperties.testLength) * 100,
-            )}
-            isTest={true}
-          />
-        </Container>
-      )}
 
-      {isStarted && (
+      {isChoosingGroups ? (
+        <TestChooseGroups
+          set={set}
+          groupsProperties={groupsProperties}
+          handleSetComponentProperties={setComponentProperties}
+          handleSetIsChoosingGroups={setIsChoosingGroups}
+          isTest={true}
+        />
+      ) : loading || fakeLoading ? (
+        <ProgressModal
+          inProgress={loading || fakeLoading}
+          text={"We're preparing your learning plan."}
+        />
+      ) : (
         <Container className={"flex flex-col gap-4"}>
-          {components.map((component, index) => {
-            switch (component.name) {
-              case "EnterAnswer":
-                return (
-                  <div
-                    key={index}
-                    ref={(element) => {
-                      anchors.current[index] = element;
-                    }}
-                  >
-                    <EnterAnswer
-                      className={
-                        (wasCheckedOnce && !component.isFilled
-                          ? "bg-red-300 "
-                          : "bg-gray-100 ") +
-                        (isEnd
-                          ? component.isCorrect
-                            ? "border-2 border-lime-500"
-                            : "border-2 border-red-500"
-                          : "") +
-                        " rounded-md p-4"
-                      }
-                      isTest={true}
-                      isClicked={isEnd}
-                      isCorrect={component.isCorrect}
-                      isSeen={isEnd}
-                      isEnd={isEnd}
-                      translation={component.data}
-                      length={testProperties.testLength}
-                      componentIndex={index}
-                      addAnswer={addAnswer}
-                    />
-                  </div>
-                );
-              case "ChooseAnswer":
-                return (
-                  <div
-                    key={index}
-                    ref={(element) => {
-                      anchors.current[index] = element;
-                    }}
-                  >
-                    <ChooseAnswer
-                      className={
-                        (wasCheckedOnce && !component.isFilled
-                          ? "bg-red-300 "
-                          : "bg-gray-100 ") +
-                        (isEnd
-                          ? component.isCorrect
-                            ? "border-2 border-lime-500"
-                            : "border-2 border-red-500"
-                          : "") +
-                        " rounded-md p-4"
-                      }
-                      isEnd={isEnd}
-                      isClicked={isEnd}
-                      isCorrect={component.isCorrect}
-                      isForeignLanguage={testProperties.isForeignLanguage}
-                      isTest={true}
-                      length={testProperties.testLength}
-                      translation={component.data}
-                      componentIndex={index}
-                      addAnswer={addAnswer}
-                    />
-                  </div>
-                );
-              case "TrueOrFalseAnswer":
-                return (
-                  <div
-                    key={index}
-                    ref={(element) => {
-                      anchors.current[index] = element;
-                    }}
-                  >
-                    <TrueOrFalseAnswer
-                      // is filled up
-                      className={
-                        (wasCheckedOnce && !component.isFilled
-                          ? "bg-red-300 "
-                          : "bg-gray-100 ") +
-                        (isEnd
-                          ? component.isCorrect
-                            ? "border-2 border-lime-500"
-                            : "border-2 border-red-500"
-                          : "") +
-                        " rounded-md p-2 relative transition"
-                      }
-                      isTest={true}
-                      isClicked={isEnd}
-                      isEnd={isEnd}
-                      data={component.data}
-                      isDisabled={component.isDisabled}
-                      isCorrect={component.isCorrect}
-                      length={testProperties.testLength}
-                      componentIndex={index}
-                      addAnswer={addAnswer}
-                    />
-                  </div>
-                );
-            }
+          {groups.map((group, groupIndex) => {
+            return group.map((component, translationIndex) => {
+              switch (component.component) {
+                case "EnterAnswer":
+                  return (
+                    <div
+                      // key={index}
+                      ref={(element) => {
+                        anchors.current.push(element);
+                      }}
+                    >
+                      <EnterAnswer
+                        className={
+                          (wasCheckedOnce && !component.isFilled
+                            ? "bg-red-300 "
+                            : "bg-gray-100 ") +
+                          (isEnd
+                            ? component.isCorrect
+                              ? "border-2 border-lime-500"
+                              : "border-2 border-red-500"
+                            : "") +
+                          " rounded-md p-4"
+                        }
+                        isTest={true}
+                        isClicked={isEnd}
+                        // isCorrect={component.isCorrect}
+                        isSeen={isEnd}
+                        isEnd={isEnd}
+                        translation={component}
+                        // length={testProperties.testLength}
+                        // componentIndex={index}
+                        // addAnswer={addAnswer}
+                        isForeignLanguage={
+                          componentProperties.isForeignLanguage
+                        }
+                      />
+                    </div>
+                  );
+                case "ChooseAnswer":
+                  return (
+                    <div
+                      // key={index}
+                      ref={(element) => {
+                        anchors.current.push(element);
+                      }}
+                    >
+                      <ChooseAnswer
+                        className={
+                          (wasCheckedOnce && !component.isFilled
+                            ? "bg-red-300 "
+                            : "bg-gray-100 ") +
+                          (isEnd
+                            ? component.isCorrect
+                              ? "border-2 border-lime-500"
+                              : "border-2 border-red-500"
+                            : "") +
+                          " rounded-md p-4"
+                        }
+                        isEnd={isEnd}
+                        isClicked={isEnd}
+                        // isCorrect={component.isCorrect}
+                        isForeignLanguage={
+                          componentProperties.isForeignLanguage
+                        }
+                        isTest={true}
+                        // length={testProperties.testLength}
+                        translation={component}
+                        // componentIndex={index}
+                        // addAnswer={addAnswer}
+                      />
+                    </div>
+                  );
+                case "TrueOrFalseAnswer":
+                  return (
+                    <div
+                      key={index}
+                      ref={(element) => {
+                        anchors.current.push(element);
+                      }}
+                    >
+                      <TrueOrFalseAnswer
+                        // is filled up
+                        className={
+                          (wasCheckedOnce && !component.isFilled
+                            ? "bg-red-300 "
+                            : "bg-gray-100 ") +
+                          (isEnd
+                            ? component.isCorrect
+                              ? "border-2 border-lime-500"
+                              : "border-2 border-red-500"
+                            : "") +
+                          " rounded-md p-2 relative transition"
+                        }
+                        isTest={true}
+                        isClicked={isEnd}
+                        isEnd={isEnd}
+                        data={component}
+                        isDisabled={component.isDisabled}
+                        isCorrect={component.isCorrect}
+                        length={componentProperties.testLength}
+                        // componentIndex={index}
+                        // addAnswer={addAnswer}
+                      />
+                    </div>
+                  );
+              }
+            });
           })}
           <div className={"mx-auto mt-4"}>
             {isEnd ? (

@@ -19,7 +19,6 @@ export const LearnChooseGroups = ({
     setValue,
     resetField,
     setError,
-    clearErrors,
   } = useForm({
     defaultValues: {
       groupsProperties,
@@ -36,7 +35,6 @@ export const LearnChooseGroups = ({
         register={register}
         errors={errors}
         setError={setError}
-        clearErrors={clearErrors}
         set={set}
         title={"Set up your learning plan"}
       >

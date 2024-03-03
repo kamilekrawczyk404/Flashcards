@@ -19,7 +19,6 @@ export const TestForm = ({
   setComponents,
   setTestProperties,
 }) => {
-  // IF I WILL BE CHECKING THE LAST TRANSLATION IN THE TEST MAKE COMPONENT FOR CHECKING IT
   // For checking that at least one component has been checked by user
   const [isAnyOptionSelected, setIsAnyOptionSelected] = useState(true);
   const refs = useRef([]);
@@ -187,18 +186,6 @@ export const TestForm = ({
             refs.current[3] = element;
           }}
         >
-          <FormChild>
-            True / false
-            <AnimatedCheckbox {...register("TrueOrFalseAnswer")} />
-          </FormChild>
-          <FormChild>
-            Multiple choice
-            <AnimatedCheckbox {...register("ChooseAnswer")} />
-          </FormChild>
-          <FormChild>
-            Written
-            <AnimatedCheckbox {...register("EnterAnswer")} />
-          </FormChild>
           {!isAnyOptionSelected && (
             <InputError
               message={

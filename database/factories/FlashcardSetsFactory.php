@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Http\Controllers\Flashcards\TranslationsController;
 use App\Models\FlashcardSets;
 use App\Models\FlashcardsSetsProgress;
 use App\Models\Translations;
@@ -45,12 +46,12 @@ class FlashcardSetsFactory extends Factory
 
                 // Store translation in main table
 
-                $randomTerm = Translations::randomWord($randomLanguages[0]);
-                $randomDefinition = Translations::getTranslation(Translations::getLanguageShortcut($randomLanguages[1], true), $randomTerm);
+                $randomTerm = TranslationsController::randomWord($randomLanguages[0]);
+                $randomDefinition = TranslationsController::getTranslation(TranslationsController::getLanguageShortcut($randomLanguages[1], true), $randomTerm);
 
-                $term = Translations::makeSingle($randomTerm, Translations::getLanguageShortcut
+                $term = TranslationsController::makeSingle($randomTerm, TranslationsController::getLanguageShortcut
                 ($randomLanguages[0]));
-                $definition = Translations::makeSingle($randomDefinition, Translations::getLanguageShortcut
+                $definition = TranslationsController::makeSingle($randomDefinition, TranslationsController::getLanguageShortcut
                 ($randomLanguages[1]));
 
                 DB::table($title)->insert([

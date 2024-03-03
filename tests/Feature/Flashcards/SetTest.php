@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Flashcards;
 
+use App\Http\Controllers\Flashcards\TranslationsController;
 use App\Models\FlashcardSets;
 use App\Models\Translations;
 use App\Models\User;
@@ -42,8 +43,8 @@ class SetTest extends TestCase
         $translations = [];
 
         for($i = 0; $i < rand(2,4); $i++) {
-            $term = Translations::randomWord($randomLanguages[0]);
-            $definition = Translations::getTranslation(Translations::getLanguageShortcut($randomLanguages[1], true),
+            $term = TranslationsController::randomWord($randomLanguages[0]);
+            $definition = TranslationsController::getTranslation(TranslationsController::getLanguageShortcut($randomLanguages[1], true),
                 $term);
 
             $translations[] = ['term' => $term, 'definition' => $definition];
@@ -69,12 +70,13 @@ class SetTest extends TestCase
 
         $translations[] = [
             'term' => [
-                'word' => Translations::randomWord($languages->source),
-                'language' => Translations::getLanguageShortcut($languages->source)
+                'word' => TranslationsController
+                    ::randomWord($languages->source),
+                'language' => TranslationsController::getLanguageShortcut($languages->source)
             ],
             'definition' => [
-                'word' => Translations::randomWord($languages->target),
-                'language' => Translations::getLanguageShortcut($languages->target)
+                'word' => TranslationsController::randomWord($languages->target),
+                'language' => TranslationsController::getLanguageShortcut($languages->target)
             ],
             'isNew' => true
         ];

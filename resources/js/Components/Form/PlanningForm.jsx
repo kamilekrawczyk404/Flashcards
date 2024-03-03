@@ -5,7 +5,7 @@ import { FormSection } from "@/Components/Form/FormSection.jsx";
 import { FormChild } from "@/Components/Form/FormChild.jsx";
 import { Select } from "@/Components/Form/Select.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
-import { getFormGroupsSettingsErrors } from "@/getFormGroupsSettingsErrors.js";
+import { getFormCustomErrors } from "@/getFormCustomErrors.js";
 
 export const PlanningForm = ({
   handleSubmit,
@@ -16,14 +16,13 @@ export const PlanningForm = ({
   register,
   errors,
   setError,
-  clearErrors,
   children,
+  isTest = false,
 }) => {
   const refs = useRef([]);
 
   const onSubmit = (data) => {
-    const customErrors = getFormGroupsSettingsErrors(data.groupsProperties);
-    console.log(customErrors);
+    const customErrors = getFormCustomErrors(data, isTest);
 
     if (customErrors.length === 0) {
       handleSetComponentProperties(data);

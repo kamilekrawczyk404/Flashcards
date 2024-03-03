@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Flashcards;
 
 use App\Http\Controllers\Controller;
 use App\Models\FlashcardSets;
+use App\Models\Translations;
+use Illuminate\Support\Facades\DB;
 
 class HelperController extends Controller
 {
@@ -31,71 +33,42 @@ class HelperController extends Controller
         return (object)['sourceAnswers' => $source, 'targetAnswers' => $target];
     }
 
-    public static function getTrueOrFalseComponentData($translations): array
+    public static function getTrueOrFalseData($translation, $group): array
     {
-        $trueOrFalseComponentData = [];
-        $cases = [0, 1, 1, 0, 0, 1];
+        switch(fake()->boolean()) {
+            case true:
+                    return ['component' => 'TrueOrFalseAnswer', 'name' => $group['name'], 'id' => $translation->id, 'term' => $translation->term, 'definition' => $translation->definition, 'answer' => true,];
+            case false:
+                // without correct answer
+                $definitions = array_map(fn ($t) => $t->definition, $group['translations']);
+                $definitions = array_splice($definitions, array_search($translation->definition, $definitions) - 1, 1);
 
-        $temp = array_map(function($translation) {
-            return $translation['definition']->word ?? $translation['definition']->{0}->word;
-        },  $translations);
-
-        foreach ($translations as $key => $translation) {
-            switch ($cases[rand(0, count($cases) - 1)]) {
-                case 1:
-                    $trueOrFalseComponentData[$key] = (object)[
-                        'id' => $key + 1,
-                        'term' =>
-                            (object)['word' => $translation['term']->word ?? $translation['term']->{0}->word],
-                        'definition'
-                        =>
-                            (object)['word' => $translation['definition']->word ??
-                                $translation['definition']->{0}->word],
-                        'answer' =>
-                            true,
-                    ];
-                    break;
-                case 0:
-                    array_splice($temp, $translation['id'] - 1, 1);
-                    $randomAnswer = $temp[rand(0, count($temp) - 1)];
-
-                    $trueOrFalseComponentData[$key] = (object)[
-                        'id' => $key + 1,
-                        'term' =>
-                            (object)['word' => $translation['term']->word ?? $translation['term']->{0}->word],
-                        'definition'
-                        =>
-                            (object)['word' => $randomAnswer],
-                        'answer' =>
-                            false,
-
-                    ];
-                    break;
-                default:
-                    break;
-            }
+                return ['component' => 'TrueOrFalseAnswer', 'name' => $group['name'], 'id' => $translation->id, 'term' => $translation->term, 'definition' => fake()->randomElement($definitions), 'answer' => false];
+            default:
+                return [];
         }
-        return $trueOrFalseComponentData;
     }
 
-    public static function prepareForTest($title): array {
-        $shuffledTranslations = FlashcardSets::getGroups($title)->toArray();
-        $definitions = [];
-        $terms = [];
+    public static function getChooseAnswerData($translation, $translations): array {
+        $terms = $definitions = [];
 
-        foreach ($shuffledTranslations as $translation) {
-            $definitions[] = $translation['definition']->word ?? $translation['definition']->{0}->word;
-            $terms[] = $translation['term']->word ?? $translation['term']->{0}->word;
+        foreach ($translations as $t) {
+            $terms[] = $t->term;
+            $definitions[] = $t->definition;
         }
 
-        $toSend = [];
-        foreach ($shuffledTranslations as $translation) {
+        $answers = HelperController::makeAnswers($translation->term,
+            $translation->definition, $terms, $definitions);
 
-            $translation['answers'] = HelperController::makeAnswers($translation['term']->word ?? $translation['term']->{0}->word,$translation['definition']->word ?? $translation['definition']->{0}->word, $terms, $definitions);
-            $toSend[] = $translation;
 
-        }
+        return [
+            'type' => 'ChooseAnswer',
+            'translation' => $translation,
+            'answers' => $answers,
+        ];
+    }
 
-        return $toSend;
+    public static function getEnterAnswerData($translation): array {
+        return ['type' => 'EnterAnswer', 'translation' => $translation];
     }
 }

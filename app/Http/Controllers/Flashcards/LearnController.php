@@ -23,28 +23,18 @@ class LearnController extends Controller
         $groups = FlashcardSets::getGroups($user_id, $set_id, $groups);
 
         $final = [];
+        $components = ['EnterAnswer', 'ChooseAnswer'];
 
         foreach ($groups as $key => $group) {
-            $translationsCount = 0;
-            $answers = $terms = $definitions = [];
+            $final[$key]['group_name'] = $group['name'];
+            $final[$key]['translationsCount'] = count($group['translations']);
 
-            foreach ($group['translations'] as $translation) {
-                $terms[] = $translation->term;
-                $definitions[] = $translation->definition;
-                $translationsCount++;
+            foreach ($group['translations'] as $tKey => $translation) {
+                $final[$key]['components'][$tKey] = match(fake()->randomElement($components)) {
+                    'EnterAnswer' => HelperController::getEnterAnswerData($translation),
+                    'ChooseAnswer' => HelperController::getChooseAnswerData($translation, $group['translations']),
+                };
             }
-
-            foreach ($group['translations'] as $translation) {
-                $answers = HelperController::makeAnswers($translation->term,
-                    $translation->definition, $terms, $definitions);
-            }
-
-            $final[$key] = [
-                'name' => $group['name'],
-                'translations' => $group['translations'],
-                'answers' => $answers,
-                'translationsCount' => $translationsCount,
-            ];
         }
 
         return $final;

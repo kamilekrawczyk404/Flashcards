@@ -138,13 +138,13 @@ class FlashcardSets extends Model
                 ->toArray();
         }
 
-        foreach($groups as $key => $group) {
+        foreach($groups as $group) {
             $translationsBelongToGroup =
                 DB::table('flashcards_sets_progress AS fsp')
                     ->leftJoin($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
 //                    ->join('flashcard_sets AS fs', 'fs.id', '=', 'fsp.flashcard_sets_id')
 //                    ->join('users AS u', 'u.id', '=', 'fsp.user_id')
-                    ->where(['t.group_name' =>  $allGroups ? $group->group_name : $key, 'fsp.user_id' => $user_id])
+                    ->where(['t.group_name' =>  $allGroups ? $group->group_name : $group['group_name'], 'fsp.user_id' => $user_id])
                     ->select( 't.*' ,'fsp.isFavourite', 'fsp.status')
                     ->distinct()
                     ->get()
@@ -152,9 +152,8 @@ class FlashcardSets extends Model
                     ->toArray();
 
             $data[] = [
-                'name' => $allGroups ? $group->group_name : $key,
-                // splice D:
-                'translations' => $allGroups ? $translationsBelongToGroup : array_splice($translationsBelongToGroup, $group['minValue'], $group['maxValue'] - $group['minValue']),
+                'name' => $allGroups ? $group->group_name : $group['group_name'],
+                'translations' => $allGroups ? $translationsBelongToGroup : array_splice($translationsBelongToGroup, $group['minValue'] - 1, $group['maxValue'] - ($group['minValue'] - 1)),
             ];
         }
 
@@ -172,7 +171,7 @@ class FlashcardSets extends Model
                 'group_name' => $groupName->group_name,
                 'settings_on' => false,
                 'minValue' => 1,
-                'maxValue' => TranslationsController::countTranslationsSingleGroup($set_id, $groupName->group_name)
+                'maxValue' => Translations::getTranslationsCountPerGroup($set_id, $groupName->group_name)
             ];
         }
 
