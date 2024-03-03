@@ -50,7 +50,6 @@ export default function Learn({ auth, set, groupsProperties }) {
   };
 
   const next = () => {
-    console.log("next");
     setCurrent((prev) => {
       return groups[current.groupIndex]?.translationsCount - 1 ===
         current.componentIndex && groups.length > prev.groupIndex + 1
@@ -66,7 +65,6 @@ export default function Learn({ auth, set, groupsProperties }) {
   };
 
   const check = (userAnswer, correctAnswer) => {
-    // console.log("xd");
     ref.current.style.animationPlayState = "paused";
     setIsClicked(true);
 
@@ -121,8 +119,12 @@ export default function Learn({ auth, set, groupsProperties }) {
     // (it was calling the check function even after the learning session had ended)
     if (
       !isChoosingGroups &&
-      current.componentIndex !== groups[groups.length - 1].translationsCount
+      current.componentIndex !== groups[current.groupIndex]?.translationsCount
     ) {
+      setIsClicked(false);
+      setIsCorrect(false);
+      setIsSeen(false);
+
       const timer = setTimeout(() => {
         setIsClicked(true);
         setIsSeen(true);
@@ -130,17 +132,11 @@ export default function Learn({ auth, set, groupsProperties }) {
         check("4", "2");
       }, secondsToAnswer);
 
-      setIsClicked(false);
-      setIsCorrect(false);
-      setIsSeen(false);
-
       return () => {
         clearTimeout(timer);
       };
     }
   }, [current]);
-
-  // console.log(current);
 
   return (
     <>

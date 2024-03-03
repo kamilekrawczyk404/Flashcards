@@ -22,36 +22,38 @@ export const Table = ({ groups, data = [], className = "", ...props }) => {
         </thead>
         <tbody>
           {groups.map((group, groupIndex) =>
-            group.translations.map((translation, translationIndex) => {
-              if (data.some((element) => element === translation.id)) {
+            group.components.map((component, componentIndex) => {
+              if (
+                data.some((element) => element === component.translation.id)
+              ) {
                 return (
                   <tr
                     className="bg-white border-b transition"
-                    key={`${groupIndex}.${translationIndex}`}
+                    key={`${groupIndex}.${componentIndex}`}
                   >
                     <td
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
                     >
-                      {translation.id}
+                      {component.translation.id}
                     </td>{" "}
                     <td
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
                     >
-                      {translation.group_name}
+                      {component.translation.group_name}
                     </td>
                     <td
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
                     >
-                      {translation.term}
+                      {component.translation.term}
                     </td>
                     <td
                       scope="row"
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
                     >
-                      {translation.definition}
+                      {component.translation.definition}
                     </td>
                   </tr>
                 );

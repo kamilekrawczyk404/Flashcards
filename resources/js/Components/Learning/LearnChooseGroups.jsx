@@ -26,6 +26,8 @@ export const LearnChooseGroups = ({
     },
   });
 
+  // TODO: only difficult
+
   return (
     <Container>
       <PlanningForm
