@@ -14,6 +14,7 @@ import { useFakeLoading } from "@/useFakeLoading.js";
 import { TestChooseGroups } from "@/Components/Learning/TestChooseGroups.jsx";
 const Test = ({ set, groupsProperties }) => {
   const [unfilledArray, setUnfilledArray] = useState([]);
+  const [testLength, setTestLength] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
   const [wasCheckedOnce, setWasCheckedOnce] = useState(false);
@@ -31,11 +32,13 @@ const Test = ({ set, groupsProperties }) => {
 
   const fakeLoading = useFakeLoading(loading);
 
-  // const [testProperties, setTestProperties] = useState({
-  //   isForeignLanguage: true,
-  //   testTypes: ["TrueOrFalse", "ChooseAnswer", "EnterAnswer"],
-  //   testLength: translations.length,
-  // });
+  useEffect(() => {
+    if (groups.length !== 0) {
+      let sum = 0;
+      groups.forEach((group) => (sum += group.translationsCount));
+      setTestLength(sum);
+    }
+  }, [groups]);
 
   // const [answerResults, setAnswerResults] = useState({
   //   correct: 0,
@@ -155,53 +158,57 @@ const Test = ({ set, groupsProperties }) => {
   //   }
   // };
 
-  // const addAnswer = (
-  //   componentIndex,
-  //   componentType,
-  //   data,
-  //   answerFromComponent,
-  //   event,
-  // ) => {
-  //   if (event) event.preventDefault();
-  //
-  //   if (userAnswers.length !== testProperties.testLength) {
-  //     let copyOfUnfilled = [...unfilledArray];
-  //     copyOfUnfilled.splice(componentIndex, 1, 1);
-  //     setUnfilledArray(copyOfUnfilled);
-  //   }
-  //
-  //   let copy = [...userAnswers];
-  //
-  //   if (copy.some((element) => element.id === data.id)) {
-  //     copy.splice(
-  //       copy.findIndex((userAnswer) => userAnswer.index === data.id),
-  //       1,
-  //       {
-  //         id: data.id,
-  //         term: data.term,
-  //         definition: data.definition,
-  //         answers: data.answers,
-  //         answer: answerFromComponent,
-  //       },
-  //     );
-  //     setUserAnswers(copy);
-  //   } else {
-  //     setUserAnswers((prev) => {
-  //       return [
-  //         ...prev,
-  //         {
-  //           id: data.id,
-  //           term: data.term,
-  //           definition: data.definition,
-  //           answers: data.answers,
-  //           answer: answerFromComponent,
-  //         },
-  //       ];
-  //     });
-  //   }
-  // };
+  const addAnswer = (
+    groupIndex,
+    componentIndex,
+    componentType,
+    data,
+    answerFromComponent,
+    event,
+  ) => {
+    console.log(data);
+    if (event) event.preventDefault();
 
-  // groups.map((group) => group.map(translation));
+    // if (userAnswers.length !== testLength) {
+    //   let copyOfUnfilled = [...unfilledArray];
+    //   copyOfUnfilled.splice(componentIndex, 1, 1);
+    //   setUnfilledArray(copyOfUnfilled);
+    // }
+
+    let copy = [...userAnswers];
+
+    let answer = {
+      groupIndex: groupIndex,
+      componentIndex: componentIndex,
+      id: data.id,
+      term: data.term,
+      definition: data.definition,
+      answer: answerFromComponent,
+    };
+
+    if (
+      copy.some(
+        (answer) =>
+          answer.groupIndex === groupIndex &&
+          answer.componentIndex === componentIndex,
+      )
+    ) {
+      copy.splice(
+        copy.findIndex(
+          (answer) =>
+            answer.groupIndex === groupIndex &&
+            answer.componentIndex === componentIndex,
+        ),
+        1,
+        answer,
+      );
+      setUserAnswers(copy);
+    } else {
+      setUserAnswers((prev) => [...prev, answer]);
+    }
+  };
+
+  console.log(userAnswers);
 
   return (
     <>
@@ -225,109 +232,99 @@ const Test = ({ set, groupsProperties }) => {
       ) : (
         <Container className={"flex flex-col gap-4"}>
           {groups.map((group, groupIndex) => {
-            return group.map((component, translationIndex) => {
-              switch (component.component) {
+            return group.components.map((component, componentIndex) => {
+              switch (component.type) {
                 case "EnterAnswer":
                   return (
-                    <div
-                      // key={index}
+                    <EnterAnswer
+                      key={`${groupIndex}.${componentIndex}`}
                       ref={(element) => {
                         anchors.current.push(element);
                       }}
-                    >
-                      <EnterAnswer
-                        className={
-                          (wasCheckedOnce && !component.isFilled
-                            ? "bg-red-300 "
-                            : "bg-gray-100 ") +
-                          (isEnd
-                            ? component.isCorrect
-                              ? "border-2 border-lime-500"
-                              : "border-2 border-red-500"
-                            : "") +
-                          " rounded-md p-4"
-                        }
-                        isTest={true}
-                        isClicked={isEnd}
-                        // isCorrect={component.isCorrect}
-                        isSeen={isEnd}
-                        isEnd={isEnd}
-                        translation={component}
-                        // length={testProperties.testLength}
-                        // componentIndex={index}
-                        // addAnswer={addAnswer}
-                        isForeignLanguage={
-                          componentProperties.isForeignLanguage
-                        }
-                      />
-                    </div>
+                      componentIndex={componentIndex}
+                      groupIndex={groupIndex}
+                      className={
+                        (wasCheckedOnce && !component.isFilled
+                          ? "bg-red-300 "
+                          : "bg-gray-100 ") +
+                        (isEnd
+                          ? component.isCorrect
+                            ? "border-2 border-lime-500"
+                            : "border-2 border-red-500"
+                          : "") +
+                        " rounded-md p-4"
+                      }
+                      isTest={true}
+                      isClicked={isEnd}
+                      // isCorrect={component.isCorrect}
+                      isSeen={isEnd}
+                      isEnd={isEnd}
+                      translation={component.translation}
+                      length={testLength}
+                      addAnswer={addAnswer}
+                      isForeignLanguage={componentProperties.isForeignLanguage}
+                    />
                   );
                 case "ChooseAnswer":
                   return (
-                    <div
-                      // key={index}
+                    <ChooseAnswer
+                      key={`${groupIndex}.${componentIndex}`}
                       ref={(element) => {
                         anchors.current.push(element);
                       }}
-                    >
-                      <ChooseAnswer
-                        className={
-                          (wasCheckedOnce && !component.isFilled
-                            ? "bg-red-300 "
-                            : "bg-gray-100 ") +
-                          (isEnd
-                            ? component.isCorrect
-                              ? "border-2 border-lime-500"
-                              : "border-2 border-red-500"
-                            : "") +
-                          " rounded-md p-4"
-                        }
-                        isEnd={isEnd}
-                        isClicked={isEnd}
-                        // isCorrect={component.isCorrect}
-                        isForeignLanguage={
-                          componentProperties.isForeignLanguage
-                        }
-                        isTest={true}
-                        // length={testProperties.testLength}
-                        translation={component}
-                        // componentIndex={index}
-                        // addAnswer={addAnswer}
-                      />
-                    </div>
+                      componentIndex={componentIndex}
+                      groupIndex={groupIndex}
+                      className={
+                        (wasCheckedOnce && !component.isFilled
+                          ? "bg-red-300 "
+                          : "bg-gray-100 ") +
+                        (isEnd
+                          ? component.isCorrect
+                            ? "border-2 border-lime-500"
+                            : "border-2 border-red-500"
+                          : "") +
+                        " rounded-md p-4"
+                      }
+                      isEnd={isEnd}
+                      isClicked={isEnd}
+                      // isCorrect={component.isCorrect}
+                      isForeignLanguage={componentProperties.isForeignLanguage}
+                      isTest={true}
+                      length={testLength}
+                      translation={component.translation}
+                      answers={component.answers}
+                      addAnswer={addAnswer}
+                    />
                   );
                 case "TrueOrFalseAnswer":
                   return (
-                    <div
-                      key={index}
+                    <TrueOrFalseAnswer
+                      key={`${groupIndex}.${componentIndex}`}
                       ref={(element) => {
                         anchors.current.push(element);
                       }}
-                    >
-                      <TrueOrFalseAnswer
-                        // is filled up
-                        className={
-                          (wasCheckedOnce && !component.isFilled
-                            ? "bg-red-300 "
-                            : "bg-gray-100 ") +
-                          (isEnd
-                            ? component.isCorrect
-                              ? "border-2 border-lime-500"
-                              : "border-2 border-red-500"
-                            : "") +
-                          " rounded-md p-2 relative transition"
-                        }
-                        isTest={true}
-                        isClicked={isEnd}
-                        isEnd={isEnd}
-                        data={component}
-                        isDisabled={component.isDisabled}
-                        isCorrect={component.isCorrect}
-                        length={componentProperties.testLength}
-                        // componentIndex={index}
-                        // addAnswer={addAnswer}
-                      />
-                    </div>
+                      componentIndex={componentIndex}
+                      groupIndex={groupIndex}
+                      // is filled up
+                      className={
+                        (wasCheckedOnce && !component.isFilled
+                          ? "bg-red-300 "
+                          : "bg-gray-100 ") +
+                        (isEnd
+                          ? component.isCorrect
+                            ? "border-2 border-lime-500"
+                            : "border-2 border-red-500"
+                          : "") +
+                        " rounded-md p-2 relative transition"
+                      }
+                      isClicked={isEnd}
+                      isEnd={isEnd}
+                      translation={component.translation}
+                      isDisabled={component.isDisabled}
+                      isCorrect={component.isCorrect}
+                      length={testLength}
+                      addAnswer={addAnswer}
+                    />
                   );
               }
             });
@@ -338,7 +335,7 @@ const Test = ({ set, groupsProperties }) => {
                 <MainButton
                   className={"bg-indigo-500 hover:bg-indigo-600 text-gray-100"}
                   isRedirect={true}
-                  href={route("flashcards.showSet", [set.id, set.title])}
+                  href={route("flashcards.showSet", [set.id])}
                 >
                   Back to the set preview
                 </MainButton>
