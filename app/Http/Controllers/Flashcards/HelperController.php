@@ -37,13 +37,31 @@ class HelperController extends Controller
     {
         switch(fake()->boolean()) {
             case true:
-                    return ['component' => 'TrueOrFalseAnswer', 'name' => $group['name'], 'id' => $translation->id, 'term' => $translation->term, 'definition' => $translation->definition, 'answer' => true,];
+                    return [
+                        'type' => 'TrueOrFalseAnswer',
+                        'name' => $group['name'],
+                        'answer' => true,
+                        'translation' => [
+                            'id' => $translation->id,
+                            'term' => $translation->term,
+                            'definition' => $translation->definition
+                        ],
+                    ];
             case false:
                 // without correct answer
                 $definitions = array_map(fn ($t) => $t->definition, $group['translations']);
                 $definitions = array_splice($definitions, array_search($translation->definition, $definitions) - 1, 1);
 
-                return ['component' => 'TrueOrFalseAnswer', 'name' => $group['name'], 'id' => $translation->id, 'term' => $translation->term, 'definition' => fake()->randomElement($definitions), 'answer' => false];
+                return [
+                    'type' => 'TrueOrFalseAnswer',
+                    'name' => $group['name'],
+                    'answer' => false,
+                    'translation' => [
+                        'id' => $translation->id,
+                        'term' => $translation->term,
+                        'definition' => fake()->randomElement($definitions)
+                    ]
+                ];
             default:
                 return [];
         }

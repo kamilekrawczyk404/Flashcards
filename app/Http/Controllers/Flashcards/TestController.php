@@ -15,9 +15,6 @@ class TestController extends Controller
         return Inertia::render('Flashcards/Test', [
             'set' => FlashcardSets::find($set_id),
             'groupsProperties' => FlashcardSets::getGroupsProperties($set_id)
-//            'shuffledTranslations' => HelperController::prepareForTest($title),
-//            'translations' => FlashcardSets::getGroups($title),
-//            'trueOrFalseData' => HelperController::getTrueOrFalseComponentData($translations->toArray())
         ]);
     }
 
@@ -27,14 +24,17 @@ class TestController extends Controller
         $final = [];
 
         foreach($groups as $key => $group) {
-            foreach($group['translations'] as $translationKey => $translation) {
-                $option = array_rand($options);
+            foreach($group['translations'] as $tKey => $translation) {
+                $final[$key]['group_name'] = $group['name'];
+                $final[$key]['translationsCount'] = count($group['translations']);
 
-                $final[$key][$translationKey] = match($option) {
+                $final[$key]['components'][$tKey] = match(array_rand($options)) {
                     'TrueOrFalseAnswer' => HelperController::getTrueOrFalseData($translation, $group),
-                    'EnterAnswer', 'ChooseAnswer' => HelperController::getEnterAndChooseAnswerData($group),
+                    'ChooseAnswer' => HelperController::getChooseAnswerData($translation, $group['translations']),
+                    'EnterAnswer', => HelperController::getEnterAnswerData($translation),
                 };
             }
+            shuffle($final[$key]['components']);
         }
 
         return $final;

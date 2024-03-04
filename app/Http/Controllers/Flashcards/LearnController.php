@@ -35,6 +35,7 @@ class LearnController extends Controller
                     'ChooseAnswer' => HelperController::getChooseAnswerData($translation, $group['translations']),
                 };
             }
+            shuffle($final[$key]['components']);
         }
 
         return $final;
