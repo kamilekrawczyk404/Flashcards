@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const EnterAnswer = forwardRef(
   (
     {
-      className = "",
       isClicked,
       isCorrect,
       isSeen,
@@ -16,10 +15,13 @@ export const EnterAnswer = forwardRef(
       handleOnSubmit,
       componentIndex,
       addAnswer,
-      isTest = false,
-      isEnd = false,
       length,
       isForeignLanguage,
+      className = "",
+      isTest = false,
+      isEnd = false,
+      isEmpty = false,
+      wasCheckedOnce = false,
       ...props
     },
     ref,
@@ -46,7 +48,19 @@ export const EnterAnswer = forwardRef(
       <div
         ref={ref}
         {...props}
-        className={"relative " + className}
+        className={
+          "relative overflow-hidden " +
+          (isTest
+            ? (wasCheckedOnce && isEmpty ? "bg-red-300 " : "bg-gray-100 ") +
+              (isEnd
+                ? isCorrect
+                  ? "border-2 border-lime-500 "
+                  : "border-2 border-red-500 "
+                : "") +
+              "rounded-md p-4 "
+            : "") +
+          className
+        }
         id={componentIndex}
       >
         {isTest && (
@@ -58,8 +72,8 @@ export const EnterAnswer = forwardRef(
           className={
             "mt-2 px-4 py-2 text-white font-medium bg-indigo-500 transition rounded-md w-fit " +
             (isEnd || isHintShown
-              ? "cursor-not-allowed"
-              : "hover:bg-indigo-600")
+              ? "cursor-not-allowed "
+              : "hover:bg-indigo-600 ")
           }
           disabled={isHintShown || isEnd || isClicked}
         >

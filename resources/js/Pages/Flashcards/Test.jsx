@@ -6,19 +6,16 @@ import { ChooseAnswer } from "@/Components/Learning/ChooseAnswer.jsx";
 import { TrueOrFalseAnswer } from "@/Components/Learning/TrueOrFalseAnswer.jsx";
 import { Feedback } from "@/Pages/Flashcards/Feedback.jsx";
 import { Container } from "@/Components/Container.jsx";
-import TranslationsData from "@/TranslationsData.js";
-import { TestForm } from "@/Components/Learning/TestForm.jsx";
 import { ProgressModal } from "@/Components/ProgressModal.jsx";
 import { useGetGroups } from "@/useGetGroups.js";
 import { useFakeLoading } from "@/useFakeLoading.js";
 import { TestChooseGroups } from "@/Components/Learning/TestChooseGroups.jsx";
 const Test = ({ set, groupsProperties }) => {
-  const [unfilledArray, setUnfilledArray] = useState([]);
+  const [emptyFields, setEmptyFields] = useState([]);
   const [testLength, setTestLength] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
   const [wasCheckedOnce, setWasCheckedOnce] = useState(false);
-
   const [isChoosingGroups, setIsChoosingGroups] = useState(true);
   const [componentProperties, setComponentProperties] = useState(null);
   const anchors = useRef([]);
@@ -35,128 +32,69 @@ const Test = ({ set, groupsProperties }) => {
   useEffect(() => {
     if (groups.length !== 0) {
       let sum = 0;
-      groups.forEach((group) => (sum += group.translationsCount));
+      groups.forEach((group, groupIndex) => {
+        sum += group.translationsCount;
+
+        group.components.forEach((component, componentIndex) =>
+          setEmptyFields((prev) => [
+            ...prev,
+            { groupIndex: groupIndex, componentIndex: componentIndex },
+          ]),
+        );
+      });
+
       setTestLength(sum);
     }
   }, [groups]);
 
-  // const [answerResults, setAnswerResults] = useState({
-  //   correct: 0,
-  //   incorrect: {
-  //     count: 0,
-  //     translations: [],
-  //   },
-  // });
+  const checkAnswers = () => {
+    setWasCheckedOnce(true);
 
-  // useEffect(() => {
-  //   if (!isStarted) {
-  //     setUnfilledArray(new Array(testProperties?.testLength).fill(0));
-  //   }
-  // }, [testProperties]);
+    // user hasn't filled all fields so scroll his view to the first unfilled field in the test
+    if (emptyFields.length !== 0) {
+      anchors.current[0].scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    } else {
+      setIsEnd(true);
+      let final = [];
+      userAnswers.forEach((userAnswer) => {
+        let temp = [...final];
+        temp.push({
+          ...userAnswer,
+          isCorrect:
+            groups[userAnswer.groupIndex].components[userAnswer.componentIndex]
+              .type === "TrueOrFalseAnswer"
+              ? userAnswer.answerTOF === Boolean(userAnswer.answer)
+              : userAnswer.answer ===
+                (componentProperties.answersLanguage === set.target_language
+                  ? userAnswer.definition
+                  : userAnswer.term),
+        });
+        final = temp;
+      });
+      setUserAnswers(final);
+    }
+  };
 
-  // const checkAnswers = () => {
-  //   anchors.current[0].scrollIntoView({
-  //     behavior: "smooth",
-  //   });
-  //   setWasCheckedOnce(true);
-  //   let copy = [...components];
-  //
-  //   // user hasn't filled all fields so scroll his view to the first unfilled field in the test
-  //   if (userAnswers.length < testProperties.testLength) {
-  //     // move user to first unfilled component
-  //     if (!isEnd)
-  //       anchors.current[unfilledArray.indexOf(0)].scrollIntoView({
-  //         behavior: "smooth",
-  //         block: "center",
-  //       });
-  //
-  //     userAnswers.forEach((userAnswer) => {
-  //       let seekingIndex = components.findIndex(
-  //         (component) => component.data.id === userAnswer.id,
-  //       );
-  //       copy.splice(
-  //         components.findIndex(
-  //           (component) => component.data.id === userAnswer.id,
-  //         ),
-  //         1,
-  //         {
-  //           name: components[seekingIndex].name,
-  //           data: userAnswer,
-  //           isFilled: true,
-  //         },
-  //       );
-  //       setComponents(copy);
-  //     });
-  //   } else {
-  //     setIsEnd(true);
-  //
-  //     userAnswers.forEach((userAnswer, index) => {
-  //       let seekingIndex = components.findIndex(
-  //         (component) => component.data.id === userAnswer.id,
-  //       );
-  //       let data = new TranslationsData(userAnswer);
-  //
-  //       copy.splice(
-  //         components.findIndex(
-  //           (component) => component.data.id === userAnswer.id,
-  //         ),
-  //         1,
-  //         {
-  //           name: components[seekingIndex].name,
-  //           data: userAnswer,
-  //           isFilled: true,
-  //           isCorrect:
-  //             userAnswer.answer === data.definition.word ||
-  //             components[index].data.answer === userAnswer.answer,
-  //           isDisabled: true,
-  //         },
-  //       );
-  //
-  //       setComponents(copy);
-  //       fillAnswersResults(userAnswer, index);
-  //     });
-  //   }
-  // };
+  const isFieldEmpty = (groupIndex, componentIndex) => {
+    return emptyFields.some(
+      (field) =>
+        field.groupIndex === groupIndex &&
+        field.componentIndex === componentIndex,
+    );
+  };
 
-  // const fillAnswersResults = (userAnswer, index, count) => {
-  //   const correct = new TranslationsData(
-  //     shuffledTranslations
-  //       .filter((translation) => translation.id === userAnswer.id)
-  //       .at(0),
-  //   );
-  //   const data = new TranslationsData(userAnswer);
-  //
-  //   if (
-  //     userAnswer.answer === data.definition.word ||
-  //     userAnswer.answer === components[index].data.answer
-  //   ) {
-  //     setAnswerResults((prev) => ({
-  //       ...prev,
-  //       correct: prev.correct + 1,
-  //     }));
-  //   } else {
-  //     setAnswerResults((prev) => ({
-  //       ...prev,
-  //       incorrect: {
-  //         count: prev.incorrect.count + 1,
-  //         translations: [
-  //           ...prev.incorrect.translations,
-  //           {
-  //             id: index + 1,
-  //             term: {
-  //               word: data.term.word,
-  //             },
-  //             definition: {
-  //               word: testProperties.isForeignLanguage
-  //                 ? correct.definition.word
-  //                 : correct.term.word,
-  //             },
-  //           },
-  //         ],
-  //       },
-  //     }));
-  //   }
-  // };
+  const checkIfFieldIsCorrect = (groupIndex, componentIndex) => {
+    return userAnswers.at(
+      userAnswers.findIndex(
+        (answer) =>
+          answer.groupIndex === groupIndex &&
+          answer.componentIndex === componentIndex,
+      ),
+    )?.isCorrect;
+  };
 
   const addAnswer = (
     groupIndex,
@@ -166,16 +104,24 @@ const Test = ({ set, groupsProperties }) => {
     answerFromComponent,
     event,
   ) => {
-    console.log(data);
     if (event) event.preventDefault();
 
-    // if (userAnswers.length !== testLength) {
-    //   let copyOfUnfilled = [...unfilledArray];
-    //   copyOfUnfilled.splice(componentIndex, 1, 1);
-    //   setUnfilledArray(copyOfUnfilled);
-    // }
+    // remove a filled field
+    if (isFieldEmpty(groupIndex, componentIndex)) {
+      let temp = [...emptyFields];
+      temp.splice(
+        emptyFields.findIndex(
+          (element) =>
+            element.groupIndex === groupIndex &&
+            element.componentIndex === componentIndex,
+        ),
+        1,
+      );
 
-    let copy = [...userAnswers];
+      setEmptyFields(temp);
+    }
+
+    // add an answer
 
     let answer = {
       groupIndex: groupIndex,
@@ -183,18 +129,21 @@ const Test = ({ set, groupsProperties }) => {
       id: data.id,
       term: data.term,
       definition: data.definition,
+      // TrueOrFalse answer
+      answerTOF: groups[groupIndex].components[componentIndex]?.answer ?? null,
       answer: answerFromComponent,
     };
 
     if (
-      copy.some(
+      userAnswers.some(
         (answer) =>
           answer.groupIndex === groupIndex &&
           answer.componentIndex === componentIndex,
       )
     ) {
-      copy.splice(
-        copy.findIndex(
+      let temp = [...userAnswers];
+      temp.splice(
+        userAnswers.findIndex(
           (answer) =>
             answer.groupIndex === groupIndex &&
             answer.componentIndex === componentIndex,
@@ -202,13 +151,13 @@ const Test = ({ set, groupsProperties }) => {
         1,
         answer,
       );
-      setUserAnswers(copy);
+      setUserAnswers(temp);
     } else {
       setUserAnswers((prev) => [...prev, answer]);
     }
   };
 
-  console.log(userAnswers);
+  console.log(componentProperties);
 
   return (
     <>
@@ -243,52 +192,46 @@ const Test = ({ set, groupsProperties }) => {
                       }}
                       componentIndex={componentIndex}
                       groupIndex={groupIndex}
-                      className={
-                        (wasCheckedOnce && !component.isFilled
-                          ? "bg-red-300 "
-                          : "bg-gray-100 ") +
-                        (isEnd
-                          ? component.isCorrect
-                            ? "border-2 border-lime-500"
-                            : "border-2 border-red-500"
-                          : "") +
-                        " rounded-md p-4"
-                      }
                       isTest={true}
+                      wasCheckedOnce={wasCheckedOnce}
+                      isEmpty={isFieldEmpty(groupIndex, componentIndex)}
                       isClicked={isEnd}
-                      // isCorrect={component.isCorrect}
+                      isCorrect={checkIfFieldIsCorrect(
+                        groupIndex,
+                        componentIndex,
+                      )}
                       isSeen={isEnd}
                       isEnd={isEnd}
                       translation={component.translation}
                       length={testLength}
                       addAnswer={addAnswer}
-                      isForeignLanguage={componentProperties.isForeignLanguage}
+                      isForeignLanguage={
+                        componentProperties.answersLanguage ===
+                        set.target_language
+                      }
                     />
                   );
                 case "ChooseAnswer":
                   return (
                     <ChooseAnswer
+                      wasCheckedOnce={wasCheckedOnce}
+                      isEmpty={isFieldEmpty(groupIndex, componentIndex)}
                       key={`${groupIndex}.${componentIndex}`}
                       ref={(element) => {
                         anchors.current.push(element);
                       }}
                       componentIndex={componentIndex}
                       groupIndex={groupIndex}
-                      className={
-                        (wasCheckedOnce && !component.isFilled
-                          ? "bg-red-300 "
-                          : "bg-gray-100 ") +
-                        (isEnd
-                          ? component.isCorrect
-                            ? "border-2 border-lime-500"
-                            : "border-2 border-red-500"
-                          : "") +
-                        " rounded-md p-4"
-                      }
                       isEnd={isEnd}
                       isClicked={isEnd}
-                      // isCorrect={component.isCorrect}
-                      isForeignLanguage={componentProperties.isForeignLanguage}
+                      isCorrect={checkIfFieldIsCorrect(
+                        groupIndex,
+                        componentIndex,
+                      )}
+                      isForeignLanguage={
+                        componentProperties.answersLanguage ===
+                        set.target_language
+                      }
                       isTest={true}
                       length={testLength}
                       translation={component.translation}
@@ -305,25 +248,22 @@ const Test = ({ set, groupsProperties }) => {
                       }}
                       componentIndex={componentIndex}
                       groupIndex={groupIndex}
-                      // is filled up
-                      className={
-                        (wasCheckedOnce && !component.isFilled
-                          ? "bg-red-300 "
-                          : "bg-gray-100 ") +
-                        (isEnd
-                          ? component.isCorrect
-                            ? "border-2 border-lime-500"
-                            : "border-2 border-red-500"
-                          : "") +
-                        " rounded-md p-2 relative transition"
-                      }
                       isClicked={isEnd}
+                      isEmpty={isFieldEmpty(groupIndex, componentIndex)}
                       isEnd={isEnd}
+                      wasCheckedOnce={wasCheckedOnce}
                       translation={component.translation}
-                      isDisabled={component.isDisabled}
-                      isCorrect={component.isCorrect}
+                      isDisabled={isEnd}
+                      isCorrect={checkIfFieldIsCorrect(
+                        groupIndex,
+                        componentIndex,
+                      )}
                       length={testLength}
                       addAnswer={addAnswer}
+                      isForeignLanguage={
+                        componentProperties.answersLanguage ===
+                        set.target_language
+                      }
                     />
                   );
               }

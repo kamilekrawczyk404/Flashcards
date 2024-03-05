@@ -6,17 +6,19 @@ export const ChooseAnswer = forwardRef(
     {
       isClicked,
       isCorrect,
-      isTest = false,
       isEnd,
       isForeignLanguage,
       translation,
       answers,
       onClickAnswer,
-      className = "",
       addAnswer,
       componentIndex,
       groupIndex,
       length,
+      className = "",
+      isTest = false,
+      isEmpty = false,
+      wasCheckedOnce = false,
       ...props
     },
     ref,
@@ -28,13 +30,25 @@ export const ChooseAnswer = forwardRef(
 
     const styling =
       "bg-indigo-100 h-14 rounded-md transition-all relative flex flex-col justify-center text-gray-700 " +
-      (isEnd || isClicked ? "" : "hover:bg-indigo-300");
+      (isEnd || isClicked ? "" : "hover:bg-indigo-300 ");
 
     return (
       <form
         ref={ref}
         {...props}
-        className={"relative " + className}
+        className={
+          "relative " +
+          (isTest
+            ? (wasCheckedOnce && isEmpty ? "bg-red-300 " : "bg-gray-100 ") +
+              (isEnd
+                ? isCorrect
+                  ? "border-2 border-lime-500 "
+                  : "border-2 border-red-500 "
+                : "") +
+              "rounded-md p-4 "
+            : "") +
+          className
+        }
         id={componentIndex}
       >
         {isTest && (

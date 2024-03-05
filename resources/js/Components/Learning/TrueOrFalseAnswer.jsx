@@ -4,6 +4,7 @@ import { CurrentIndexIndicator } from "@/Components/Translations/CurrentIndexInd
 export const TrueOrFalseAnswer = forwardRef(
   (
     {
+      isForeignLanguage,
       isClicked,
       isCorrect,
       isDisabled,
@@ -14,6 +15,8 @@ export const TrueOrFalseAnswer = forwardRef(
       addAnswer,
       componentIndex,
       groupIndex,
+      wasCheckedOnce = false,
+      isEmpty = false,
       ...props
     },
     ref,
@@ -28,7 +31,17 @@ export const TrueOrFalseAnswer = forwardRef(
       <div
         ref={ref}
         {...props}
-        className={"relative " + className}
+        className={
+          "relative " +
+          (wasCheckedOnce && isEmpty ? "bg-red-300 " : "bg-gray-100 ") +
+          (isEnd
+            ? isCorrect
+              ? "border-2 border-lime-500 "
+              : "border-2 border-red-500 "
+            : "") +
+          "rounded-md p-4 " +
+          +className
+        }
         id={componentIndex}
       >
         <CurrentIndexIndicator index={componentIndex} length={length} />
@@ -42,13 +55,17 @@ export const TrueOrFalseAnswer = forwardRef(
               <span className="absolute top-0 left-0 text-sm text-gray-500 font-semibold">
                 Term
               </span>
-              <span>{translation.term}</span>
+              <span>
+                {isForeignLanguage ? translation.term : translation.definition}
+              </span>
             </div>
             <div className={"py-20 w-1/2 text-center relative"}>
               <span className="absolute top-0 left-2 text-sm text-gray-500 font-semibold">
                 Definition
               </span>
-              <span>{translation.definition}</span>
+              <span>
+                {isForeignLanguage ? translation.definition : translation.term}
+              </span>
             </div>
           </div>
           {!isClicked && (

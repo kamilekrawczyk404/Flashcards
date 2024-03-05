@@ -39,5 +39,5 @@ export const useGetGroups = (
     }
   }, [isChoosingGroups]);
 
-  return { groups, loading };
+  return { groups, setGroups, loading };
 };
