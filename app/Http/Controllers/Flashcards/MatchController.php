@@ -12,65 +12,27 @@ use Inertia\Response;
 
 class MatchController extends Controller
 {
-    private int $translationsSetPerOnePage = 6;
-    private function leaveOnlyTermsAndDefinitions($translations): array
-    {
-        // it must be odd number
-        $breakPoints = 0;
-        $array = [];
-        $count = 0;
+    private int $translationsPerPage = 6;
 
-        foreach ($translations as $key => $translation) {
-            if ($key % $this->translationsSetPerOnePage == 0)
-                $breakPoints += 1;
-
-            $translation['term']=
-                json_decode(json_encode([
-                    'id' => $translation['id'],
-                    'refId' => $count++,
-                    'text' => $translation['term']->word ?? $translation['term']->{0}->word,
-                    'isFocused' => false,
-                    'page' => $breakPoints
-                ]));
-
-            $translation['definition'] =
-                json_decode(json_encode([
-                    'id' => $translation['id'],
-                    'refId' => $count++,
-                    'text' => $translation['definition']->word ?? $translation['definition']->{0}->word,
-                    'isFocused' => false,
-                    'page' => $breakPoints
-                ]));
-        }
-
-        foreach ($translations as $translation) {
-            $array[] = $translation['term'];
-            $array[] = $translation['definition'];
-        }
-
-        for ($i = 0; $i < $breakPoints; $i++) {
-            $sliceOfArray = array_slice($array, $i * ($this->translationsSetPerOnePage + 3), $this->translationsSetPerOnePage + 3);
-            shuffle($sliceOfArray);
-            array_splice($array, $i * ($this->translationsSetPerOnePage + 3), $this->translationsSetPerOnePage + 3, $sliceOfArray);
-        }
-        return $array;
+    public function prepareForMatch($set_id): array {
+        return FlashcardSets::getGroups(Auth::id(), $set_id, [], ['translations_per_page' => $this->translationsPerPage]);
     }
 
-    public function show(int $id, string $title): Response
+    public function show(int $set_id): Response
     {
         return Inertia::render('Flashcards/Match', [
-            'set' => FlashcardSets::find($id),
-            'onlyTranslations' => $this->leaveOnlyTermsAndDefinitions(FlashcardSets::getGroups($title)),
-            'setsPerPage' => $this->translationsSetPerOnePage,
-            'bestResult' => MatchScores::getBestResult($id),
-            'rankingList' => MatchScores::getTopFiveRankings($id)
+            'set' => FlashcardSets::find($set_id),
+            'groups' => FlashcardSets::getGroups(Auth::id(), $set_id),
+            'translations' => $this->prepareForMatch($set_id),
+            'bestResult' => MatchScores::getBestResult($set_id),
+            'rankingList' => MatchScores::getTopFiveRankings($set_id),
+            'translationsPerPage' => $this->translationsPerPage,
         ]);
     }
 
     public function store(int $id, MatchTimeRequest $request): void {
         $scoreTime = new MatchScores;
-        $scoreTime->matchingTime =
-            json_encode($request->score);
+        $scoreTime->matching_time = $request->score;
         $scoreTime->set_id = $id;
 
         $user = Auth::user();

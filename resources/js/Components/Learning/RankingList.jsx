@@ -46,7 +46,7 @@ export const RankingList = ({ className = "", rankings, ...props }) => {
             <span
               className={"bg-gray-100 px-1 rounded-md text-gray-700 font-bold"}
             >
-              {ranking.matchingTime}s
+              {ranking.matching_time}s
             </span>
             <span className={"float-right font-bold"}>#{index + 1}</span>
           </div>

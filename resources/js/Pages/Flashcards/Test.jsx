@@ -10,6 +10,7 @@ import { ProgressModal } from "@/Components/ProgressModal.jsx";
 import { useGetGroups } from "@/useGetGroups.js";
 import { useFakeLoading } from "@/useFakeLoading.js";
 import { TestChooseGroups } from "@/Components/Learning/TestChooseGroups.jsx";
+import { useFeedbackResults } from "@/useFeedbackResults.js";
 const Test = ({ set, groupsProperties }) => {
   const [emptyFields, setEmptyFields] = useState([]);
   const [testLength, setTestLength] = useState(0);
@@ -18,6 +19,7 @@ const Test = ({ set, groupsProperties }) => {
   const [wasCheckedOnce, setWasCheckedOnce] = useState(false);
   const [isChoosingGroups, setIsChoosingGroups] = useState(true);
   const [componentProperties, setComponentProperties] = useState(null);
+  const [feedbackData, setFeedbackData] = useState({});
   const anchors = useRef([]);
 
   const { groups, loading } = useGetGroups(
@@ -57,8 +59,11 @@ const Test = ({ set, groupsProperties }) => {
         block: "center",
       });
     } else {
-      setIsEnd(true);
       let final = [];
+      let feedbackTemp = {};
+
+      setIsEnd(true);
+
       userAnswers.forEach((userAnswer) => {
         let temp = [...final];
         temp.push({
@@ -73,27 +78,26 @@ const Test = ({ set, groupsProperties }) => {
                   : userAnswer.term),
         });
         final = temp;
+
+        feedbackTemp = useFeedbackResults(
+          feedbackTemp,
+          groups,
+          userAnswer.groupIndex,
+          userAnswer.componentIndex,
+          groups[userAnswer.groupIndex].components[userAnswer.componentIndex]
+            .type === "TrueOrFalseAnswer"
+            ? userAnswer.answerTOF
+            : componentProperties.answersLanguage === set.target_language
+              ? userAnswer.definition
+              : userAnswer.term,
+
+          userAnswer.answer,
+        );
       });
+
       setUserAnswers(final);
+      setFeedbackData(feedbackTemp);
     }
-  };
-
-  const isFieldEmpty = (groupIndex, componentIndex) => {
-    return emptyFields.some(
-      (field) =>
-        field.groupIndex === groupIndex &&
-        field.componentIndex === componentIndex,
-    );
-  };
-
-  const checkIfFieldIsCorrect = (groupIndex, componentIndex) => {
-    return userAnswers.at(
-      userAnswers.findIndex(
-        (answer) =>
-          answer.groupIndex === groupIndex &&
-          answer.componentIndex === componentIndex,
-      ),
-    )?.isCorrect;
   };
 
   const addAnswer = (
@@ -157,8 +161,25 @@ const Test = ({ set, groupsProperties }) => {
     }
   };
 
-  console.log(componentProperties);
+  const isFieldEmpty = (groupIndex, componentIndex) => {
+    return emptyFields.some(
+      (field) =>
+        field.groupIndex === groupIndex &&
+        field.componentIndex === componentIndex,
+    );
+  };
 
+  const checkIfFieldIsCorrect = (groupIndex, componentIndex) => {
+    return userAnswers.at(
+      userAnswers.findIndex(
+        (answer) =>
+          answer.groupIndex === groupIndex &&
+          answer.componentIndex === componentIndex,
+      ),
+    )?.isCorrect;
+  };
+
+  // Progress bar in learning component
   return (
     <>
       <GamesNavigation set={set}>
@@ -179,119 +200,131 @@ const Test = ({ set, groupsProperties }) => {
           text={"We're preparing your learning plan."}
         />
       ) : (
-        <Container className={"flex flex-col gap-4"}>
-          {groups.map((group, groupIndex) => {
-            return group.components.map((component, componentIndex) => {
-              switch (component.type) {
-                case "EnterAnswer":
-                  return (
-                    <EnterAnswer
-                      key={`${groupIndex}.${componentIndex}`}
-                      ref={(element) => {
-                        anchors.current.push(element);
-                      }}
-                      componentIndex={componentIndex}
-                      groupIndex={groupIndex}
-                      isTest={true}
-                      wasCheckedOnce={wasCheckedOnce}
-                      isEmpty={isFieldEmpty(groupIndex, componentIndex)}
-                      isClicked={isEnd}
-                      isCorrect={checkIfFieldIsCorrect(
-                        groupIndex,
-                        componentIndex,
-                      )}
-                      isSeen={isEnd}
-                      isEnd={isEnd}
-                      translation={component.translation}
-                      length={testLength}
-                      addAnswer={addAnswer}
-                      isForeignLanguage={
-                        componentProperties.answersLanguage ===
-                        set.target_language
-                      }
-                    />
-                  );
-                case "ChooseAnswer":
-                  return (
-                    <ChooseAnswer
-                      wasCheckedOnce={wasCheckedOnce}
-                      isEmpty={isFieldEmpty(groupIndex, componentIndex)}
-                      key={`${groupIndex}.${componentIndex}`}
-                      ref={(element) => {
-                        anchors.current.push(element);
-                      }}
-                      componentIndex={componentIndex}
-                      groupIndex={groupIndex}
-                      isEnd={isEnd}
-                      isClicked={isEnd}
-                      isCorrect={checkIfFieldIsCorrect(
-                        groupIndex,
-                        componentIndex,
-                      )}
-                      isForeignLanguage={
-                        componentProperties.answersLanguage ===
-                        set.target_language
-                      }
-                      isTest={true}
-                      length={testLength}
-                      translation={component.translation}
-                      answers={component.answers}
-                      addAnswer={addAnswer}
-                    />
-                  );
-                case "TrueOrFalseAnswer":
-                  return (
-                    <TrueOrFalseAnswer
-                      key={`${groupIndex}.${componentIndex}`}
-                      ref={(element) => {
-                        anchors.current.push(element);
-                      }}
-                      componentIndex={componentIndex}
-                      groupIndex={groupIndex}
-                      isClicked={isEnd}
-                      isEmpty={isFieldEmpty(groupIndex, componentIndex)}
-                      isEnd={isEnd}
-                      wasCheckedOnce={wasCheckedOnce}
-                      translation={component.translation}
-                      isDisabled={isEnd}
-                      isCorrect={checkIfFieldIsCorrect(
-                        groupIndex,
-                        componentIndex,
-                      )}
-                      length={testLength}
-                      addAnswer={addAnswer}
-                      isForeignLanguage={
-                        componentProperties.answersLanguage ===
-                        set.target_language
-                      }
-                    />
-                  );
-              }
-            });
-          })}
-          <div className={"mx-auto mt-4"}>
-            {isEnd ? (
-              <>
+        <>
+          {isEnd && (
+            <Feedback
+              set={set}
+              isTest={true}
+              groups={groups}
+              answersResults={feedbackData}
+            />
+          )}
+          <Container className={"flex flex-col gap-4"}>
+            {groups.map((group, groupIndex) => {
+              return group.components.map((component, componentIndex) => {
+                switch (component.type) {
+                  case "EnterAnswer":
+                    return (
+                      <EnterAnswer
+                        key={`${groupIndex}.${componentIndex}`}
+                        ref={(element) => {
+                          anchors.current.push(element);
+                        }}
+                        componentIndex={componentIndex}
+                        groupIndex={groupIndex}
+                        isTest={true}
+                        wasCheckedOnce={wasCheckedOnce}
+                        isEmpty={isFieldEmpty(groupIndex, componentIndex)}
+                        isClicked={isEnd}
+                        isCorrect={checkIfFieldIsCorrect(
+                          groupIndex,
+                          componentIndex,
+                        )}
+                        isSeen={isEnd}
+                        isEnd={isEnd}
+                        translation={component.translation}
+                        length={testLength}
+                        addAnswer={addAnswer}
+                        isForeignLanguage={
+                          componentProperties.answersLanguage ===
+                          set.target_language
+                        }
+                      />
+                    );
+                  case "ChooseAnswer":
+                    return (
+                      <ChooseAnswer
+                        wasCheckedOnce={wasCheckedOnce}
+                        isEmpty={isFieldEmpty(groupIndex, componentIndex)}
+                        key={`${groupIndex}.${componentIndex}`}
+                        ref={(element) => {
+                          anchors.current.push(element);
+                        }}
+                        componentIndex={componentIndex}
+                        groupIndex={groupIndex}
+                        isEnd={isEnd}
+                        isClicked={isEnd}
+                        isCorrect={checkIfFieldIsCorrect(
+                          groupIndex,
+                          componentIndex,
+                        )}
+                        isForeignLanguage={
+                          componentProperties.answersLanguage ===
+                          set.target_language
+                        }
+                        isTest={true}
+                        length={testLength}
+                        translation={component.translation}
+                        answers={component.answers}
+                        addAnswer={addAnswer}
+                      />
+                    );
+                  case "TrueOrFalseAnswer":
+                    return (
+                      <TrueOrFalseAnswer
+                        key={`${groupIndex}.${componentIndex}`}
+                        ref={(element) => {
+                          anchors.current.push(element);
+                        }}
+                        componentIndex={componentIndex}
+                        groupIndex={groupIndex}
+                        isClicked={isEnd}
+                        isEmpty={isFieldEmpty(groupIndex, componentIndex)}
+                        isEnd={isEnd}
+                        wasCheckedOnce={wasCheckedOnce}
+                        translation={component.translation}
+                        isDisabled={isEnd}
+                        isCorrect={checkIfFieldIsCorrect(
+                          groupIndex,
+                          componentIndex,
+                        )}
+                        length={testLength}
+                        addAnswer={addAnswer}
+                        isForeignLanguage={
+                          componentProperties.answersLanguage ===
+                          set.target_language
+                        }
+                      />
+                    );
+                }
+              });
+            })}
+            <div className={"mx-auto mt-4"}>
+              {isEnd ? (
+                <>
+                  <MainButton
+                    className={
+                      "bg-indigo-500 hover:bg-indigo-600 text-gray-100"
+                    }
+                    isRedirect={true}
+                    href={route("flashcards.showSet", [set.id])}
+                  >
+                    Back to the set preview
+                  </MainButton>
+                </>
+              ) : (
                 <MainButton
                   className={"bg-indigo-500 hover:bg-indigo-600 text-gray-100"}
-                  isRedirect={true}
-                  href={route("flashcards.showSet", [set.id])}
+                  onClick={() => {
+                    checkAnswers();
+                  }}
                 >
-                  Back to the set preview
+                  Submit your test
                 </MainButton>
-              </>
-            ) : (
-              <MainButton
-                className={"bg-indigo-500 hover:bg-indigo-600 text-gray-100"}
-                onClick={() => {
-                  checkAnswers();
-                }}
-              >
-                Submit your test
-              </MainButton>
-            )}
-          </div>
-        </Container>
+              )}
+            </div>
+          </Container>
+        </>
       )}
     </>
   );

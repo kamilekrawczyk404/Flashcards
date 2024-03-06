@@ -12,20 +12,18 @@ import { ProgressModal } from "@/Components/ProgressModal.jsx";
 import { useFakeLoading } from "@/useFakeLoading.js";
 import { updateTranslationStatus } from "@/updateTranslationStatus.js";
 import { isTheLastTranslation } from "@/isTheLastTranslation.js";
+import { useFeedbackResults } from "@/useFeedbackResults.js";
 
 export default function Learn({ auth, set, groupsProperties }) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isSeen, setIsSeen] = useState(false);
   const [isChoosingGroups, setIsChoosingGroups] = useState(true);
+  const [feedbackData, setFeedbackData] = useState({});
   const [componentProperties, setComponentProperties] = useState(null);
   const [current, setCurrent] = useState({
     groupIndex: 0,
     componentIndex: 0,
-  });
-  const [userAnswers, setUserAnswers] = useState({
-    correctIds: [],
-    incorrectIds: [],
   });
 
   const secondsToAnswer = 10000;
@@ -69,26 +67,21 @@ export default function Learn({ auth, set, groupsProperties }) {
     setIsClicked(true);
 
     if (correctAnswer === userAnswer) {
-      setUserAnswers((prev) => ({
-        ...prev,
-        correctIds: [
-          ...prev.correctIds,
-          groups[current.groupIndex]?.components[current.componentIndex]
-            ?.translation.id,
-        ],
-      }));
       setIsCorrect(true);
     } else {
-      setUserAnswers((prev) => ({
-        ...prev,
-        incorrectIds: [
-          ...prev.incorrectIds,
-          groups[current.groupIndex]?.components[current.componentIndex]
-            ?.translation.id,
-        ],
-      }));
       setIsSeen(true);
     }
+
+    setFeedbackData(
+      useFeedbackResults(
+        feedbackData,
+        groups,
+        current.groupIndex,
+        current.componentIndex,
+        correctAnswer,
+        userAnswer,
+      ),
+    );
 
     updateTranslationStatus(
       auth.user.id,
@@ -224,7 +217,7 @@ export default function Learn({ auth, set, groupsProperties }) {
           ) : (
             <Feedback
               set={set}
-              answersResults={userAnswers}
+              answersResults={feedbackData}
               routeName={"learn"}
               groups={groups}
             />

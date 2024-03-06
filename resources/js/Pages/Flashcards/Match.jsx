@@ -8,11 +8,12 @@ import { router } from "@inertiajs/react";
 import Animation from "@/Pages/Animation.js";
 import { RankingList } from "@/Components/Learning/RankingList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useFeedbackResults } from "@/useFeedbackResults.js";
 
 const Match = ({
   set,
-  onlyTranslations,
-  setsPerPage,
+  translations,
+  translationsPerPage,
   bestResult,
   rankingList,
 }) => {
@@ -22,19 +23,13 @@ const Match = ({
   const [isEnd, setIsEnd] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [firstCardIndex, setFirstCardIndex] = useState(null);
-  const [currentSetPage, setCurrentSetPage] = useState(1);
-  const [cards, setCards] = useState(onlyTranslations);
+  const [currentPage, setCurrentPage] = useState(1);
   const [disabledCards, setDisabledCards] = useState([]);
   const [hiddenCards, setHiddenCards] = useState([]);
   const [refIndex, setRefIndex] = useState(null);
   const [isWrong, setIsWrong] = useState(false);
-  const [userAnswers, setUserAnswers] = useState({
-    correct: 0,
-    incorrect: {
-      count: 0,
-      translations: [],
-    },
-  });
+  const [cards, setCards] = useState(translations);
+  const [feedbackData, setFeedbackData] = useState({});
 
   const refs = useRef([]);
   const cardRefs = useRef([]);
@@ -43,14 +38,19 @@ const Match = ({
   const styling =
     "aspect-square text-center text-xl font-medium shadow-md transition rounded-md text-gray-700 polygon-y-start hover:scale-[1.05] hover:bg-indigo-500 bg-gray-100 ";
 
+  console.log(translations);
+
   useEffect(() => {
     let timer;
 
     if (!isEnd)
       timer = setInterval(() => {
-        setSeconds((prev) => (isStarted ? prev + 1 : 0));
-      }, 1000);
-    else router.post(`/store_new_match_time/${set.id}`, { score: seconds });
+        setSeconds((prev) => (isStarted ? prev + 0.01 : 0));
+      }, 10);
+    else
+      router.post(`/store_new_match_time/${set.id}`, {
+        score: seconds.toFixed(2),
+      });
 
     if (hiddenCards.length === cards.length / 2) {
       setIsEnd(true);
@@ -61,7 +61,7 @@ const Match = ({
     return () => {
       clearInterval(timer);
     };
-  }, [currentSetPage, cards, isStarted, hiddenCards]);
+  }, [currentPage, cards, isStarted, hiddenCards]);
 
   useLayoutEffect(() => {
     const infoAnimation = new Animation(refs.current);
@@ -69,12 +69,12 @@ const Match = ({
 
     infoAnimation.animateAll("<", "", "<+.1");
     cardsAnimation.animateAll("<", "", "<+.1");
-  }, [isStarted, currentSetPage]);
+  }, [isStarted, currentPage]);
 
   const focusCard = (card) => {
     let data = [...cards];
     data.splice(
-      data.findIndex((d) => d === card),
+      data.findIndex((t) => t === card),
       1,
       {
         ...card,
@@ -86,7 +86,7 @@ const Match = ({
   };
 
   const unfocusCards = (secondCard) => {
-    cardRefs.current[secondCard.refId].classList.add(
+    cardRefs.current[secondCard.ref_id].classList.add(
       "!bg-red-500",
       "animate-wrong-match",
       "text-white",
@@ -120,14 +120,14 @@ const Match = ({
       setFirstCardIndex(null);
 
       cardRefs.current
-        .at(secondCard.refId)
+        .at(secondCard.ref_id)
         .classList.remove("animate-wrong-match", "text-white");
 
       cardRefs.current[refIndex].classList.remove(
         "animate-wrong-match",
         "text-white",
       );
-      cardRefs.current[secondCard.refId].classList.replace(
+      cardRefs.current[secondCard.ref_id].classList.replace(
         "!bg-red-500",
         "bg-gray-100",
       );
@@ -138,39 +138,17 @@ const Match = ({
     }, SECONDS);
   };
 
-  const addIncorrectTranslations = () => {
-    const translations = cards.filter((c) => c.id === cards[firstCardIndex].id);
-    let data = [...userAnswers.incorrect.translations];
-    if (!data.some((d) => d.id === cards[firstCardIndex].id)) {
-      data.push({
-        id: translations[0].id,
-        term: { word: translations[0].text },
-        definition: { word: translations[1].text },
-      });
-    }
-    data.sort((a, b) => a.id - b.id);
-    setUserAnswers((prev) => {
-      return {
-        ...prev,
-        incorrect: {
-          count: prev.incorrect.count + 1,
-          translations: data,
-        },
-      };
-    });
-  };
-
   const hideCards = (card) => {
     cardRefs.current[refIndex].classList.replace(
       "bg-indigo-500",
       "bg-lime-500",
     );
-    cardRefs.current[card.refId].classList.replace(
+    cardRefs.current[card.ref_id].classList.replace(
       "bg-gray-100",
       "bg-lime-500",
     );
-    cardRefs.current[card.refId].classList.add("text-white");
-    cardRefs.current[card.refId].classList.remove("hover:bg-indigo-500");
+    cardRefs.current[card.ref_id].classList.add("text-white");
+    cardRefs.current[card.ref_id].classList.remove("hover:bg-indigo-500");
     cardRefs.current[refIndex].classList.remove("hover:bg-indigo-500");
 
     setTimeout(() => {
@@ -188,39 +166,50 @@ const Match = ({
 
   const checkCards = (currentCard, index) => {
     if (isFirstCard) {
-      cardRefs.current[currentCard.refId].classList.replace(
+      cardRefs.current[currentCard.ref_id].classList.replace(
         "bg-gray-100",
         "bg-indigo-500",
       );
-      cardRefs.current[currentCard.refId].classList.add("text-white");
+      cardRefs.current[currentCard.ref_id].classList.add("text-white");
       setIsFirstCard(false);
       setFirstCardIndex(index);
-      setRefIndex(currentCard.refId);
+      setRefIndex(currentCard.ref_id);
     } else {
       setIsSecondCard(true);
+
+      console.log(index);
+      if (
+        Object.keys(feedbackData).length === 0 ||
+        !feedbackData?.incorrectIds?.some(
+          (id) => id === currentCard.translation_id,
+        )
+      )
+        setFeedbackData(
+          useFeedbackResults(
+            feedbackData,
+            [],
+            0,
+            0,
+            translations.at(firstCardIndex),
+            currentCard,
+            true,
+          ),
+        );
 
       if (
         cards[firstCardIndex].id === currentCard.id &&
         firstCardIndex !== index
       ) {
         hideCards(currentCard);
-        if (
-          !userAnswers.incorrect.translations.some(
-            (translation) => currentCard.id === translation.id,
-          )
-        )
-          setUserAnswers((prev) => ({
-            ...prev,
-            correct: prev.correct + 1,
-          }));
+
         if (
           hiddenCards.length > 0 &&
-          hiddenCards.length % setsPerPage === setsPerPage - 1
+          hiddenCards.length % (translationsPerPage - 1) === 0
         ) {
-          setCurrentSetPage((prev) => prev + 1);
+          setCurrentPage((prev) => prev + 1);
         }
       } else {
-        addIncorrectTranslations();
+        // addIncorrectTranslations();
         unfocusCards(currentCard);
         setIsWrong(true);
         setSeconds((prev) => prev + additionalSeconds);
@@ -286,7 +275,7 @@ const Match = ({
               ></div>
               <div
                 className={
-                  "mx-auto text-xl font-semibold w-fit p-2 rounded-md flex items-center gap-2 relative " +
+                  "mx-auto text-xl p-2 rounded-md flex items-center gap-2 relative w-fit " +
                   (isWrong
                     ? "bg-red-500 before:-m-3 before:transition before:absolute before:left-full before:bottom-full before:text-base before:content-['+10sec'] before:z-10 before:bg-gray-700 before:text-white before:p-1 before:rounded-md"
                     : "bg-amber-500")
@@ -294,27 +283,35 @@ const Match = ({
               >
                 <FontAwesomeIcon
                   icon="fa-solid fa-hourglass-start"
-                  className={"text-md transform animate-hourglass"}
+                  className={
+                    "text-md transform animate-hourglass font-semibold"
+                  }
                 />
-                {seconds}
+                <span
+                  className={
+                    "w-fit max-w-[10vw] overflow-hidden overflow-ellipsis font-mono"
+                  }
+                >
+                  {seconds.toFixed(2)}
+                </span>
               </div>
             </div>
             <div className="grid grid-cols-4 gap-4">
-              {cards.map((card, index) => {
-                if (currentSetPage === card.page) {
+              {cards.map((card, cardIndex) => {
+                if (currentPage === card.page) {
                   return (
                     <button
                       ref={(element) => {
-                        cardRefs.current[card.refId] = element;
+                        cardRefs.current[card.ref_id] = element;
                       }}
                       disabled={
                         disabledCards.includes(card.id) ||
                         isSecondCard ||
                         card.isDisabled
                       }
-                      key={index}
+                      key={cardIndex}
                       onClick={() => {
-                        checkCards(card, index);
+                        checkCards(card, cardIndex);
                         focusCard(card);
                       }}
                       className={
@@ -322,7 +319,7 @@ const Match = ({
                         (hiddenCards.includes(card.id) ? " invisible" : " ")
                       }
                     >
-                      {card.text}
+                      {card.word}
                     </button>
                   );
                 }
@@ -333,14 +330,14 @@ const Match = ({
         {isEnd && (
           <Feedback
             set={set}
-            answersResults={userAnswers}
+            answersResults={feedbackData}
             barWidth={Math.round(
-              (userAnswers.correct / (cards.length / 2)) * 100,
+              (feedbackData.correctIds / (cards.length / 2)) * 100,
               2,
             )}
             length={cards.length / 2}
             routeName={"match"}
-            finishedTime={seconds}
+            finishedTime={seconds.toFixed(2)}
             bestResult={bestResult}
           />
         )}

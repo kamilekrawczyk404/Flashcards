@@ -124,10 +124,14 @@ class FlashcardSets extends Model
         return $final;
     }
 
-    public static function getGroups($user_id, $set_id, $groups = []): array {
+    public static function getGroups($user_id, $set_id, $groups = [], $matching_properties = []): array {
         $data = [];
         $allGroups = false;
         $translationTableName = FlashcardSets::getTitle($set_id);
+
+        // for matching
+        $breakPoints = $count = 0;
+        $translationsApart = [];
 
         // If third parameter was no declared
         if (!count($groups)) {
@@ -138,7 +142,7 @@ class FlashcardSets extends Model
                 ->toArray();
         }
 
-        foreach($groups as $group) {
+        foreach($groups as $gKey => $group) {
             $translationsBelongToGroup =
                 DB::table('flashcards_sets_progress AS fsp')
                     ->leftJoin($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
@@ -151,13 +155,38 @@ class FlashcardSets extends Model
                     ->unique('id')
                     ->toArray();
 
-            $data[] = [
-                'name' => $allGroups ? $group->group_name : $group['group_name'],
-                'translations' => $allGroups ? $translationsBelongToGroup : array_splice($translationsBelongToGroup, $group['minValue'] - 1, $group['maxValue'] - ($group['minValue'] - 1)),
-            ];
+            // if user wants to generate matching component, first we need to convert groups into single translations which can help us to display and separate them apart. Then we need to assign to a single translation properties: group name, page and ref index (for calling correctly animations)
+
+            if (count($matching_properties)) {
+                foreach ($translationsBelongToGroup as $translation) {
+
+                    if ($count % ($matching_properties['translations_per_page'] * 2) == 0) {
+                        $breakPoints += 1;
+                    }
+
+                    $translationsApart[] = ['id' => $translation->id, 'word' => $translation->term, 'group_name' => $translation->group_name, 'page' => $breakPoints, 'ref_id' => $count++, 'translation_id' => $translation->id, 'group_id' => $gKey];
+                    $translationsApart[] = ['id' => $translation->id, 'word' => $translation->definition, 'group_name' => $translation->group_name, 'page' => $breakPoints, 'ref_id' => $count++, 'translation_id' => $translation->id];
+
+                }
+
+                for($i = 0; $i < $breakPoints; $i++) {
+                    $temp = $translationsApart;
+
+                    $shuffled = array_splice($temp, ($i * $matching_properties['translations_per_page'] * 2), $matching_properties['translations_per_page'] * 2);
+                    shuffle($shuffled);
+
+                    array_splice($translationsApart, ($i * $matching_properties['translations_per_page'] * 2), $matching_properties['translations_per_page'] * 2, $shuffled);
+                }
+
+            } else {
+                $data[] = [
+                    'name' => $allGroups ? $group->group_name : $group['group_name'],
+                    'translations' => $allGroups ? $translationsBelongToGroup : array_splice($translationsBelongToGroup, $group['minValue'] - 1, $group['maxValue'] - ($group['minValue'] - 1)),
+                ];
+            }
         }
 
-        return $data;
+        return count($matching_properties) !== 0  ? $translationsApart : $data ;
     }
 
     public static function getGroupsProperties(int $set_id): array {

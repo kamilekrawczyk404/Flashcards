@@ -64,11 +64,11 @@ export const Feedback = ({
   }, [finishedTime]);
 
   return (
-    <Container>
-      <div
-        ref={feedbackRef}
-        className="rounded-md bg-gray-100 flex flex-col z-10 p-4 polygon-from-top opacity-0 -translate-y-12"
-      >
+    <Container
+      ref={feedbackRef}
+      className="rounded-md bg-gray-100 flex flex-col z-10 p-4 polygon-from-top opacity-0 -translate-y-12"
+    >
+      <div>
         <p className="font-semibold text-xl text-gray-700 whitespace-pre-line">
           {infoAboutResults[selectedIndex]}
         </p>

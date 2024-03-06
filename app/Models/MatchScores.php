@@ -15,24 +15,24 @@ class MatchScores extends Model
 
     protected $primaryKey = 'id';
 
-    public static function getBestResult(int $id){
+    public static function getBestResult(int $set_id){
         return MatchScores::where(
             [
                 'user_id' => Auth::id(),
-                'set_id' => $id
+                'set_id' => $set_id
             ])
-            ->orderBy('matchingTime',
+            ->orderBy('matching_time',
                 'desc')
             ->first()
             ?? -1;
     }
 
-    public static function getTopFiveRankings(int $id) {
-        return MatchScores::selectRaw("name, min(matchingTime) AS matchingTime")
+    public static function getTopFiveRankings(int $set_id) {
+        return MatchScores::selectRaw("name, min(matching_time) AS matching_time")
             ->join('users', 'users.id', '=', 'match_scores.user_id')
-            ->where('set_id', $id)
+            ->where('set_id', $set_id)
             ->groupBy('users.id')
-            ->orderBy('match_scores.matchingTime', 'ASC')
+            ->orderBy('match_scores.matching_time', 'ASC')
             ->limit(5)
             ->get() ?? -1;
     }
