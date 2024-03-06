@@ -1,12 +1,12 @@
 import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
-import { MainButton } from "@/Components/MainButton.jsx";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import React, { useEffect, useRef, useState } from "react";
 import { EnterAnswer } from "@/Components/Learning/EnterAnswer.jsx";
 import { ChooseAnswer } from "@/Components/Learning/ChooseAnswer.jsx";
 import { TrueOrFalseAnswer } from "@/Components/Learning/TrueOrFalseAnswer.jsx";
 import { Feedback } from "@/Pages/Flashcards/Feedback.jsx";
 import { Container } from "@/Components/Container.jsx";
-import { ProgressModal } from "@/Components/ProgressModal.jsx";
+import { ProgressModal } from "@/Components/Loading/ProgressModal.jsx";
 import { useGetGroups } from "@/useGetGroups.js";
 import { useFakeLoading } from "@/useFakeLoading.js";
 import { TestChooseGroups } from "@/Components/Learning/TestChooseGroups.jsx";

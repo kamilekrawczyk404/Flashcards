@@ -1,13 +1,13 @@
 import InputError from "@/Components/Form/InputError.jsx";
-import PrimaryButton from "@/Components/PrimaryButton";
+import PrimaryButton from "@/Components/Buttons/PrimaryButton.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import { Link, router, useForm, usePage } from "@inertiajs/react";
 import { Transition } from "@headlessui/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import { useEffect, useRef, useState } from "react";
-import { SocialsPopUp } from "@/Components/UserEdit/SocialsPopUp.jsx";
+import { SocialsPopUp } from "@/Components/Modals/SocialsPopUp.jsx";
 import MicroModal from "micromodal";
-import { SocialButton } from "@/Components/UserEdit/SocialButton.jsx";
+import { SocialButton } from "@/Components/Buttons/SocialButton.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function UpdateProfileInformation({

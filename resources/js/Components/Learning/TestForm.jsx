@@ -1,7 +1,7 @@
 import { Select } from "@/Components/Form/Select.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
-import { AnimatedCheckbox } from "@/Components/AnimatedCheckbox.jsx";
-import { MainButton } from "@/Components/MainButton.jsx";
+import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import { Container } from "@/Components/Container.jsx";
 import { useForm } from "react-hook-form";
 import { useLayoutEffect, useRef, useState } from "react";

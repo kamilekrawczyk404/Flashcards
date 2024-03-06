@@ -5,7 +5,7 @@ import Textarea from "@/Components/Form/Textarea.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Container } from "@/Components/Container";
-import { MainButton } from "@/Components/MainButton.jsx";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap/all";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
@@ -14,13 +14,12 @@ import { TranslationForm } from "@/Components/Translations/TranslationForm.jsx";
 import { AddButton } from "@/Components/Form/AddButton.jsx";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ProgressModal } from "@/Components/ProgressModal.jsx";
+import { ProgressModal } from "@/Components/Loading/ProgressModal.jsx";
 import GroupsFieldArray from "@/Components/Form/GroupsFieldArray.jsx";
-import PrimaryButton from "@/Components/PrimaryButton.jsx";
+import PrimaryButton from "@/Components/Buttons/PrimaryButton.jsx";
 
 export default function EditSet({ auth, set, groups, errorsFromController }) {
   const mainInputsRefs = useRef([]);
-  console.log(errorsFromController);
   // validation on client side will prevent submitting form if occur errors on client side,
   // but we must prevent showing up LoadProgress if there occur some errors form server,
   // so we need to them in state and refresh it after each submission

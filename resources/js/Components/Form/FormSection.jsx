@@ -1,4 +1,4 @@
-import { AnimatedCheckbox } from "@/Components/AnimatedCheckbox.jsx";
+import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
 
 export const FormSection = ({ title, children, className = "" }) => {
   return (

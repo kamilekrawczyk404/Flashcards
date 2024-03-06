@@ -5,10 +5,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { GoBackIndicator } from "@/Components/GoBackIndicator.jsx";
-import { SingleSet } from "@/Components/SingleSet.jsx";
+import { GoBackIndicator } from "@/Pages/Flashcards/Partials/GoBackIndicator.jsx";
+import { SingleSet } from "@/Pages/Flashcards/Partials/SingleSet.jsx";
 import { useSetsSearch } from "@/useSetsSearch.js";
-import { SearchLoadingAnimation } from "@/Components/SearchLoadingAnimation.jsx";
+import { SearchLoadingAnimation } from "@/Components/Loading/SearchLoadingAnimation.jsx";
 import Animation from "@/Pages/Animation.js";
 import { Search } from "@/Components/Form/Search.jsx";
 import Cookies from "js-cookie";
@@ -165,7 +165,11 @@ export const Explore = forwardRef(
               ),
             )}
             {sets.length > 0 && (
-              <SearchLoadingAnimation progress={progress} hasMore={hasMore} sets={sets} />
+              <SearchLoadingAnimation
+                progress={progress}
+                hasMore={hasMore}
+                sets={sets}
+              />
             )}
           </div>
         </div>

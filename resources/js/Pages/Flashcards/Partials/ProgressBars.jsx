@@ -19,7 +19,7 @@ export const ProgressBars = forwardRef(
       <div
         ref={ref}
         className={
-          "space-y-2 text-gray-700 opacity-0 translate-y-12 polygon-start"
+          "space-y-2 text-gray-700 opacity-0 translate-y-12 polygon-start w-full"
         }
       >
         <p>{bar.text}</p>

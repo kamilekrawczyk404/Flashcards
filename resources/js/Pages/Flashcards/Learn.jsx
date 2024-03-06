@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Feedback } from "@/Pages/Flashcards/Feedback.jsx";
-import ProgressBar from "@/Components/ProgressBar";
+import ProgressBar from "@/Components/Loading/ProgressBar.jsx";
 import { ChooseAnswer } from "@/Components/Learning/ChooseAnswer.jsx";
 import { EnterAnswer } from "@/Components/Learning/EnterAnswer.jsx";
-import { MainButton } from "@/Components/MainButton";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import { Container } from "@/Components/Container";
 import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
 import { LearnChooseGroups } from "@/Components/Learning/LearnChooseGroups.jsx";
 import { useGetGroups } from "@/useGetGroups.js";
-import { ProgressModal } from "@/Components/ProgressModal.jsx";
+import { ProgressModal } from "@/Components/Loading/ProgressModal.jsx";
 import { useFakeLoading } from "@/useFakeLoading.js";
 import { updateTranslationStatus } from "@/updateTranslationStatus.js";
 import { isTheLastTranslation } from "@/isTheLastTranslation.js";
@@ -112,6 +112,8 @@ export default function Learn({ auth, set, groupsProperties }) {
     // (it was calling the check function even after the learning session had ended)
     if (
       !isChoosingGroups &&
+      !fakeLoading &&
+      !loading &&
       current.componentIndex !== groups[current.groupIndex]?.translationsCount
     ) {
       setIsClicked(false);
@@ -129,7 +131,7 @@ export default function Learn({ auth, set, groupsProperties }) {
         clearTimeout(timer);
       };
     }
-  }, [current]);
+  }, [current, fakeLoading, loading]);
 
   return (
     <>

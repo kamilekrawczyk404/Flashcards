@@ -3,7 +3,7 @@ import { SignUpSignIn } from "@/Pages/Auth/SignUpSignIn.jsx";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SectionWithVerticalMargin } from "@/Components/SectionWithVerticalMargin.jsx";
 import Authenticated from "@/Layouts/AuthenticatedLayout.jsx";
-import { OptionCard } from "@/Components/OptionCard.jsx";
+import { OptionCard } from "@/Layouts/Partials/OptionCard.jsx";
 import Animation from "@/Pages/Animation.js";
 import { AllSets } from "@/Pages/Flashcards/AllSets.jsx";
 import { Explore } from "@/Pages/Flashcards/Explore.jsx";
@@ -181,7 +181,9 @@ export default function Home({
               }
             >
               <div
-                className={"mx-auto py-2 border-b-4 border-indigo-500 w-fit"}
+                className={
+                  "mx-auto py-2 border-b-4 border-indigo-500 w-fit sm:p-0 p-4"
+                }
               >
                 <h1 className={"text-3xl text-gray-700 font-bold"}>
                   Welcome back{" "}
@@ -191,7 +193,7 @@ export default function Home({
               </div>
               <div
                 className={
-                  "flex relative w-full sm:flex-row flex-col items-center justify-center p-4 gap-4"
+                  "flex relative w-full sm:flex-row flex-col sm:items-center p-4 gap-4"
                 }
               >
                 <OptionCard
@@ -210,7 +212,7 @@ export default function Home({
                   </h1>
                   <img
                     className={
-                      "xl:max-w-[25rem] lg:max-w-[20rem] max-w-[12rem] rounded-md self-center"
+                      "sm:block hidden xl:max-w-[25rem] lg:max-w-[20rem] sm:max-w-[12rem] rounded-md self-center"
                     }
                     src="http://127.0.0.1:8000/storage/images/learn.jpg"
                     alt="learning image"
@@ -231,7 +233,7 @@ export default function Home({
                   </span>
                   <img
                     className={
-                      "xl:max-w-[25rem] lg:max-w-[20rem] max-w-[12rem] w-full rounded-md self-center xl:mt-20 lg:mt-12 mt-8"
+                      "sm:block hidden xl:max-w-[25rem] lg:max-w-[20rem] sm:max-w-[12rem] w-full rounded-md self-center xl:mt-20 lg:mt-12 mt-8"
                     }
                     src="http://127.0.0.1:8000/storage/images/searching.jpg"
                     alt="explore"

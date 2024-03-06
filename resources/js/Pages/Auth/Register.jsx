@@ -6,8 +6,8 @@ import InputLabel from "@/Components/Form/InputLabel.jsx";
 import Unauthenticated from "@/Layouts/UnauthenticatedLayout.jsx";
 import { SectionWithVerticalMargin } from "@/Components/SectionWithVerticalMargin.jsx";
 import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
-import { MainButton } from "@/Components/MainButton.jsx";
-import { ApplicationLogo } from "@/Components/ApplicationLogo.jsx";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
+import { ApplicationLogo } from "@/Layouts/Partials/ApplicationLogo.jsx";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

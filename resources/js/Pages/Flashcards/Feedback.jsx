@@ -1,5 +1,5 @@
-import { MainButton } from "@/Components/MainButton";
-import { Table } from "@/Components/Table";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
+import { Table } from "@/Components/Buttons/Feedback/Table.jsx";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Animation from "@/Pages/Animation.js";

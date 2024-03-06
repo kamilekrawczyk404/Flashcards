@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Dropdown from "@/Components/Dropdown";
-import NavLink from "@/Components/NavLink";
-import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { ApplicationLogo } from "@/Components/ApplicationLogo.jsx";
+import Dropdown from "@/Layouts/Partials/Dropdown.jsx";
+import NavLink from "@/Layouts/Partials/NavLink.jsx";
+import ResponsiveNavLink from "@/Layouts/Partials/ResponsiveNavLink.jsx";
+import { ApplicationLogo } from "@/Layouts/Partials/ApplicationLogo.jsx";
 
 export default function Authenticated({
   user,

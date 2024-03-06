@@ -5,11 +5,11 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import { SectionWithVerticalMargin } from "@/Components/SectionWithVerticalMargin.jsx";
 import Unauthenticated from "@/Layouts/UnauthenticatedLayout.jsx";
-import { ApplicationLogo } from "@/Components/ApplicationLogo.jsx";
+import { ApplicationLogo } from "@/Layouts/Partials/ApplicationLogo.jsx";
 import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
 import Animation from "@/Pages/Animation.js";
-import { MainButton } from "@/Components/MainButton.jsx";
-import { AnimatedCheckbox } from "@/Components/AnimatedCheckbox.jsx";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
+import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
 
 export default function Login({ status, canResetPassword }) {
   let formRef = useRef();

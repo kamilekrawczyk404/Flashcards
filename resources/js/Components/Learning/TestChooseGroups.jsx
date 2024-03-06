@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { FormSection } from "@/Components/Form/FormSection.jsx";
 import { PlanningForm } from "@/Components/Form/PlanningForm.jsx";
 import { GroupPropertiesForm } from "@/Components/Form/GroupPropertiesForm.jsx";
-import { AnimatedCheckbox } from "@/Components/AnimatedCheckbox.jsx";
+import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
 
 export const TestChooseGroups = ({
   set,

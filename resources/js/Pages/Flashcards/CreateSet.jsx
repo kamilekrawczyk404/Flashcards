@@ -1,5 +1,5 @@
 import InputError from "@/Components/Form/InputError.jsx";
-import PrimaryButton from "@/Components/PrimaryButton";
+import PrimaryButton from "@/Components/Buttons/PrimaryButton.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import Textarea from "@/Components/Form/Textarea.jsx";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
@@ -11,7 +11,7 @@ import gsap from "gsap/all";
 import { Select } from "@/Components/Form/Select.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import Animation from "@/Pages/Animation.js";
-import { ProgressModal } from "@/Components/ProgressModal.jsx";
+import { ProgressModal } from "@/Components/Loading/ProgressModal.jsx";
 import GroupsFieldArray from "@/Components/Form/GroupsFieldArray.jsx";
 
 export default function CreateSet({ auth, errorsFromController }) {

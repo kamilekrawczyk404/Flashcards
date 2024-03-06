@@ -52,7 +52,6 @@ export default class TranslationsData {
   }
 
   constructor(translation) {
-    console.log(translation);
     const data = this.getData(translation);
 
     this.id = translation.id;

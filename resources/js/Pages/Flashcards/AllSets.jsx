@@ -6,9 +6,9 @@ import React, {
   useState,
 } from "react";
 import Animation from "@/Pages/Animation.js";
-import { MainButton } from "@/Components/MainButton.jsx";
-import { SingleSet } from "@/Components/SingleSet.jsx";
-import { GoBackIndicator } from "@/Components/GoBackIndicator.jsx";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
+import { SingleSet } from "@/Pages/Flashcards/Partials/SingleSet.jsx";
+import { GoBackIndicator } from "@/Pages/Flashcards/Partials/GoBackIndicator.jsx";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
 import { usePage } from "@inertiajs/react";
 

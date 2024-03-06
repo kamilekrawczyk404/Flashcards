@@ -1,5 +1,5 @@
 import { SoundButton } from "@/Components/Translations/SoundButton.jsx";
-import { EditButton } from "@/Components/EditButton.jsx";
+import { EditButton } from "@/Components/Buttons/EditButton.jsx";
 import MicroModal from "micromodal";
 import React from "react";
 import { Phonetics } from "@/Components/Translations/Phonetics.jsx";

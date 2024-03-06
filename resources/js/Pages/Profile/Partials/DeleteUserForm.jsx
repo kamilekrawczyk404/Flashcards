@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
-import DangerButton from "@/Components/DangerButton";
+import DangerButton from "@/Components/Buttons/DangerButton.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
 import Modal from "@/Components/Modals/Modal.jsx";
-import SecondaryButton from "@/Components/SecondaryButton";
+import SecondaryButton from "@/Components/Buttons/SecondaryButton.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import { useForm } from "@inertiajs/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";

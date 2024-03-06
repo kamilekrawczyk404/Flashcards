@@ -1,4 +1,4 @@
-import { MainButton } from "@/Components/MainButton.jsx";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import React, { useEffect, useMemo } from "react";
 import { CancelButton } from "@/Components/Modals/CancelButton.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";

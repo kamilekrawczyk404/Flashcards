@@ -1,5 +1,5 @@
 import { SoundButton } from "@/Components/Translations/SoundButton.jsx";
-import { EditButton } from "@/Components/EditButton.jsx";
+import { EditButton } from "@/Components/Buttons/EditButton.jsx";
 import MicroModal from "micromodal";
 import { router } from "@inertiajs/react";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export const Translation = ({
     <form
       onSubmit={submit}
       className={
-        "bg-gradient-to-tl from-indigo-600 to-indigo-400 p-3 rounded-md flex justify-between relative overflow-hidden gap-2 w-[calc(100%-2rem)]"
+        "bg-gradient-to-tl from-indigo-600 to-indigo-400 p-3 rounded-md flex sm:flex-row flex-col justify-between relative overflow-hidden gap-2 w-[calc(100%-2rem)]"
       }
     >
       <div className={"relative w-1/2 font-bold flex flex-col"}>
@@ -61,7 +61,7 @@ export const Translation = ({
       {permissions.canEdit && (
         <div
           className={
-            "flex self-start gap-2 top-3 right-3 text-2xl items-center"
+            "sm:flex sm:self-start sm:gap-2 absolute space-x-2 top-3 right-3 text-2xl items-center"
           }
         >
           <EditButton

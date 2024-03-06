@@ -1,4 +1,4 @@
-import { AnimatedCheckbox } from "@/Components/AnimatedCheckbox.jsx";
+import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import { useState } from "react";

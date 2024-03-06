@@ -5,17 +5,17 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "@splidejs/react-splide/css";
 import "@splidejs/react-splide/css/skyblue";
 import { Container } from "@/Components/Container";
-import { MainButton } from "@/Components/MainButton";
-import { TestLink } from "@/Components/TestLink";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
+import { TestLink } from "@/Pages/Flashcards/Partials/TestLink.jsx";
 import { PopUpEdit } from "@/Components/Translations/PopUpEdit.jsx";
 import { RotatingCard } from "@/Components/Translations/RotatingCard.jsx";
 import { Translation } from "@/Components/Translations/Translation.jsx";
-import TranslationsData from "@/TranslationsData.js";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
 import { ProgressBars } from "@/Pages/Flashcards/Partials/ProgressBars.jsx";
 import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
+import { SetProgression } from "@/Pages/Flashcards/Partials/SetProgression.jsx";
 
 export default function SetInfo({
   auth,
@@ -39,20 +39,9 @@ export default function SetInfo({
   });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
 
-  const progressBars = [
-    { type: "known", color: "bg-lime-500", text: "Already learned" },
-    { type: "unknown", color: "bg-gray-500", text: "Not learned yet" },
-    {
-      type: "difficult",
-      color: "bg-amber-500",
-      text: "Causing difficulties",
-    },
-  ];
-
   let mainRefs = useRef([]);
   let translationsRefs = useRef([]);
   let groupsRefs = useRef([]);
-  let progressionRefs = useRef([]);
 
   const checkCurrentWindowWidth = () => {
     if (window.innerWidth <= 640) {
@@ -74,7 +63,6 @@ export default function SetInfo({
     const mainAnimation = new Animation(mainRefs.current);
     const translationsAnimation = new Animation(translationsRefs.current);
     const groupsAnimation = new Animation(groupsRefs.current);
-    const progressionAnimation = new Animation(progressionRefs.current);
 
     // Nav
     for (let i = 0; i < 4; i++) {
@@ -100,9 +88,6 @@ export default function SetInfo({
       .to(mainRefs.current[4], {}, "<+.3")
       .to(mainRefs.current[5], {}, "<+.5")
       .to(mainRefs.current[6], {}, "<+.3");
-
-    // Progression
-    progressionAnimation.animateAll("<", "<+.2", "<+.3");
 
     // Groups
     groupsAnimation.animateAll("", "+.2", "+.3");
@@ -139,44 +124,14 @@ export default function SetInfo({
       >
         <Head title={`Set - ${set.title}`} />
 
-        <section
-          className={
-            "fixed top-1/2 -translate-y-1/2 left-[calc((100vw-62rem)/4)] transform -translate-x-1/2 w-fit"
-          }
-        >
-          <div className={"bg-white rounded-md h-fit p-4 flex flex-col gap-2"}>
-            <span className={"text-lg text-indigo-500 font-bold"}>
-              Progression of this set
-            </span>
-
-            {progressBars.map((bar, index) => (
-              <ProgressBars
-                ref={(element) => (progressionRefs.current[index] = element)}
-                length={Object.values(progression).at(index)}
-                translationsLength={translationsCount}
-                bar={bar}
-              />
-            ))}
-          </div>
-        </section>
+        <SetProgression
+          progression={progression}
+          translationsCount={translationsCount}
+        />
 
         <Container>
           <div className="bg-white overflow-hidden sm:rounded-md">
             <div className="flex gap-4 text-md md:flex-row flex-col relative">
-              {/*<div*/}
-              {/*    ref={(element) => {*/}
-              {/*        mainRefs.current[0] = element;*/}
-              {/*    }}*/}
-              {/*    className={*/}
-              {/*        "min-w-fit md:w-1/4 w-full polygon-start translate-y-12 opacity-0"*/}
-              {/*    }*/}
-              {/*>*/}
-              {/*    <TestLink>*/}
-              {/*        <i className="fa-solid fa-tablet mr-3 text-xl text-gray-600 transition"></i>*/}
-              {/*        Flashcards*/}
-              {/*    </TestLink>*/}
-              {/*</div>*/}
-
               <TestLink
                 ref={(element) => {
                   mainRefs.current[1] = element;
@@ -292,7 +247,7 @@ export default function SetInfo({
                   mainRefs.current[5] = element;
                 }}
                 className={
-                  "polygon-start opacity-0 translate-y-12 flex justify-between"
+                  "polygon-start opacity-0 translate-y-12 flex sm:flex-row flex-col justify-between"
                 }
               >
                 <p>

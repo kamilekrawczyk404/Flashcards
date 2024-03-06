@@ -1,6 +1,6 @@
 import { Container } from "@/Components/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { MainButton } from "@/Components/MainButton";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
 import { Feedback } from "@/Pages/Flashcards/Feedback.jsx";
 import gsap from "gsap/all";
@@ -37,8 +37,6 @@ const Match = ({
   const SECONDS = 500;
   const styling =
     "aspect-square text-center text-xl font-medium shadow-md transition rounded-md text-gray-700 polygon-y-start hover:scale-[1.05] hover:bg-indigo-500 bg-gray-100 ";
-
-  console.log(translations);
 
   useEffect(() => {
     let timer;
@@ -177,7 +175,6 @@ const Match = ({
     } else {
       setIsSecondCard(true);
 
-      console.log(index);
       if (
         Object.keys(feedbackData).length === 0 ||
         !feedbackData?.incorrectIds?.some(

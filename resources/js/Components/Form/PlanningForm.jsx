@@ -1,4 +1,4 @@
-import { MainButton } from "@/Components/MainButton.jsx";
+import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import { useLayoutEffect, useRef, useState } from "react";
 import Animation from "@/Pages/Animation.js";
 import { FormSection } from "@/Components/Form/FormSection.jsx";
