@@ -3,6 +3,7 @@ import Dropdown from "@/Layouts/Partials/Dropdown.jsx";
 import NavLink from "@/Layouts/Partials/NavLink.jsx";
 import ResponsiveNavLink from "@/Layouts/Partials/ResponsiveNavLink.jsx";
 import { ApplicationLogo } from "@/Layouts/Partials/ApplicationLogo.jsx";
+import { getFilePath } from "@/getFilePath.jsx";
 
 export default function Authenticated({
   user,
@@ -51,7 +52,7 @@ export default function Authenticated({
                           className={
                             "max-w-[2.5rem] shadow-lg aspect-square border-2 border-indigo-500 rounded-full"
                           }
-                          src={`http://127.0.0.1:8000/storage/users_avatars/${user.avatar}`}
+                          src={getFilePath(`/users_avatars/${user.avatar}`)}
                           alt={"avatar"}
                         />
                       </button>
@@ -161,7 +162,7 @@ export default function Authenticated({
         </header>
       )}
 
-      <main>{children}</main>
+      <main className={"mt-4"}>{children}</main>
     </div>
   );
 }

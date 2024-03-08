@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export const GoBackIndicator = ({
   onRight = false,
@@ -17,7 +18,7 @@ export const GoBackIndicator = ({
         (onRight ? "left-[1vw] rotate-180 " : "right-[1vw]")
       }
     >
-      <FontAwesomeIcon icon="fa-solid fa-arrow-right" />
+      <FontAwesomeIcon icon={faArrowRight} />
     </button>
   );
 };

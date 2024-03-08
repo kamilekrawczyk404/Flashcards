@@ -13,7 +13,6 @@ import { Translation } from "@/Components/Translations/Translation.jsx";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
-import { ProgressBars } from "@/Pages/Flashcards/Partials/ProgressBars.jsx";
 import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
 import { SetProgression } from "@/Pages/Flashcards/Partials/SetProgression.jsx";
 

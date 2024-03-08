@@ -38,14 +38,6 @@ class TranslationsController extends Controller
         DB::table($title)->where('id', $translation_id)->delete();
     }
 
-    public function updateOnlyFavourite(int $id, int $translation_id, string $title): void {
-        $isFavourite = DB::table($title)->where('id', $translation_id)->value('isFavourite');
-
-        DB::connection('mysql')->table($title)->where('id', $translation_id)->update([
-            'isFavourite' => !$isFavourite
-        ]);
-    }
-
     public static function getLanguageShortcut(string $language, bool $isForTranslator = false): string {
         return match($language) {
             'English' => $isForTranslator ? 'en-GB' : 'en',

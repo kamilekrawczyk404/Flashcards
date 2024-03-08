@@ -37,7 +37,7 @@ export const Search = forwardRef(
       <div
         className={
           "flex flex-col relative transition-width duration-500 " +
-          (isSearching ? "lg:w-1/2 md:w-2/3 w-full" : "w-0")
+          (isSearching ? "xl:w-1/2 lg:w-3/4 w-full" : "w-0")
         }
       >
         <div

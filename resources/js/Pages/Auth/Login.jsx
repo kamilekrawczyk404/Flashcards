@@ -53,7 +53,7 @@ export default function Login({ status, canResetPassword }) {
 
         <div
           className={
-            " translate-y-12 opacity-0 polygon-start flex items-center flex-col p-1"
+            "translate-y-12 opacity-0 polygon-start flex items-center flex-col p-1 sm:w-fit w-full"
           }
           ref={(element) => (logoRef.current = element)}
         >
@@ -76,7 +76,7 @@ export default function Login({ status, canResetPassword }) {
         <GradientAndLines
           ref={formRef}
           className={
-            "relative 2xl:w-1/3 lg:w-1/2 md:w-2/3 sm:w-full p-8 translate-y-12 opacity-0 polygon-start"
+            "relative 2xl:w-1/3 lg:w-1/2 md:w-2/3 w-full p-8 translate-y-12 opacity-0 polygon-start"
           }
           hasLines={true}
           linesColor={"bg-gray-100"}

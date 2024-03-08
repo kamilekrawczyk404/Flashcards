@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\Flashcards\TranslationsController;
+use App\Http\Controllers\FlashcardsSetsProgressController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,8 +52,12 @@ class FlashcardSets extends Model
         $sets = FlashcardSets::where('user_id', $user_id)->get()->toArray();
 
         foreach ($sets as $set) {
-            $count = ['count' => FlashcardSets::countTranslations($set['id'])];
-            $final[] = array_merge($set, $count);
+            $temp = [
+                'translationsCount' => FlashcardSets::countTranslations($set['id']),
+                'groupsCount' => FlashcardSets::countGroups($set['id']),
+                'progression' => FlashcardsSetsProgressController::getSetProgress($user_id, $set['id'])
+            ];
+            $final[] = array_merge($set, $temp);
         }
 
         return $final;
@@ -115,9 +120,9 @@ class FlashcardSets extends Model
         foreach($sets[0] as $set) {
             $progression = [];
             if (Auth::id() === $set['user_id']) {
-                $progression['progression'] = [FlashcardsSetsProgress::getSetProgress(Auth::id(), $set['id'])];
+                $progression['progression'] = FlashcardsSetsProgressController::getSetProgress(Auth::id(), $set['id']);
             }
-            $translationsCount = ['count' => FlashcardSets::countTranslations($set['id'])];
+            $translationsCount = ['translationsCount' => FlashcardSets::countTranslations($set['id'])];
             $final[] = array_merge($translationsCount, $set, $progression);
         }
 
@@ -149,7 +154,7 @@ class FlashcardSets extends Model
 //                    ->join('flashcard_sets AS fs', 'fs.id', '=', 'fsp.flashcard_sets_id')
 //                    ->join('users AS u', 'u.id', '=', 'fsp.user_id')
                     ->where(['t.group_name' =>  $allGroups ? $group->group_name : $group['group_name'], 'fsp.user_id' => $user_id])
-                    ->select( 't.*' ,'fsp.isFavourite', 'fsp.status')
+                    ->select( 't.*' ,'fsp.is_favourite', 'fsp.status')
                     ->distinct()
                     ->get()
                     ->unique('id')
@@ -209,7 +214,11 @@ class FlashcardSets extends Model
 
     public static function countTranslations($set_id, ): int {
         return DB::table(
-            FlashcardSets::getTitle($set_id))->select(DB::raw('count(*) as count'))->value('count');
+            FlashcardSets::getTitle($set_id))->count();
+    }
+
+    public static function countGroups($set_id): int {
+        return DB::table(FlashcardSets::getTitle($set_id))->distinct('group_name')->count();
     }
 
     public static function getAuthorName($set_id): string {

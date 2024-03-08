@@ -1,29 +1,31 @@
-import { ProgressBars } from "@/Pages/Flashcards/Partials/ProgressBars.jsx";
+import { ProgressBar } from "@/Pages/Flashcards/Partials/ProgressBar.jsx";
 import { useLayoutEffect, useRef } from "react";
 import Animation from "@/Pages/Animation.js";
 import { Container } from "@/Components/Container.jsx";
+import { useObserver } from "@/useObserver.js";
 
-export const SetProgression = ({ progression, translationsCount }) => {
+export const SetProgression = ({
+  progression,
+  translationsCount,
+  asSection = true,
+}) => {
   const progressBars = [
     { type: "known", color: "bg-lime-500", text: "Already learned" },
     { type: "unknown", color: "bg-gray-500", text: "Not learned yet" },
     {
       type: "difficult",
       color: "bg-amber-500",
-      text: "Causing difficulties",
+      text: "Difficult",
     },
   ];
 
   let progressionRefs = useRef([]);
 
   useLayoutEffect(() => {
-    const progressionAnimation = new Animation(progressionRefs.current);
-
-    // Progression
-    progressionAnimation.animateAll("<", "<+.2", "<+.3");
+    useObserver(progressionRefs, "<", "<+.2", "<+.3");
   }, []);
 
-  return (
+  return asSection ? (
     <section
       className={
         "2xl:fixed 2xl:top-1/2 2xl:-translate-y-1/2 2xl:left-[calc((100vw-62rem)/4)] transform 2xl:-translate-x-1/2 md:max-w-[62rem] max-w-[76rem] mx-auto my-4 bg-white rounded-md "
@@ -38,7 +40,8 @@ export const SetProgression = ({ progression, translationsCount }) => {
         }
       >
         {progressBars.map((bar, index) => (
-          <ProgressBars
+          <ProgressBar
+            key={index}
             ref={(element) => (progressionRefs.current[index] = element)}
             length={Object.values(progression).at(index)}
             translationsLength={translationsCount}
@@ -47,5 +50,21 @@ export const SetProgression = ({ progression, translationsCount }) => {
         ))}
       </div>
     </section>
+  ) : (
+    <div
+      className={
+        "absolute bottom-4 left-[4rem] flex flex-col md:flex-row gap-x-4"
+      }
+    >
+      {progressBars.map((bar, index) => (
+        <ProgressBar
+          key={index}
+          ref={(element) => (progressionRefs.current[index] = element)}
+          length={Object.values(progression).at(index)}
+          translationsLength={translationsCount}
+          bar={bar}
+        />
+      ))}
+    </div>
   );
 };

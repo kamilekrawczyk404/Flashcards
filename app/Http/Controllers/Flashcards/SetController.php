@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Flashcards;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FlashcardsSetsProgressController;
 use App\Http\Requests\StoreNewSetRequest;
 use App\Http\Requests\UpdateSetRequest;
 use App\Http\Resources\DictionaryResource;
@@ -28,7 +29,7 @@ class SetController extends Controller
         return Inertia::render('Flashcards/SetInfo', [
             'set' => FlashcardSets::find($set_id),
             'groups' => FlashcardSets::getGroups(Auth::id(), $set_id),
-            'progression' => FlashcardsSetsProgress::getSetProgress(Auth::id(), $set_id),
+            'progression' => FlashcardsSetsProgressController::getSetProgress(Auth::id(), $set_id),
             'author' => FlashcardSets::getAuthorName($set_id),
             'translationsCount' => FlashcardSets::countTranslations($set_id)
         ]);
@@ -112,7 +113,7 @@ class SetController extends Controller
                     $setProgress->flashcard_sets_id = FlashcardSets::orderBy('id', 'desc')->first()->id;
                     $setProgress->translation_id = $countIndex;
                     $setProgress->status = 'unknown';
-                    $setProgress->isFavourite = false;
+                    $setProgress->is_favourite = false;
 
                     $user->setsProgress()->save($setProgress);
 
@@ -159,7 +160,7 @@ class SetController extends Controller
                     $setProgress->flashcard_sets_id = $set['id'];
                     $setProgress->translation_id = $lastId;
                     $setProgress->status = 'unknown';
-                    $setProgress->isFavourite = false;
+                    $setProgress->is_favourite = false;
 
                     $user->setsProgress()->save($setProgress);
                     $lastId += 1;

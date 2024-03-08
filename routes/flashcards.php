@@ -30,8 +30,10 @@ use Illuminate\Support\Facades\Route;
         // TestController
         Route::get('/set/{set_id}/test', [TestController::class, 'show'])->name('test');
 
-        // TranslationsController
+        // FlashcardsSetsProgress
         Route::put('/set/updateTranslationStatus', [FlashcardsSetsProgress::class, 'updateTranslationStatus'])->name('updateTranslationStatus');
+
+        Route::put("/set/setFavourite", [FlashcardsSetsProgress::class, 'updateFavourite'])->name('updateFavourite');
 
     });
 
@@ -44,9 +46,8 @@ use Illuminate\Support\Facades\Route;
         Route::delete('/delete/set/{set_id}', [SetController::class, 'deleteSet'])->name('deleteSet');
 
         // Translations controller
-        Route::put('/set/{set_id}/update-translation/{translation_id}/{title}', [TranslationsController::class, 'update'])->name('updateTranslation');
+        Route::put('/set/{set_id}/update-translation/{translation_id}', [TranslationsController::class, 'update'])->name('updateTranslation');
 
-        Route::delete('/set/{set_id}/delete/translation/{translation_id}/{title}', [TranslationsController::class, 'delete'])->name('deleteTranslation');
+        Route::delete('/set/{set_id}/delete/translation/{translation_id}', [TranslationsController::class, 'delete'])->name('deleteTranslation');
 
-        Route::put("/set/{set_id}/setFavourite/{translation_id}/{title}", [TranslationsController::class, 'updateOnlyFavourite'])->name('updateOnlyFavourite');
     });

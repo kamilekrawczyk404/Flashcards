@@ -55,7 +55,7 @@ export const Filter = ({
   return (
     <>
       {isSearching && (
-        <div className={isSearching ? "relative md:w-1/5 w-full" : "w-0"}>
+        <div className={isSearching ? "relative lg:w-1/5 w-full" : "w-0"}>
           <div
             className={
               "bg-gray-100 rounded-t-md p-2 self-start text-gray-700 transition-[width] flex flex-col relative"

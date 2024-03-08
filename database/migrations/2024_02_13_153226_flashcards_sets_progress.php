@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(FlashcardSets::class);
             $table->integer('translation_id');
             $table->string('status');
-            $table->string('isFavourite');
+            $table->string('is_favourite');
         });
     }
 

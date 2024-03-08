@@ -15,7 +15,7 @@ import Cookies from "js-cookie";
 import { Filter } from "@/Components/Form/Filter.jsx";
 
 export const Explore = forwardRef(
-  ({ auth, handleAnimateToRight, availableLanguages }, ref) => {
+  ({ handleAnimateToRight, availableLanguages }, ref) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [searching, setSearching] = useState("");
     const [isSearching, setIsSearching] = useState(false);
@@ -91,7 +91,7 @@ export const Explore = forwardRef(
         ...setsRef.current,
       ]);
 
-      resultsAppearingAnimation.animateAll("<-.2", "", "<-.2");
+      resultsAppearingAnimation.animateAll("<-.3", "", "<-.4");
     }, [sets]);
 
     //TODO: filtering by title, created_date, desc, asc
@@ -105,12 +105,12 @@ export const Explore = forwardRef(
       >
         <div
           className={
-            "max-h-[70vh] mx-auto w-full flex gap-4 flex-col items-center justify-center"
+            "sm:max-h-[70vh] h-full mx-auto w-full flex gap-4 flex-col items-center justify-center"
           }
         >
           <div
             className={
-              "flex w-full justify-center gap-2 md:flex-row flex-col-reverse"
+              "flex w-full justify-center gap-2 lg:flex-row flex-col-reverse"
             }
           >
             <Filter
@@ -132,7 +132,7 @@ export const Explore = forwardRef(
           </div>
           {!sets.length && (
             <SearchLoadingAnimation
-              className={"md:ml-[20%] ml-0"}
+              className={"lg:ml-[20%] ml-0 lg:mt-0 mt-32"}
               progress={progress}
               hasMore={hasMore}
               sets={sets}
@@ -140,26 +140,22 @@ export const Explore = forwardRef(
           )}
           <div
             className={
-              "overflow-y-scroll h-[90vh] w-full flex flex-col items-center gap-4 md:ml-[20.75%] ml-0"
+              "overflow-y-scroll h-[75vh] w-full flex flex-col items-center gap-4 lg:ml-[20.75%] ml-0 lg:mt-0 mt-32"
             }
           >
             {sets.map((set, index) =>
               sets.length === index + 1 && sets.length !== 1 ? (
                 <SingleSet
-                  auth={auth}
                   key={index}
                   set={set}
                   ref={lastSetRef}
-                  translationsCount={set.count}
                   className={"opacity-0 polygon-start"}
                 />
               ) : (
                 <SingleSet
-                  auth={auth}
                   key={index}
                   set={set}
                   ref={(element) => (setsRef.current[index] = element)}
-                  translationsCount={set.count}
                   className={"opacity-0 polygon-start"}
                 />
               ),

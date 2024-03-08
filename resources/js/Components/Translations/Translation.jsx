@@ -4,6 +4,7 @@ import MicroModal from "micromodal";
 import { router } from "@inertiajs/react";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 export const Translation = ({
   permissions,
@@ -16,9 +17,16 @@ export const Translation = ({
     e.preventDefault();
 
     router.put(
-      `/set/${set.id}/setFavourite/${translation.id}`,
-      !translation.isFavourite,
-      { preserveScroll: true, preserveState: false },
+      `/set/setFavourite/`,
+      {
+        value: !Boolean(parseInt(translation.is_favourite)),
+        translation_id: translation.id,
+        set_id: set.id,
+      },
+      {
+        preserveScroll: true,
+        preserveState: true,
+      },
     );
   };
 
@@ -75,16 +83,10 @@ export const Translation = ({
             className={"text-gray-100"}
           />
           <button>
-            {parseInt(translation.isFavourite) ? (
-              <FontAwesomeIcon
-                icon="fa-solid fa-star"
-                className={"text-amber-500"}
-              />
+            {parseInt(translation.is_favourite) ? (
+              <FontAwesomeIcon icon={faStar} className={"text-amber-500"} />
             ) : (
-              <FontAwesomeIcon
-                icon="fa-regular fa-star"
-                className={"text-gray-100"}
-              />
+              <FontAwesomeIcon icon={faStar} className={"text-gray-100"} />
             )}
           </button>
         </div>

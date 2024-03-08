@@ -9,6 +9,7 @@ import { AllSets } from "@/Pages/Flashcards/AllSets.jsx";
 import { Explore } from "@/Pages/Flashcards/Explore.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
+import { getFilePath } from "@/getFilePath.jsx";
 
 export default function Home({
   auth,
@@ -138,11 +139,11 @@ export default function Home({
             <div
               ref={welcomeScreen}
               className={
-                "flex mx-auto items-center xl:flex-row flex-col-reverse justify-between xl:gap-0 gap-20 max-w-[76rem]  polygon-start translate-y-12 opacity-0"
+                "flex sm:mx-auto items-center xl:flex-row flex-col-reverse justify-between xl:gap-0 gap-10 max-w-[76rem] m-2 polygon-start translate-y-12 opacity-0"
               }
             >
               <div className={"xl:space-y-16 space-y-8 rounded-md"}>
-                <h1 className={"text-3xl text-gray-700"}>
+                <h1 className={"sm:text-3xl text-2xl text-gray-700"}>
                   Start your learning journey right now!
                   <div
                     className={
@@ -156,14 +157,13 @@ export default function Home({
                   </div>
                 </h1>
                 <SignUpSignIn
-                  className={"rounded-md [&>a]:scale-[1.25] space-x-6"}
+                  className={"rounded-md [&>a]:  space-x-6"}
+                  isInNav={false}
                 />
               </div>
               <img
-                className={"max-w-[55%]"}
-                src={
-                  "http://127.0.0.1:8000/storage/images/home_unauthenticated.jpg"
-                }
+                className={"sm:max-w-[55%] w-fit"}
+                src={getFilePath("/images/home_unauthenticated.jpg")}
                 alt="Study Image"
               />
             </div>
@@ -214,7 +214,7 @@ export default function Home({
                     className={
                       "sm:block hidden xl:max-w-[25rem] lg:max-w-[20rem] sm:max-w-[12rem] rounded-md self-center"
                     }
-                    src="http://127.0.0.1:8000/storage/images/learn.jpg"
+                    src={getFilePath("/images/learn.jpg")}
                     alt="learning image"
                   />
                 </OptionCard>
@@ -235,7 +235,7 @@ export default function Home({
                     className={
                       "sm:block hidden xl:max-w-[25rem] lg:max-w-[20rem] sm:max-w-[12rem] w-full rounded-md self-center xl:mt-20 lg:mt-12 mt-8"
                     }
-                    src="http://127.0.0.1:8000/storage/images/searching.jpg"
+                    src={getFilePath("/images/searching.jpg")}
                     alt="explore"
                   />
                 </OptionCard>
@@ -244,14 +244,11 @@ export default function Home({
             <AllSets
               handleHasMovedToAllSets={setHasMovedToAllSets}
               hasMovedToAllSets={hasMovedToAllSets}
-              auth={auth}
               ref={setsComponent}
               handleAnimateToLeft={animateToLeft}
-              userId={auth.user.id}
             />
             <Explore
               availableLanguages={availableLanguages}
-              auth={auth}
               ref={exploreComponent}
               handleAnimateToRight={animateToRight}
             />

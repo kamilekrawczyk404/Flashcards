@@ -14,13 +14,7 @@ import { usePage } from "@inertiajs/react";
 
 export const AllSets = forwardRef(
   (
-    {
-      auth,
-      userId,
-      handleAnimateToLeft,
-      hasMovedToAllSets,
-      handleHasMovedToAllSets,
-    },
+    { handleAnimateToLeft, hasMovedToAllSets, handleHasMovedToAllSets },
     ref,
   ) => {
     const [sets, setSets] = useState([]);
@@ -28,9 +22,11 @@ export const AllSets = forwardRef(
 
     const feedback = usePage().props?.feedback;
 
+    const auth = usePage().props.auth;
+
     // Fatch data async with all sets...
     useEffect(() => {
-      fetch(`/get-user-sets/${userId}`)
+      fetch(`/get-user-sets/${auth.user.id}`)
         .then((response) => response.json())
         .then((data) => {
           setSets(data);
@@ -88,12 +84,10 @@ export const AllSets = forwardRef(
               >
                 {sets.map((set, index) => (
                   <SingleSet
-                    auth={auth}
                     key={index}
                     ref={(e) => (refs.current[index] = e)}
                     set={set}
                     index={index}
-                    translationsCount={set.count}
                     className={"opacity-0 translate-y-6 polygon-start"}
                   />
                 ))}

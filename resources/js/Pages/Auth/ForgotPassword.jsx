@@ -39,6 +39,8 @@ export default function ForgotPassword({ status }) {
           }
           hasLines={true}
           className={"p-8"}
+          from={"bg-indigo-600"}
+          to={"bg-indigo-400"}
         >
           <div className="mb-4 text-md text-gray-100">
             <span className={"text-lg font-bold"}>Forgot your password?</span>{" "}

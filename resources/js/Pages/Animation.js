@@ -3,9 +3,9 @@ import gsap from "gsap/all";
 export default class Animation {
   animateAll = (clippingPosition, movingPosition, appearingPosition) => {
     this.elements.forEach((element) => {
-      this.clipping.to(element, {}, clippingPosition);
-      this.moving.to(element, {}, movingPosition);
-      this.appearing.to(element, {}, appearingPosition);
+      this.clippingTo.to(element, {}, clippingPosition);
+      this.movingTo.to(element, {}, movingPosition);
+      this.appearingTo.to(element, {}, appearingPosition);
     });
   };
 
@@ -51,7 +51,7 @@ export default class Animation {
       },
       slidingPosition,
     );
-    this.appearing.to(
+    this.appearingTo.to(
       this.elements[0],
       {
         display: "flex",
@@ -90,7 +90,7 @@ export default class Animation {
       },
     });
 
-    this.clipping = gsap.timeline({
+    this.clippingTo = gsap.timeline({
       onComplete: onComplete,
       defaults: {
         ...this.defaults,
@@ -101,7 +101,7 @@ export default class Animation {
       },
     });
 
-    this.moving = gsap.timeline({
+    this.movingTo = gsap.timeline({
       onComplete: onComplete,
       defaults: {
         ...this.defaults,
@@ -109,7 +109,7 @@ export default class Animation {
       },
     });
 
-    this.appearing = gsap.timeline({
+    this.appearingTo = gsap.timeline({
       onComplete: onComplete,
       defaults: {
         ...this.defaults,
