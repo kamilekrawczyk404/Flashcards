@@ -44,8 +44,6 @@ export const SingleSet = forwardRef(
       useObserver(titleRef, "", "", "+.2");
     }, []);
 
-    console.log(set.progression);
-
     return (
       <div
         ref={ref}

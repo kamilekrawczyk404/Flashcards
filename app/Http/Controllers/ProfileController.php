@@ -24,6 +24,7 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'userSocialMedias' => User::getUserSocials()
         ]);
     }
 
@@ -32,7 +33,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $filename = "";
+        $filename = $request->avatar;
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
@@ -48,8 +49,9 @@ class ProfileController extends Controller
 
         }
 
-        $request->user()->fill([
-            $request->validated(),
+        User::find(Auth::id())->update([
+            'name' => $request->name,
+            'email' => $request->email,
             'avatar' => $filename
         ]);
 
@@ -62,21 +64,20 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
-    public function update_socials(Request $request): RedirectResponse {
-        User::where('id', Auth::id())->update([
-            'social_media_links' => $request->all()
-        ]);
+    public function updateSocials(Request $request): RedirectResponse {
+        foreach ($request->all() as $key => $value) {
+            User::where('id', Auth::id())->update([
+                $key => $value
+            ]);
+        }
 
-        return Redirect::route('profile.edit');
+
+        return Redirect::route('profile.edit')->with('success', 'Your social medias have been updated successfully');
     }
 
-    public function delete_social(Request $request): RedirectResponse {
-        $socialLinks = Auth::user()->social_media_links;
-
-        $socialLinks[$request->get('name')] = null;
-
+    public function deleteSocial(Request $request): RedirectResponse{
         User::where('id', Auth::id())->update([
-            'social_media_links' => $socialLinks
+            $request->get('name') => ""
         ]);
 
         return Redirect::route('profile.edit');

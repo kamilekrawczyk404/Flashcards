@@ -9,6 +9,7 @@ import Animation from "@/Pages/Animation.js";
 import { RankingList } from "@/Components/Learning/RankingList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFeedbackResults } from "@/useFeedbackResults.js";
+import gradient from "@material-tailwind/react/theme/components/timeline/timelineIconColors/gradient.js";
 
 const Match = ({
   set,

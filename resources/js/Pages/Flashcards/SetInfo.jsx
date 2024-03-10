@@ -65,25 +65,25 @@ export default function SetInfo({
 
     // Nav
     for (let i = 0; i < 4; i++) {
-      mainAnimation.clipping.to(mainRefs.current[i], {}, "<");
-      mainAnimation.moving.to(mainRefs.current[i], {}, "");
-      mainAnimation.appearing.to(mainRefs.current[i], {}, "<+.1");
+      mainAnimation.clippingTo.to(mainRefs.current[i], {}, "<");
+      mainAnimation.movingTo.to(mainRefs.current[i], {}, "");
+      mainAnimation.appearingTo.to(mainRefs.current[i], {}, "<+.1");
     }
 
     // Carousel
-    mainAnimation.moving
+    mainAnimation.movingTo
       .to(mainRefs.current[4], {}, "<+.5")
       // Author
       .to(mainRefs.current[5], {}, "<-.5")
       // Button
       .to(mainRefs.current[6], {}, "<+.3");
 
-    mainAnimation.appearing
+    mainAnimation.appearingTo
       .to(mainRefs.current[4], {}, "<+.3")
       .to(mainRefs.current[5], {}, "<+.7")
       .to(mainRefs.current[6], {}, "<");
 
-    mainAnimation.clipping
+    mainAnimation.clippingTo
       .to(mainRefs.current[4], {}, "<+.3")
       .to(mainRefs.current[5], {}, "<+.5")
       .to(mainRefs.current[6], {}, "<+.3");

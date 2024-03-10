@@ -1,5 +1,6 @@
 import { Link } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export const CancelButton = ({
   className = "",
@@ -15,7 +16,7 @@ export const CancelButton = ({
         className
       }
     >
-      <FontAwesomeIcon icon="fa-solid fa-xmark" />
+      <FontAwesomeIcon icon={faXmark} />
     </Link>
   );
 };

@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Animation from "@/Pages/Animation.js";
 import { act } from "react-dom/test-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp, faFilter } from "@fortawesome/free-solid-svg-icons";
 
 export const Filter = ({
   isSearching,
@@ -70,7 +71,7 @@ export const Filter = ({
             >
               <p className={"flex items-center p-2 bg-white rounded-sm"}>
                 <FontAwesomeIcon
-                  icon="fa-solid fa-filter"
+                  icon={faFilter}
                   className={"text-xl text-indigo-500 mr-2"}
                 />
                 <span>Filters</span>
@@ -82,7 +83,7 @@ export const Filter = ({
                 }
               >
                 <FontAwesomeIcon
-                  icon="fa-solid fa-arrow-up"
+                  icon={faArrowUp}
                   className={"text-xl text-indigo-500"}
                 />
               </span>

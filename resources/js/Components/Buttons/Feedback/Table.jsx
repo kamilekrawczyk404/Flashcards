@@ -1,6 +1,8 @@
 export const Table = ({ groups, data = [], className = "", ...props }) => {
   const columns = ["Id", "Group Name", "Term", "Definition"];
 
+  console.log(groups);
+
   return (
     <div className="rounded-md max-h-[50vh] overflow-y-auto">
       <table

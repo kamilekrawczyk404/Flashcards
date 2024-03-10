@@ -10,6 +10,10 @@ import { Explore } from "@/Pages/Flashcards/Explore.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
 import { getFilePath } from "@/getFilePath.jsx";
+import {
+  faGraduationCap,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function Home({
   auth,
@@ -18,6 +22,8 @@ export default function Home({
   canRegister,
   feedback,
 }) {
+  // convert images to webp
+
   const sentences = [
     "It's totally free!",
     "Join to our community!",
@@ -206,7 +212,7 @@ export default function Home({
                   <h1 className={"text-indigo-500 text-2xl font-bold"}>
                     Learn
                     <FontAwesomeIcon
-                      icon="fa-solid fa-graduation-cap"
+                      icon={faGraduationCap}
                       className={"text-amber-500 ml-2"}
                     />
                   </h1>
@@ -227,7 +233,7 @@ export default function Home({
                   <span className={"text-indigo-500 text-2xl font-bold"}>
                     Explore
                     <FontAwesomeIcon
-                      icon="fa-solid fa-magnifying-glass"
+                      icon={faMagnifyingGlass}
                       className={"text-amber-500 ml-2"}
                     />
                   </span>

@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export const SearchLoadingAnimation = ({
   progress,
@@ -30,7 +31,7 @@ export const SearchLoadingAnimation = ({
             "bg-gray-100 rounded-md p-4 text-red-500 font-bold flex items-center gap-2"
           }
         >
-          <FontAwesomeIcon icon="fa-solid fa-xmark" className={"text-xl"} />
+          <FontAwesomeIcon icon={faXmark} className={"text-xl"} />
           No sets found!
         </div>
       )}

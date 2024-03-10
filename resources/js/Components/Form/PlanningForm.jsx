@@ -52,7 +52,7 @@ export const PlanningForm = ({
         <p className="text-2xl text-indigo-500 font-semibold mt-2">{title}</p>
       </div>
       <div
-        className="relative flex gap-4 flex-col items-start bg-gray-100 py-4 space-y-2 rounded-md polygon-start opacity-0 translate-y-12 before:absolute before:w-1 before:h-full before:bg-indigo-400 before:top-0 before:left-4 pl-6 pr-4 text-gray-700"
+        className="relative flex  flex-col items-start bg-gray-100 py-4 rounded-md polygon-start opacity-0 translate-y-12 before:absolute before:w-1 before:h-full before:bg-indigo-400 before:top-0 before:left-4 pl-6 pr-4 text-gray-700"
         ref={(element) => {
           refs.current[2] = element;
         }}

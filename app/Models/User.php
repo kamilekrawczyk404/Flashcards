@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\SerializableClosure\UnsignedSerializableClosure;
 
 class User extends Authenticatable
 {
@@ -23,17 +24,18 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'social_media_links',
-        'avatar'
+        'avatar',
+        'instagram',
+        'twitter',
+        'snapchat',
+        'facebook'
     ];
 
     protected $attributes = [
-        'social_media_links' => '{
-            "instagram": null,
-            "facebook": null,
-            "x": null,
-            "snapchat": null
-        }'
+        'instagram' => "",
+        'twitter'=> "",
+        'snapchat' => "",
+        'facebook' => ""
     ];
 
     /**
@@ -54,7 +56,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'social_media_links' => 'json'
     ];
 
     public function sets(): HasMany {
@@ -71,4 +72,9 @@ class User extends Authenticatable
     public static function getAvatarName() {
         return User::where('id', Auth::id())->value('avatar');
     }
+
+    public static function getUserSocials(): object {
+        return User::find(Auth::id())->get(['instagram', 'facebook', 'snapchat', 'twitter'])[0];
+    }
+
 }

@@ -18,7 +18,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('avatar');
-            $table->json('social_media_links');
+            $table->string('facebook');
+            $table->string('instagram');
+            $table->string('snapchat');
+            $table->string('twitter');
             $table->rememberToken();
             $table->timestamps();
         });

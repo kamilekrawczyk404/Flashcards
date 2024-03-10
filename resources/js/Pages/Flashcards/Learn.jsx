@@ -157,7 +157,7 @@ export default function Learn({ auth, set, groupsProperties }) {
           groups[current.groupIndex]?.translationsCount ? (
             <>
               <ProgressBar ref={ref} className="top-0 h-4 bg-indigo-500" />
-              <Container>
+              <Container className={"mt-4"}>
                 {groups?.map((group, groupIndex) =>
                   group?.components.map((component, componentIndex) => {
                     if (

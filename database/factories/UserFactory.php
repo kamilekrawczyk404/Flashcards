@@ -29,6 +29,10 @@ class UserFactory extends Factory
             'password' => 'qwerty',
             'avatar' => 'default.png',
             'remember_token' => Str::random(10),
+            'facebook' => "https://facebook.com/user1234qwerty",
+            'instagram' => "qwerty",
+            'twitter' => "qwerty@qwerty",
+            'snapchat' => "qwerty"
         ];
     }
 

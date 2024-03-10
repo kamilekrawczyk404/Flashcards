@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useRef } from "react";
 import { button } from "@material-tailwind/react";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export const Search = forwardRef(
   (
@@ -60,7 +61,7 @@ export const Search = forwardRef(
             }}
           >
             <FontAwesomeIcon
-              icon="fa-solid fa-magnifying-glass"
+              icon={faMagnifyingGlass}
               className={"text-lg text-indigo-500"}
             />
           </button>
@@ -92,7 +93,7 @@ export const Search = forwardRef(
               }
             >
               <FontAwesomeIcon
-                icon="fa-solid fa-xmark"
+                icon={faXmark}
                 className={"font-bold text-2xl px-3 py-2"}
               />
             </button>
@@ -108,11 +109,11 @@ export const Search = forwardRef(
           <div
             ref={previousSearchesContainerRef}
             className={
-              "w-full space-y-2 mx-auto bg-gray-100 rounded-b-md p-2 polygon-from-top opacity-0"
+              "w-full space-y-2 mx-auto bg-gray-100 rounded-b-md p-2 max-h-[4.95rem] polygon-from-top opacity-0"
             }
           >
             <p className={"text-indigo-500"}>Last searches</p>
-            <div className={"flex gap-2 flex-wrap rounded-full max-h-[2rem] "}>
+            <div className={"flex gap-2 flex-wrap rounded-full  "}>
               {previousSearches.reverse().map(
                 (previous, index) =>
                   index < 10 && (
@@ -145,7 +146,7 @@ export const Search = forwardRef(
                         }}
                       >
                         <FontAwesomeIcon
-                          icon="fa-solid fa-xmark"
+                          icon={faXmark}
                           className={
                             "text-md pl-2 pr-3 font-bold text-gray-100"
                           }

@@ -7,7 +7,6 @@ import { Head, router } from "@inertiajs/react";
 import { Container } from "@/Components/Container";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import gsap from "gsap/all";
 import { Select } from "@/Components/Form/Select.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import Animation from "@/Pages/Animation.js";
@@ -111,10 +110,10 @@ export default function CreateSet({ auth, errorsFromController }) {
         <Container>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="p-2 text-gray-900 flex gap-4 flex-col"
+            className=" text-gray-900 flex gap-4 flex-col"
           >
             <div
-              className="bg-gradient-to-br from-indigo-600 to-indigo-400 rounded-md space-y-4 shadow-md p-4 polygon-start opacity-0 translate-y-12"
+              className="bg-gradient-to-br from-indigo-600 to-indigo-400 sm:rounded-md space-y-4 shadow-md p-4 polygon-start opacity-0 translate-y-12"
               ref={(element) => (refs.current[0] = element)}
             >
               <div className={"shadow-lg"}>

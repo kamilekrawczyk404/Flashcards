@@ -29,7 +29,7 @@ export const LearnChooseGroups = ({
   // TODO: only difficult
 
   return (
-    <Container>
+    <Container className={"mt-4"}>
       <PlanningForm
         handleSubmit={handleSubmit}
         handleSetIsChoosingGroups={handleSetIsChoosingGroups}
@@ -40,9 +40,9 @@ export const LearnChooseGroups = ({
         set={set}
         title={"Set up your learning plan"}
       >
-        <FormSection title={"Groups"} className={"gap-8"}>
+        <FormSection title={"Groups"} className={"gap-2"}>
           {groupsProperties.map((group, index) => (
-            <FormChild className={"gap-2 items-center"} key={index}>
+            <FormChild className={"gap-2 flex-col"} key={index}>
               <GroupPropertiesForm
                 group={group}
                 errors={errors}

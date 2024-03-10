@@ -6,18 +6,29 @@ import { useLayoutEffect, useRef } from "react";
 import Animation from "@/Pages/Animation.js";
 import UpdateProfileInformation from "@/Pages/Profile/Partials/UpdateProfileInformationForm.jsx";
 import { SocialsPopUp } from "@/Components/Modals/SocialsPopUp.jsx";
+import {
+  faSquareFacebook,
+  faSquareInstagram,
+  faSquareSnapchat,
+  faSquareXTwitter,
+} from "@fortawesome/free-brands-svg-icons";
 
-export default function Edit({ auth, mustVerifyEmail, status }) {
+export default function Edit({
+  auth,
+  mustVerifyEmail,
+  status,
+  userSocialMedias,
+}) {
   const linesStyle =
     "relative before:absolute before:-right-[13rem] before:bottom-0 before:bg-indigo-500 before:w-1/2 before:h-1 before:transform before:-rotate-45 after:absolute after:-right-[15rem] after:bottom-0 after:bg-indigo-500 after:w-1/2 after:h-1 after:transform after:-rotate-45 overflow-hidden";
 
   const refs = useRef([]);
 
-  const socialMedias = [
-    { name: "instagram", color: "text-purple-500" },
-    { name: "facebook", color: "text-blue-700" },
-    { name: "x", color: "text-gray-900" },
-    { name: "snapchat", color: "text-amber-400" },
+  const socialMediasProps = [
+    { name: "instagram", color: "text-purple-500", icon: faSquareInstagram },
+    { name: "facebook", color: "text-blue-700", icon: faSquareFacebook },
+    { name: "twitter", color: "text-gray-900", icon: faSquareXTwitter },
+    { name: "snapchat", color: "text-amber-400", icon: faSquareSnapchat },
   ];
 
   useLayoutEffect(() => {
@@ -48,7 +59,8 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
             <UpdateProfileInformation
               mustVerifyEmail={mustVerifyEmail}
               status={status}
-              socialMedias={socialMedias}
+              socialMediasProps={socialMediasProps}
+              userSocialMedias={userSocialMedias}
             />
           </div>
           <div
@@ -73,10 +85,10 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
         </div>
       </div>
       <SocialsPopUp
-        userSocialMedias={auth.user.social_media_links}
+        socialMediasProps={socialMediasProps}
+        userSocialMedias={userSocialMedias}
         modalId={"socials"}
         header={"Social media"}
-        socialMedias={socialMedias}
       />
     </AuthenticatedLayout>
   );

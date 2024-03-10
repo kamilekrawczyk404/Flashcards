@@ -9,11 +9,13 @@ import { SocialsPopUp } from "@/Components/Modals/SocialsPopUp.jsx";
 import MicroModal from "micromodal";
 import { SocialButton } from "@/Components/Buttons/SocialButton.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 export default function UpdateProfileInformation({
   mustVerifyEmail,
   status,
-  socialMedias,
+  userSocialMedias,
+  socialMediasProps,
 }) {
   const user = usePage().props.auth.user;
 
@@ -192,28 +194,26 @@ export default function UpdateProfileInformation({
                     }}
                   >
                     <FontAwesomeIcon
-                      icon="fa-solid fa-plus"
+                      icon={faPlus}
                       className={"text-xl text-gray-500"}
                     />
                   </button>
 
-                  {Object.entries(user.social_media_links).map(
-                    ([key, value]) => {
-                      if (typeof value === "string") {
-                        return (
-                          <SocialButton
-                            key={key}
-                            usedInForm={false}
-                            element={socialMedias.find(
-                              (element) => element.name === key,
-                            )}
-                            handleDeleteSocial={deleteSocial}
-                            isDeleting={isDeleting}
-                          />
-                        );
-                      }
-                    },
-                  )}
+                  {Object.entries(userSocialMedias).map(([key, value]) => {
+                    if (value !== "") {
+                      return (
+                        <SocialButton
+                          key={key}
+                          usedInForm={false}
+                          element={socialMediasProps.find(
+                            (element) => element.name === key,
+                          )}
+                          handleDeleteSocial={deleteSocial}
+                          isDeleting={isDeleting}
+                        />
+                      );
+                    }
+                  })}
                 </div>
               </div>
             </div>
@@ -247,7 +247,7 @@ export default function UpdateProfileInformation({
                   }
                 >
                   <FontAwesomeIcon
-                    icon="fa-solid fa-camera"
+                    icon={faCamera}
                     className={"text-gray-100 text-md"}
                   />
                 </button>
