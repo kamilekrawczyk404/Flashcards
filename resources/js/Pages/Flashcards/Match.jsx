@@ -10,6 +10,7 @@ import { RankingList } from "@/Components/Learning/RankingList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFeedbackResults } from "@/useFeedbackResults.js";
 import gradient from "@material-tailwind/react/theme/components/timeline/timelineIconColors/gradient.js";
+import { faHourglassStart } from "@fortawesome/free-solid-svg-icons";
 
 const Match = ({
   set,
@@ -17,6 +18,7 @@ const Match = ({
   translationsPerPage,
   bestResult,
   rankingList,
+  groups,
 }) => {
   const [isStarted, setIsStarted] = useState(false);
   const [isFirstCard, setIsFirstCard] = useState(true);
@@ -221,12 +223,14 @@ const Match = ({
     }
   };
 
+  console.log(groups);
+
   return (
     <>
       <GamesNavigation set={set}>
         <span className="text-indigo-500 font-bold">Match</span>
       </GamesNavigation>
-      <Container>
+      <Container className={"mt-4"}>
         {!isStarted && !isEnd && (
           <div
             className="mx-auto flex flex-col gap-8 m-4 items-center relative opacity-0 polygon-start translate-y-12"
@@ -234,16 +238,14 @@ const Match = ({
               refs.current[0] = element;
             }}
           >
-            <div>
-              <RankingList rankings={rankingList} />
-            </div>
-            <span className="text-2xl text-indigo-500 font-bold bg-gray-100 p-2 rounded-md">
+            <RankingList rankings={rankingList} />
+            <p className="text-2xl text-indigo-500 font-bold bg-gray-100 p-2 rounded-md">
               Ready to play?
-            </span>
-            <span className="text-gray-700 text-xl md:max-w-[35%] text-center border-b-4 border-gray-300 pb-2">
+            </p>
+            <p className="text-gray-700 text-xl md:max-w-[35%] text-center border-b-4 border-gray-300 pb-2">
               Match all the terms with their definitions as quick as possible.
               Try avoiding incorrect matches. They add extra time!
-            </span>
+            </p>
             <div
               className={"polygon-start translate-y-12"}
               ref={(element) => {
@@ -280,7 +282,7 @@ const Match = ({
                 }
               >
                 <FontAwesomeIcon
-                  icon="fa-solid fa-hourglass-start"
+                  icon={faHourglassStart}
                   className={
                     "text-md transform animate-hourglass font-semibold"
                   }
@@ -329,14 +331,10 @@ const Match = ({
           <Feedback
             set={set}
             answersResults={feedbackData}
-            barWidth={Math.round(
-              (feedbackData.correctIds / (cards.length / 2)) * 100,
-              2,
-            )}
-            length={cards.length / 2}
             routeName={"match"}
             finishedTime={seconds.toFixed(2)}
             bestResult={bestResult}
+            groups={groups}
           />
         )}
       </Container>

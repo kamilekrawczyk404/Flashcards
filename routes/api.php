@@ -30,7 +30,7 @@ Route::get('/search-in-sets/', function (Request $request) {
 })->name('searchInSets');
 
 Route::get('/get-groups-for-learning/', function(Request $request) {
-    return LearnController::prepareForLearn($request->user_id, $request->set_id, $request->groups, $request->options);
+    return LearnController::prepareForLearn($request->user_id, $request->set_id, $request->groups);
 })->name('getGroupsForLearning');
 
 Route::get('/get-groups-for-test/', function(Request $request) {

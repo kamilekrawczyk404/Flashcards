@@ -10,14 +10,10 @@ import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import { ApplicationLogo } from "@/Layouts/Partials/ApplicationLogo.jsx";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useUserAvatar } from "@/useUserAvatar.js";
+import { getFilePath } from "@/getFilePath.jsx";
 
 export default function Register() {
-  const [temporaryAvatar, setTemporaryAvatar] = useState("");
-
-  const defaultAvatarPath =
-    "http://127.0.0.1:8000/storage/users_avatars/default.png";
-  const MAX_FILE_SIZE = 1024 * 1024 * 5;
-
   let fileInputRef = useRef();
   let imageRef = useRef();
   let logoRef = useRef();
@@ -28,42 +24,16 @@ export default function Register() {
     email: "",
     password: "",
     password_confirmation: "",
-    avatar: defaultAvatarPath,
+    avatar: getFilePath("/users_avatars/default.jpg"),
   });
 
-  const [avatarErrors, setAvatarErrors] = useState({
-    size: { value: false, message: "The file size must be lower than 2MB" },
-    fileType: {
-      value: false,
-      message: "The file type must be .png or .jpg",
-    },
-  });
-
-  const setPreviewAvatar = () => {
-    const file = fileInputRef.current.files[0];
-
-    if (file.size > MAX_FILE_SIZE) {
-      setAvatarErrors((prev) => ({
-        size: {
-          ...prev.size,
-          value: true,
-        },
-      }));
-    } else {
-      setAvatarErrors((prev) => ({
-        size: {
-          ...prev.size,
-          value: false,
-        },
-      }));
-    }
-
-    // store image file in form
-    setData("avatar", file);
-
-    const image = URL.createObjectURL(file);
-    setTemporaryAvatar(image);
-  };
+  const {
+    saveAvatar,
+    temporaryAvatar,
+    avatarErrors,
+    userChangedAvatar,
+    setUserChangedAvatar,
+  } = useUserAvatar(fileInputRef, setData);
 
   useEffect(() => {
     return () => {
@@ -199,7 +169,7 @@ export default function Register() {
                 <input
                   ref={(element) => (fileInputRef.current = element)}
                   type="file"
-                  onChange={() => setPreviewAvatar()}
+                  onChange={() => saveAvatar()}
                   className={"hidden"}
                   accept={"image/*"}
                 />
@@ -226,8 +196,8 @@ export default function Register() {
                   <img
                     ref={(element) => (imageRef.current = element)}
                     src={
-                      data.avatar !== defaultAvatarPath
-                        ? temporaryAvatar
+                      data.avatar !== getFilePath("/users_avatars/default.jpg")
+                        ? getFilePath("/users_avatars/default.jpg")
                         : data.avatar
                     }
                     className={"rounded-full w-[12rem] aspect-square "}

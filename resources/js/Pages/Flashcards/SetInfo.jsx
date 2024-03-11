@@ -15,6 +15,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
 import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
 import { SetProgression } from "@/Pages/Flashcards/Partials/SetProgression.jsx";
+import {
+  faBook,
+  faChalkboardUser,
+  faCopy,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function SetInfo({
   auth,
@@ -138,7 +143,7 @@ export default function SetInfo({
                 href={route("flashcards.learn", [set.id])}
               >
                 <FontAwesomeIcon
-                  icon="fa-solid fa-book"
+                  icon={faBook}
                   className={"text-xl text-gray-600 transition mr-3"}
                 />
                 Learn
@@ -151,7 +156,7 @@ export default function SetInfo({
                 href={route("flashcards.test", [set.id])}
               >
                 <FontAwesomeIcon
-                  icon="fa-solid fa-chalkboard-user"
+                  icon={faChalkboardUser}
                   className={"mr-3 text-xl text-gray-600 transition"}
                 />
                 Test
@@ -164,7 +169,7 @@ export default function SetInfo({
                 href={route("flashcards.match", [set.id])}
               >
                 <FontAwesomeIcon
-                  icon="fa-solid fa-copy"
+                  icon={faCopy}
                   className={"mr-3 text-xl text-gray-600 transition"}
                 />
                 Match

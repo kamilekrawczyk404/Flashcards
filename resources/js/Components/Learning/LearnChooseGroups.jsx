@@ -4,12 +4,15 @@ import { useForm } from "react-hook-form";
 import { FormSection } from "@/Components/Form/FormSection.jsx";
 import { PlanningForm } from "@/Components/Form/PlanningForm.jsx";
 import { GroupPropertiesForm } from "@/Components/Form/GroupPropertiesForm.jsx";
+import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
+import InputLabel from "@/Components/Form/InputLabel.jsx";
 
 export const LearnChooseGroups = ({
   set,
   groupsProperties,
   handleSetComponentProperties,
   handleSetIsChoosingGroups,
+  hasDifficult = false,
 }) => {
   const {
     formState: { errors, dirtyFields },
@@ -25,8 +28,6 @@ export const LearnChooseGroups = ({
       answersLanguage: [set.source_language, set.target_language],
     },
   });
-
-  // TODO: only difficult
 
   return (
     <Container className={"mt-4"}>
@@ -49,7 +50,6 @@ export const LearnChooseGroups = ({
                 register={register}
                 id={index}
                 getValues={getValues}
-                setValue={setValue}
                 resetField={resetField}
               />
             </FormChild>

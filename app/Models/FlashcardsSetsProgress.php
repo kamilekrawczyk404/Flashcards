@@ -57,11 +57,10 @@ class FlashcardsSetsProgress extends Model
     }
 
     public function updateFavourite(Request $request): void {
-
         FlashcardsSetsProgress::where([
             'user_id' => Auth::id(),
             'flashcard_sets_id' => $request->set_id,
             'translation_id' => $request->translation_id
-        ])->update(['is_favourite' => $request->value]);
+        ])->update(['is_favourite' => +$request->value]);
     }
 }

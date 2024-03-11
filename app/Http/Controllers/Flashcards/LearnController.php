@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Flashcards;
 
+use App\Http\Controllers\FlashcardsSetsProgressController;
 use App\Models\FlashcardSets;
+use App\Models\FlashcardsSetsProgress;
 use App\Models\Translations;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Controller;
@@ -19,7 +21,7 @@ class LearnController extends Controller
         ]);
     }
 
-    public static function prepareForLearn(int $user_id, int $set_id, $groups): array {
+    public static function prepareForLearn(int $user_id, int $set_id, $groups ): array {
         $groups = FlashcardSets::getGroups($user_id, $set_id, $groups);
 
         $final = [];

@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 export default forwardRef(function TextInput(
   {
@@ -15,8 +16,8 @@ export default forwardRef(function TextInput(
   const input = ref ? ref : useRef();
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
 
-  const eyesOpened = <FontAwesomeIcon icon="fa-solid fa-eye" />;
-  const eyesClosed = <FontAwesomeIcon icon="fa-solid fa-eye-slash" />;
+  const eyesOpened = <FontAwesomeIcon icon={faEye} />;
+  const eyesClosed = <FontAwesomeIcon icon={faEyeSlash} />;
 
   const changeVisibility = () => {
     setIsPasswordHidden(!isPasswordHidden);

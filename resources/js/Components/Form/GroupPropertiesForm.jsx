@@ -11,7 +11,6 @@ export const GroupPropertiesForm = ({
   id,
   errors,
   getValues = () => {},
-  setValue = () => {},
   resetField = () => {},
   isTest = false,
 }) => {
@@ -19,108 +18,147 @@ export const GroupPropertiesForm = ({
     ([key, value]) => key === group.group_name,
   )[0][0];
 
-  const settingsOff = () => {
-    if (getValues(`groupsProperties.${id}.settings_on`))
-      setValue(`groupsProperties.${id}.settings_on`, false);
+  const switchOffSettings = () => {
+    resetRangeFields();
+    resetDifficult();
   };
 
-  const resetFields = () => {
-    resetField(`groupsProperties.${id}.maxValue`);
-    resetField(`groupsProperties.${id}.minValue`);
+  const resetRangeFields = () => {
+    resetField(`groupsProperties.${id}.range.range_on`);
+    resetField(`groupsProperties.${id}.range.maxValue`);
+    resetField(`groupsProperties.${id}.range.minValue`);
   };
+
+  const resetDifficult = () => {
+    resetField(`groupsProperties.${id}.difficult.difficult_on`);
+  };
+
+  // TODO: dark mode
   return (
     <>
-      <AnimatedCheckbox
-        id={groupName}
-        onClick={() => {
-          resetFields();
-          settingsOff();
-        }}
-        {...register(`groupsProperties.${id}.${groupName}`)}
-      />
-      <InputLabel
-        htmlFor={groupName}
-        value={groupName}
-        className={"font-bold text-gray-700"}
-      />
-
-      <AnimatedCheckbox
-        disabled={!getValues(`groupsProperties.${id}.${groupName}`)}
-        id={`${groupName}.settings`}
-        className={""}
-        onClick={() => {
-          resetFields();
-        }}
-        {...register(`groupsProperties.${id}.settings_on`)}
-      />
-      <InputLabel
-        value={"Settings"}
-        className={"text-gray-700"}
-        htmlFor={`${groupName}.settings`}
-      />
+      <div className={"flex gap-x-2"}>
+        <AnimatedCheckbox
+          id={groupName}
+          onClick={() => switchOffSettings()}
+          {...register(`groupsProperties.${id}.${groupName}`)}
+        />
+        <InputLabel
+          htmlFor={groupName}
+          value={groupName}
+          className={"font-bold text-gray-700"}
+        />
+      </div>
 
       {!isTest && (
-        <section
-          className={
-            "flex items-center justify-center transition-all ml-2 " +
-            (getValues(`groupsProperties.${id}.settings_on`) &&
-            getValues(`groupsProperties.${id}.${groupName}`)
-              ? "h-16 mb-8"
-              : "h-0 overflow-hidden")
-          }
-        >
-          <div>
-            <InputLabel value={"From:"} className={"text-gray-700"} />
-            <TextInput
-              type="number"
-              placeholder={"From:"}
-              {...register(`groupsProperties.${id}.minValue`, {
-                required: true,
-                min: {
-                  value: 1,
-                  message: "Minimum value is 1",
-                },
-                max: {
-                  value: group.maxValue - 1,
-                  message: `Maximum value is ${group.maxValue - 1}`,
-                },
-                valueAsNumber: true,
-              })}
-            />
-            {errors?.groupsProperties?.[id]?.minValue && (
-              <InputError
-                className={"absolute mt-2 w-fit"}
-                message={errors?.groupsProperties?.[id]?.minValue?.message}
-              />
-            )}
-          </div>
-          <div className={"ml-16"}>
-            <InputLabel value={"To:"} className={"text-gray-700"} />
+        <>
+          <section
+            className={
+              "transition-all flex flex-col gap-y-2 items-start " +
+              (getValues(`groupsProperties.${id}.${groupName}`)
+                ? "h-16 " +
+                  (!getValues(`groupsProperties.${id}.difficult.disabled`)
+                    ? "mb-16 "
+                    : "")
+                : "h-0 overflow-hidden")
+            }
+          >
+            <section className={"flex items-center justify-center gap-x-16"}>
+              <div className={"flex gap-x-2"}>
+                <AnimatedCheckbox
+                  disabled={getValues(
+                    `groupsProperties.${id}.difficult.difficult_on`,
+                  )}
+                  {...register(`groupsProperties.${id}.range.range_on`)}
+                />
+                <InputLabel value={"Range"} className={"text-gray-700"} />
+              </div>
+              <div
+                className={
+                  "transition-all flex items-center gap-x-16 transform origin-top ease-in-out " +
+                  (getValues(`groupsProperties.${id}.range.range_on`)
+                    ? "scale-y-100"
+                    : "scale-y-0")
+                }
+              >
+                <div>
+                  <InputLabel value={"From:"} className={"text-gray-700"} />
+                  <TextInput
+                    disabled={
+                      !getValues(`groupsProperties.${id}.range.range_on`)
+                    }
+                    type="number"
+                    placeholder={"From:"}
+                    {...register(`groupsProperties.${id}.range.minValue`, {
+                      required: true,
+                      min: {
+                        value: 1,
+                        message: "Minimum value is 1",
+                      },
+                      max: {
+                        value: group?.range?.maxValue - 1,
+                        message: `Maximum value is ${
+                          group?.range?.maxValue - 1
+                        }`,
+                      },
+                      valueAsNumber: true,
+                    })}
+                  />
+                  {errors?.groupsProperties?.[id]?.range?.minValue && (
+                    <InputError
+                      className={"absolute mt-2 w-fit"}
+                      message={
+                        errors?.groupsProperties?.[id]?.range?.minValue?.message
+                      }
+                    />
+                  )}
+                </div>
+                <div>
+                  <InputLabel value={"To:"} className={"text-gray-700"} />
 
-            <TextInput
-              type="number"
-              placeholder={"To:"}
-              {...register(`groupsProperties.${id}.maxValue`, {
-                required: true,
-                min: {
-                  value: 2,
-                  message: "Minimum value is 2",
-                },
-                max: {
-                  value: group.maxValue,
-                  message: `Maximum value is ${group.maxValue}`,
-                },
-                valueAsNumber: true,
-              })}
-            />
-            {errors?.groupsProperties?.[id]?.maxValue && (
-              <InputError
-                className={"absolute mt-2 w-fit whitespace-nowrap"}
-                message={errors?.groupsProperties?.[id]?.maxValue?.message}
-              />
+                  <TextInput
+                    type="number"
+                    disabled={
+                      !getValues(`groupsProperties.${id}.range.range_on`)
+                    }
+                    placeholder={"To:"}
+                    {...register(`groupsProperties.${id}.range.maxValue`, {
+                      required: true,
+                      min: {
+                        value: 2,
+                        message: "Minimum value is 2",
+                      },
+                      max: {
+                        value: group?.range?.maxValue,
+                        message: `Maximum value is ${group?.range?.maxValue}`,
+                      },
+                      valueAsNumber: true,
+                    })}
+                  />
+                  {errors?.groupsProperties?.[id]?.range?.maxValue && (
+                    <InputError
+                      className={"absolute mt-2 w-fit whitespace-nowrap"}
+                      message={
+                        errors?.groupsProperties?.[id]?.range?.maxValue?.message
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            </section>
+            {!getValues(`groupsProperties.${id}.difficult.disabled`) && (
+              <div className={"relative flex items-start gap-x-2 "}>
+                <AnimatedCheckbox
+                  disabled={getValues(`groupsProperties.${id}.range.range_on`)}
+                  {...register(`groupsProperties.${id}.difficult.difficult_on`)}
+                />
+                <InputLabel
+                  value={"Only difficult"}
+                  className={"text-gray-700 "}
+                />
+              </div>
             )}
-          </div>
-        </section>
+          </section>
+        </>
       )}
     </>
   );

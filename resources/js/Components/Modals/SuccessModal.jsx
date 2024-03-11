@@ -19,7 +19,7 @@ export const SuccessModal = ({ feedback = {} }) => {
         <div
           ref={modalRef}
           className={
-            "fixed top-[100vh] transform sm:right-1/2 sm:translate-x-1/2 md:right-[2rem] md:translate-x-0 sm:translate-y-0 sm:p-6 p-3 sm:w-auto  w-full left-0 bg-white items-center gap-4 rounded-md shadow-xl opacity-0 hidden overflow-hidden"
+            "fixed top-[100vh] transform md:right-[2rem] right-0 md:translate-x-1 md:translate-y-0 p-6 md:w-fit w-full bg-white items-center gap-4 rounded-md shadow-xl opacity-0 hidden overflow-hidden"
           }
         >
           <FontAwesomeIcon

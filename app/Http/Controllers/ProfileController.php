@@ -61,7 +61,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.edit')->with('success', 'Your profile has been updated successfully');
     }
 
     public function updateSocials(Request $request): RedirectResponse {
@@ -80,7 +80,7 @@ class ProfileController extends Controller
             $request->get('name') => ""
         ]);
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.edit')->with('success', 'Your social medias have been updated successfully');
     }
 
     /**

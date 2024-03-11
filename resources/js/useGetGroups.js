@@ -21,9 +21,16 @@ export const useGetGroups = (
         params: {
           user_id: auth.user.id,
           set_id: set.id,
-          groups: componentProperties.groupsProperties.filter(
-            (property) => Object.values(property)[0] === true,
-          ),
+          groups: !componentProperties.groupsProperties.hasOwnProperty(
+            "settings_on",
+          )
+            ? componentProperties.groupsProperties.filter((groupProperty) =>
+                Object.entries(groupProperty).filter(
+                  ([property, value]) =>
+                    property === "group_name" && value === true,
+                ),
+              )
+            : componentProperties.groupsProperties,
           options: Object.fromEntries(
             Object.entries(componentProperties).filter(
               ([key, value]) => typeof value === "boolean",

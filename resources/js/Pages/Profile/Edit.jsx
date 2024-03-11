@@ -12,12 +12,14 @@ import {
   faSquareSnapchat,
   faSquareXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
+import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
 
 export default function Edit({
   auth,
   mustVerifyEmail,
   status,
   userSocialMedias,
+  feedback,
 }) {
   const linesStyle =
     "relative before:absolute before:-right-[13rem] before:bottom-0 before:bg-indigo-500 before:w-1/2 before:h-1 before:transform before:-rotate-45 after:absolute after:-right-[15rem] after:bottom-0 after:bg-indigo-500 after:w-1/2 after:h-1 after:transform after:-rotate-45 overflow-hidden";
@@ -35,6 +37,8 @@ export default function Edit({
     let animation = new Animation(refs.current);
     animation.animateAll("<-.1", "", "<+.1");
   }, []);
+
+  console.log(feedback);
 
   return (
     <AuthenticatedLayout
@@ -90,6 +94,7 @@ export default function Edit({
         modalId={"socials"}
         header={"Social media"}
       />
+      <SuccessModal feedback={feedback} />
     </AuthenticatedLayout>
   );
 }

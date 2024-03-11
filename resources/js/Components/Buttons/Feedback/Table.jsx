@@ -1,3 +1,5 @@
+import { SingleTableRow } from "@/Pages/Flashcards/SingleTableRow.jsx";
+
 export const Table = ({ groups, data = [], className = "", ...props }) => {
   const columns = ["Id", "Group Name", "Term", "Definition"];
 
@@ -23,45 +25,35 @@ export const Table = ({ groups, data = [], className = "", ...props }) => {
           </tr>
         </thead>
         <tbody>
-          {groups.map((group, groupIndex) =>
-            group.components.map((component, componentIndex) => {
-              if (
-                data.some((element) => element === component.translation.id)
-              ) {
-                return (
-                  <tr
-                    className="bg-white border-b transition"
-                    key={`${groupIndex}.${componentIndex}`}
-                  >
-                    <td
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
-                    >
-                      {component.translation.id}
-                    </td>{" "}
-                    <td
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
-                    >
-                      {component.translation.group_name}
-                    </td>
-                    <td
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
-                    >
-                      {component.translation.term}
-                    </td>
-                    <td
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap last-of-type:rounded-bl-md last-of-type:rounded-br-md"
-                    >
-                      {component.translation.definition}
-                    </td>
-                  </tr>
-                );
-              }
-            }),
-          )}
+          {groups.map((group, groupIndex) => {
+            if (group.hasOwnProperty("components")) {
+              return group.components.map((component, componentIndex) => {
+                if (
+                  data.some((element) => element === component.translation.id)
+                ) {
+                  return (
+                    <SingleTableRow
+                      component={component}
+                      key={`${groupIndex}.${componentIndex}`}
+                    />
+                  );
+                }
+              });
+            } else {
+              return group.translations.map((component, componentIndex) => {
+                if (
+                  data.some((element) => element === component.translation.id)
+                ) {
+                  return (
+                    <SingleTableRow
+                      component={component}
+                      key={`${groupIndex}.${componentIndex}`}
+                    />
+                  );
+                }
+              });
+            }
+          })}
         </tbody>
       </table>
     </div>

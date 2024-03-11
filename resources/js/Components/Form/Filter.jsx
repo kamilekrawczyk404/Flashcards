@@ -109,7 +109,7 @@ export const Filter = ({
                   <button
                     key={language}
                     onClick={() => {
-                      filters.languages.some((element) => element === language)
+                      filters.languages.includes(language)
                         ? removeActiveField(language)
                         : addActiveField(language);
                     }}

@@ -134,7 +134,7 @@ class FlashcardSets extends Model
         $allGroups = false;
         $translationTableName = FlashcardSets::getTitle($set_id);
 
-        // for matching
+        // For matching
         $breakPoints = $count = 0;
         $translationsApart = [];
 
@@ -148,17 +148,32 @@ class FlashcardSets extends Model
         }
 
         foreach($groups as $gKey => $group) {
-            $translationsBelongToGroup =
+
+            $optionMode = "";
+            if (gettype($group) === 'array') {
+                if ($group['range']['range_on'] !== 'false') {
+                    $optionMode =  "range";
+                } else if ($group['difficult']['difficult_on'] !== 'false') {
+                    $optionMode = "difficult";
+                }
+            }
+
+            $translationsBelongToGroup = $optionMode !== 'difficult' ?
                 DB::table('flashcards_sets_progress AS fsp')
-                    ->leftJoin($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
-//                    ->join('flashcard_sets AS fs', 'fs.id', '=', 'fsp.flashcard_sets_id')
-//                    ->join('users AS u', 'u.id', '=', 'fsp.user_id')
-                    ->where(['t.group_name' =>  $allGroups ? $group->group_name : $group['group_name'], 'fsp.user_id' => $user_id])
+                    ->where(['fsp.user_id' => $user_id, 'fsp.flashcard_sets_id' => $set_id])
+                    ->join($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
+                    ->where(['t.group_name' =>  $allGroups ? $group->group_name : $group['group_name']])
                     ->select( 't.*' ,'fsp.is_favourite', 'fsp.status')
-                    ->distinct()
                     ->get()
-                    ->unique('id')
+                    ->toArray() :
+                DB::table('flashcards_sets_progress AS fsp')
+                    ->where(['fsp.user_id' => $user_id, 'fsp.flashcard_sets_id' => $set_id])
+                    ->join($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
+                    ->where(['t.group_name' => $group['group_name'], 'fsp.status' => 'difficult'])
+                    ->select( 't.*' ,'fsp.is_favourite', 'fsp.status')
+                    ->get()
                     ->toArray();
+
 
             // if user wants to generate matching component, first we need to convert groups into single translations which can help us to display and separate them apart. Then we need to assign to a single translation properties: group name, page and ref index (for calling correctly animations)
 
@@ -174,7 +189,7 @@ class FlashcardSets extends Model
 
                 }
 
-                for($i = 0; $i < $breakPoints; $i++) {
+                for ($i = 0; $i < $breakPoints; $i++) {
                     $temp = $translationsApart;
 
                     $shuffled = array_splice($temp, ($i * $matching_properties['translations_per_page'] * 2), $matching_properties['translations_per_page'] * 2);
@@ -186,13 +201,14 @@ class FlashcardSets extends Model
             } else {
                 $data[] = [
                     'name' => $allGroups ? $group->group_name : $group['group_name'],
-                    'translations' => $allGroups ? $translationsBelongToGroup : array_splice($translationsBelongToGroup, $group['minValue'] - 1, $group['maxValue'] - ($group['minValue'] - 1)),
+                    'translations' => $allGroups || $optionMode === "difficult" ? $translationsBelongToGroup : array_splice($translationsBelongToGroup, $group['range']['minValue'] - 1, $group['range']['maxValue'] - ($group['range']['minValue'] - 1)),
                 ];
             }
         }
 
         return count($matching_properties) !== 0  ? $translationsApart : $data ;
     }
+
 
     public static function getGroupsProperties(int $set_id): array {
         $groupsNames = DB::table(FlashcardSets::getTitle($set_id))->distinct()->get('group_name')->toArray();
@@ -203,9 +219,15 @@ class FlashcardSets extends Model
                 // default value for a form
                 $groupName->group_name => false,
                 'group_name' => $groupName->group_name,
-                'settings_on' => false,
-                'minValue' => 1,
-                'maxValue' => Translations::getTranslationsCountPerGroup($set_id, $groupName->group_name)
+                'range' => [
+                    'range_on' => false,
+                    'minValue' => 1,
+                    'maxValue' => Translations::getTranslationsCountPerGroup($set_id, $groupName->group_name)
+                ],
+                'difficult' =>  [
+                    'disabled' => FlashcardsSetsProgressController::getSetProgress(Auth::id(), $set_id)['difficult'] === 0,
+                    'difficult_on' => false
+                ],
             ];
         }
 

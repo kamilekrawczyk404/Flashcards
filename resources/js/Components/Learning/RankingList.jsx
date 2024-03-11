@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMedal, faRankingStar } from "@fortawesome/free-solid-svg-icons";
 
 export const RankingList = ({ className = "", rankings, ...props }) => {
   const stageStyling = ["text-amber-500", "text-gray-300", "text-amber-700"];
@@ -10,10 +11,7 @@ export const RankingList = ({ className = "", rankings, ...props }) => {
           "flex flex-col items-center font-bold text-indigo-500 text-xl mb-4"
         }
       >
-        <FontAwesomeIcon
-          icon="fa-solid fa-ranking-star"
-          className={"text-3xl"}
-        />
+        <FontAwesomeIcon icon={faRankingStar} className={"text-3xl"} />
         <p>Rankings</p>
       </div>
       <div className={"space-y-2 relative text-lg"}>
@@ -38,7 +36,7 @@ export const RankingList = ({ className = "", rankings, ...props }) => {
           >
             {stageStyling[index] && (
               <FontAwesomeIcon
-                icon="fa-solid fa-medal"
+                icon={faMedal}
                 className={`text-lg ${stageStyling[index]}`}
               />
             )}

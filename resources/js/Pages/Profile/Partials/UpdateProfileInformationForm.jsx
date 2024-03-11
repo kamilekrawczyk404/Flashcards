@@ -10,6 +10,7 @@ import MicroModal from "micromodal";
 import { SocialButton } from "@/Components/Buttons/SocialButton.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useUserAvatar } from "@/useUserAvatar.js";
 
 export default function UpdateProfileInformation({
   mustVerifyEmail,
@@ -18,19 +19,9 @@ export default function UpdateProfileInformation({
   socialMediasProps,
 }) {
   const user = usePage().props.auth.user;
-
+  let fileInputRef = useRef();
+  let avatarRef = useRef();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [userChangedAvatar, setUserChangedAvatar] = useState(false);
-  const [temporaryAvatar, setTemporaryAvatar] = useState("");
-
-  const MAX_FILE_SIZE = 1024 * 1024 * 5;
-
-  const [avatarErrors, setAvatarErrors] = useState({
-    size: {
-      value: false,
-      message: `The file size must be lower than ${MAX_FILE_SIZE}MB`,
-    },
-  });
 
   const { data, setData, errors, post, processing, recentlySuccessful } =
     useForm({
@@ -38,6 +29,14 @@ export default function UpdateProfileInformation({
       email: user.email,
       avatar: user.avatar,
     });
+
+  const {
+    saveAvatar,
+    temporaryAvatar,
+    avatarErrors,
+    userChangedAvatar,
+    setUserChangedAvatar,
+  } = useUserAvatar(fileInputRef, setData);
 
   const submit = (e) => {
     e.preventDefault();
@@ -61,35 +60,6 @@ export default function UpdateProfileInformation({
       },
     );
   };
-
-  const setPreviewAvatar = () => {
-    const file = fileInputRef.current.files[0];
-
-    if (file.size > MAX_FILE_SIZE) {
-      setAvatarErrors((prev) => ({
-        size: {
-          ...prev.size,
-          value: true,
-        },
-      }));
-    } else {
-      setAvatarErrors((prev) => ({
-        size: {
-          ...prev.size,
-          value: false,
-        },
-      }));
-    }
-
-    // store image file in form
-    setData("avatar", file);
-
-    const image = URL.createObjectURL(file);
-    setTemporaryAvatar(image);
-  };
-
-  let fileInputRef = useRef();
-  let avatarRef = useRef();
 
   return (
     <>
@@ -227,7 +197,7 @@ export default function UpdateProfileInformation({
                 type="file"
                 onChange={() => {
                   setUserChangedAvatar(true);
-                  setPreviewAvatar();
+                  saveAvatar();
                 }}
                 className={"hidden"}
               />

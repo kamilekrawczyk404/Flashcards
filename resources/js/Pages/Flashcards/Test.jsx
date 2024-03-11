@@ -179,7 +179,7 @@ const Test = ({ set, groupsProperties }) => {
     )?.isCorrect;
   };
 
-  // Progress bar in learning component
+  console.log(groups);
   return (
     <>
       <GamesNavigation set={set}>
@@ -209,7 +209,7 @@ const Test = ({ set, groupsProperties }) => {
               answersResults={feedbackData}
             />
           )}
-          <Container className={"flex flex-col gap-4"}>
+          <Container className={"flex flex-col gap-4 mt-4"}>
             {groups.map((group, groupIndex) => {
               return group.components.map((component, componentIndex) => {
                 switch (component.type) {

@@ -14,7 +14,7 @@ import { updateTranslationStatus } from "@/updateTranslationStatus.js";
 import { isTheLastTranslation } from "@/isTheLastTranslation.js";
 import { useFeedbackResults } from "@/useFeedbackResults.js";
 
-export default function Learn({ auth, set, groupsProperties }) {
+export default function Learn({ auth, set, groupsProperties, hasDifficult }) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isSeen, setIsSeen] = useState(false);
@@ -124,7 +124,7 @@ export default function Learn({ auth, set, groupsProperties }) {
         setIsClicked(true);
         setIsSeen(true);
         // If user didn't enter any answer, check two not equals strings
-        check("4", "2");
+        check("4", "20");
       }, secondsToAnswer);
 
       return () => {
@@ -145,6 +145,7 @@ export default function Learn({ auth, set, groupsProperties }) {
           groupsProperties={groupsProperties}
           handleSetComponentProperties={setComponentProperties}
           handleSetIsChoosingGroups={setIsChoosingGroups}
+          hasDifficult={hasDifficult}
         />
       ) : loading || fakeLoading ? (
         <ProgressModal

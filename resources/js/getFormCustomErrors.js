@@ -11,9 +11,11 @@ export const getFormCustomErrors = (properties, isTest = false) => {
     },
   };
 
+  // console.log(properties.groupsProperties);
   if (
     properties.groupsProperties.filter(
-      (property) => property?.minValue >= property?.maxValue,
+      (groupProperty) =>
+        groupProperty.range.minValue >= groupProperty.range.maxValue,
     ).length !== 0
   ) {
     return [defaultValues.minBiggerThanMax];
