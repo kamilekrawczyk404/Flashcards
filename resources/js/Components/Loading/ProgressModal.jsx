@@ -1,12 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ThemeContext } from "@/ThemeContext.jsx";
+import { faHourglassStart } from "@fortawesome/free-solid-svg-icons";
 
 export const ProgressModal = ({
   inProgress = false,
   errors = {},
   text = "",
 }) => {
+  const { properties } = useContext(ThemeContext);
   return (
     <>
       {Object.values(errors).every(
@@ -15,7 +18,8 @@ export const ProgressModal = ({
         inProgress && (
           <div
             className={
-              "absolute top-0 left-0 w-full h-screen bg-gray-100 z-[200]"
+              properties.background +
+              " absolute top-0 left-0 w-full h-screen z-[200]"
             }
           >
             <div
@@ -24,7 +28,7 @@ export const ProgressModal = ({
               }
             >
               <FontAwesomeIcon
-                icon="fa-solid fa-hourglass-start"
+                icon={faHourglassStart}
                 className={"animate-hourglass text-2xl mr-4 text-gray-700"}
               />
               <p className={"text-2xl text-gray-700"}>

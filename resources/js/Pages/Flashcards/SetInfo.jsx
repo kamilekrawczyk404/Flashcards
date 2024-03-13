@@ -1,7 +1,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { Carousel } from "flowbite-react";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import "@splidejs/react-splide/css";
 import "@splidejs/react-splide/css/skyblue";
 import { Container } from "@/Components/Container";
@@ -20,6 +26,7 @@ import {
   faChalkboardUser,
   faCopy,
 } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export default function SetInfo({
   auth,
@@ -31,6 +38,7 @@ export default function SetInfo({
   permissions,
   feedback,
 }) {
+  const { properties } = useContext(ThemeContext);
   const [cards, setCards] = useState(
     new Array(translationsCount).fill({ isRotated: false }),
   );
@@ -134,7 +142,7 @@ export default function SetInfo({
         />
 
         <Container>
-          <div className="bg-white overflow-hidden sm:rounded-md">
+          <div className="overflow-hidden sm:rounded-md">
             <div className="flex gap-4 text-md md:flex-row flex-col relative">
               <TestLink
                 ref={(element) => {
@@ -144,7 +152,7 @@ export default function SetInfo({
               >
                 <FontAwesomeIcon
                   icon={faBook}
-                  className={"text-xl text-gray-600 transition mr-3"}
+                  className={"text-xl text-gray-700 transition mr-3"}
                 />
                 Learn
               </TestLink>
@@ -157,7 +165,7 @@ export default function SetInfo({
               >
                 <FontAwesomeIcon
                   icon={faChalkboardUser}
-                  className={"mr-3 text-xl text-gray-600 transition"}
+                  className={"mr-3 text-xl text-gray-700 transition"}
                 />
                 Test
               </TestLink>
@@ -170,7 +178,7 @@ export default function SetInfo({
               >
                 <FontAwesomeIcon
                   icon={faCopy}
-                  className={"mr-3 text-xl text-gray-600 transition"}
+                  className={"mr-3 text-xl text-gray-700 transition"}
                 />
                 Match
               </TestLink>
@@ -199,7 +207,10 @@ export default function SetInfo({
                     >
                       <div
                         className={
-                          "flip-card-inner relative mx-auto w-full h-full transition ease-in-out duration-[1s] flex items-center text-3xl break-keep text-gray-600 font-bold sm:bg-white bg-gray-100 " +
+                          properties.text +
+                          " " +
+                          properties.background +
+                          " flip-card-inner relative mx-auto w-full h-full transition ease-in-out duration-[1s] flex items-center text-3xl break-keep font-bold " +
                           (cards[translationIndex]?.isRotated
                             ? "rotate-x-0"
                             : "rotate-x-180")
@@ -219,7 +230,7 @@ export default function SetInfo({
                           {!isCardFlippedOnce && (
                             <div
                               className={
-                                "absolute bottom-0 text-lg bg-amber-400 w-full"
+                                "text-gray-700 absolute bottom-0 text-lg bg-amber-400 w-full"
                               }
                             >
                               Click the card to flip it!
@@ -245,7 +256,14 @@ export default function SetInfo({
           </div>
 
           <div className="space-y-4 rounded-md">
-            <div className="bg-gray-100 rounded-md px-4 py-2 flex gap-2 flex-col shadow-lg">
+            <div
+              className={
+                properties.background +
+                " " +
+                properties.text +
+                " rounded-md px-4 py-2 flex gap-2 flex-col shadow-lg"
+              }
+            >
               <div
                 ref={(element) => {
                   mainRefs.current[5] = element;
@@ -269,9 +287,7 @@ export default function SetInfo({
                 </p>
               </div>
               <div className="flex justify-between md:flex-row flex-col gap-2">
-                <div className="bg-gray-100 w-full md:w-1/2">
-                  {set.description}
-                </div>
+                <div className="w-full md:w-1/2">{set.description}</div>
               </div>
             </div>
 

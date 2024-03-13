@@ -2,8 +2,7 @@ import { useFieldArray } from "react-hook-form";
 import { TranslationForm } from "@/Components/Translations/TranslationForm.jsx";
 import { AddButton } from "@/Components/Form/AddButton.jsx";
 import Animation from "@/Pages/Animation.js";
-import { forwardRef, useLayoutEffect, useRef } from "react";
-import { error } from "@splidejs/splide/src/js/utils";
+import { forwardRef, useContext, useLayoutEffect, useRef } from "react";
 
 export default forwardRef(
   (

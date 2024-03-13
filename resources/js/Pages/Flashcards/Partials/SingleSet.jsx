@@ -1,6 +1,6 @@
 import {
   forwardRef,
-  useEffect,
+  useContext,
   useLayoutEffect,
   useRef,
   useState,
@@ -8,21 +8,20 @@ import {
 import { Link, router, usePage } from "@inertiajs/react";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ProgressBar } from "@/Pages/Flashcards/Partials/ProgressBar.jsx";
 import { SingleSetItem } from "@/Pages/Flashcards/Partials/SingleSetItem.jsx";
 import {
   faAnglesLeft,
-  faBarsProgress,
   faCopy,
-  faEllipsisVertical,
   faLanguage,
   faLayerGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { SetProgression } from "@/Pages/Flashcards/Partials/SetProgression.jsx";
 import { useObserver } from "@/useObserver.js";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const SingleSet = forwardRef(
   ({ set, index, className, ...props }, ref) => {
+    const { properties } = useContext(ThemeContext);
     const [cardActive, setCardActive] = useState(false);
     const titleRef = useRef(null);
 
@@ -48,7 +47,8 @@ export const SingleSet = forwardRef(
       <div
         ref={ref}
         className={
-          "rounded-md relative xl:w-1/2 lg:w-2/3 md:w-3/4 w-[82vw] transition flex justify-between items-center overflow-hidden mx-auto bg-gray-50 " +
+          properties.container +
+          " rounded-md relative xl:w-1/2 lg:w-2/3 md:w-3/4 w-[82vw] transition flex justify-between items-center overflow-hidden mx-auto " +
           (set.progression
             ? "md:min-h-[14rem] min-h-[20rem] "
             : "min-h-[14rem] ") +
@@ -63,13 +63,14 @@ export const SingleSet = forwardRef(
 
         <div
           className={
-            "bg-gray-100 absolute top-0 left-[.5rem] h-full w-[.25rem]"
+            properties.container +
+            " absolute top-0 left-[.5rem] h-full w-[.25rem]"
           }
         ></div>
         <div className={"absolute top-[5%] left-[5%] w-1/4 h-[90%] "}>
           <Link
             className={
-              "text-2xl font-bold text-indigo-500  border-amber-400 border-b-[.25rem] pl-11 whitespace-nowrap overflow-ellipsis max-w-1/2"
+              "text-2xl font-bold text-indigo-500 border-amber-400 border-b-[.25rem] pl-11 whitespace-nowrap overflow-ellipsis max-w-1/2"
             }
             href={route("flashcards.showSet", [set.id])}
           >

@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLayoutEffect, useRef } from "react";
+import { useContext, useLayoutEffect, useRef } from "react";
 import Animation from "@/Pages/Animation.js";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const SingleSetItem = ({ icon, count = "", text = "" }) => {
   const ref = useRef(null);

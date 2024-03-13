@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Dropdown from "@/Layouts/Partials/Dropdown.jsx";
 import NavLink from "@/Layouts/Partials/NavLink.jsx";
 import ResponsiveNavLink from "@/Layouts/Partials/ResponsiveNavLink.jsx";
 import { ApplicationLogo } from "@/Layouts/Partials/ApplicationLogo.jsx";
 import { getFilePath } from "@/getFilePath.jsx";
+import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "@/ThemeContext.jsx";
+import Cookies from "js-cookie";
 
 export default function Authenticated({
   user,
@@ -11,12 +16,16 @@ export default function Authenticated({
   children,
   fullScreen = false,
 }) {
+  const { properties, changeMode } = useContext(ThemeContext);
+
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 
   return (
-    <div className={"bg-gray-100 " + (fullScreen && "h-screen")}>
-      <nav className="bg-white border-b border-gray-100">
+    <div
+      className={properties.background + " " + (fullScreen ? "h-screen" : "")}
+    >
+      <nav className={properties.container + " border-b border-gray-100"}>
         <div className="md:max-w-[66rem] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex relative items-center">
@@ -33,13 +42,28 @@ export default function Authenticated({
             </div>
 
             <div className="hidden sm:flex sm:items-center">
+              <div
+                className={
+                  properties.text + " flex items-center gap-x-2 text-xl"
+                }
+              >
+                <FontAwesomeIcon icon={faSun} />
+                <AnimatedCheckbox
+                  defaultChecked={Cookies.get("darkMode") === "true"}
+                  onClick={() => changeMode()}
+                />
+                <FontAwesomeIcon icon={faMoon} />
+              </div>
               <div className="ml-3 relative">
                 <Dropdown>
                   <Dropdown.Trigger>
                     <span className="inline-flex rounded-md">
                       <button
                         type="button"
-                        className="space-x-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150 "
+                        className={
+                          properties.text +
+                          " space-x-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-gray-700 focus:outline-none transition ease-in-out duration-150 "
+                        }
                       >
                         <span
                           className={
@@ -155,14 +179,14 @@ export default function Authenticated({
       </nav>
 
       {header && (
-        <header className="bg-white shadow">
+        <header className={properties.container + " shadow"}>
           <div className="md:max-w-[66rem] max-w-7xl mx-auto h-10 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-indigo-500 font-bold text-xl">
             {header}
           </div>
         </header>
       )}
 
-      <main className={"mt-4"}>{children}</main>
+      <main className={properties.background + " mt-4"}>{children}</main>
     </div>
   );
 }

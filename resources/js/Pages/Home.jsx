@@ -1,6 +1,12 @@
 import Unauthenticated from "@/Layouts/UnauthenticatedLayout.jsx";
 import { SignUpSignIn } from "@/Pages/Auth/SignUpSignIn.jsx";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { SectionWithVerticalMargin } from "@/Components/SectionWithVerticalMargin.jsx";
 import Authenticated from "@/Layouts/AuthenticatedLayout.jsx";
 import { OptionCard } from "@/Layouts/Partials/OptionCard.jsx";
@@ -14,6 +20,7 @@ import {
   faGraduationCap,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export default function Home({
   auth,
@@ -23,6 +30,8 @@ export default function Home({
   feedback,
 }) {
   // convert images to webp
+
+  const { properties } = useContext(ThemeContext);
 
   const sentences = [
     "It's totally free!",
@@ -149,7 +158,7 @@ export default function Home({
               }
             >
               <div className={"xl:space-y-16 space-y-8 rounded-md"}>
-                <h1 className={"sm:text-3xl text-2xl text-gray-700"}>
+                <h1 className={properties.text + " sm:text-3xl text-2xl"}>
                   Start your learning journey right now!
                   <div
                     className={
@@ -191,11 +200,13 @@ export default function Home({
                   "mx-auto py-2 border-b-4 border-indigo-500 w-fit sm:p-0 p-4"
                 }
               >
-                <h1 className={"text-3xl text-gray-700 font-bold"}>
+                <h1 className={properties.text + " text-3xl font-bold"}>
                   Welcome back{" "}
                   <span className={"text-amber-500"}>{auth.user.name}</span>!
                 </h1>
-                <p className={"text-xl"}>What do we do today?</p>
+                <p className={properties.text + " text-xl"}>
+                  What do we do today?
+                </p>
               </div>
               <div
                 className={

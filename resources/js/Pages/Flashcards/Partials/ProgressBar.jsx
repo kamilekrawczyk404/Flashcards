@@ -1,7 +1,10 @@
-import { forwardRef, useLayoutEffect, useRef } from "react";
+import { forwardRef, useContext, useLayoutEffect, useRef } from "react";
 import gsap from "gsap/all";
+import { ThemeContext } from "@/ThemeContext.jsx";
 export const ProgressBar = forwardRef(
   ({ length, translationsLength, bar }, ref) => {
+    const { properties } = useContext(ThemeContext);
+
     const barRef = useRef(null);
 
     useLayoutEffect(() => {
@@ -28,7 +31,7 @@ export const ProgressBar = forwardRef(
           "space-y-2 text-gray-700 opacity-0 -translate-y-12 polygon-start w-full"
         }
       >
-        <span>{bar.text}</span>
+        <span className={properties.text}>{bar.text}</span>
         <div className={"w-full relative h-[.5rem] min-w-[10rem]"}>
           <div
             ref={barRef}

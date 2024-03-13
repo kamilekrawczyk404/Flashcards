@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Controllers\Flashcards\TranslationsController;
 use App\Http\Controllers\FlashcardsSetsProgressController;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -96,24 +97,28 @@ class FlashcardSets extends Model
 //        }
 
         $words = explode(" ", $searching);
-
         $languages = $filters['languages'] ?? [];
 
         foreach($words as $word) {
 
             // if user choose a language and count of all available languages not equals to total length of languages in sets
             if (count($languages) > 0 && count($languages) !== count(FlashcardSets::getAvailableLanguages())) {
-
-                $sets[] = FlashcardSets::when($languages, function($query) use ($languages) {
-                    $query->where(function ($query) use ($languages) {
-                        foreach($languages as $language) {
-                            $query->where(['source_language' => $language, 'target_language' => $language]);
-                        }
-                    });
-                })->where('title', 'like', "%$word%")->skip($currentPage * $take)->take($take)->get()->toArray();
+                $sets[] = FlashcardSets
+                    ::whereIn('source_language', $languages)
+                    ->orWhereIn('target_language', $languages)
+                    ->where('title', 'like', "%$word%")
+                    ->skip($currentPage * $take)
+                    ->take($take)
+                    ->get()
+                    ->toArray();
             } else {
                 // There is no filters
-                $sets[] = FlashcardSets::where('title', 'like', "%$word%")->skip($currentPage * $take)->take($take)->get()->toArray();
+                $sets[] = FlashcardSets
+                    ::where('title', 'like', "%$word%")
+                    ->skip($currentPage * $take)
+                    ->take($take)
+                    ->get()
+                    ->toArray();
             }
         }
 

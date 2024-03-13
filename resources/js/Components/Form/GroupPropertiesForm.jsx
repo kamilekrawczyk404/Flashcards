@@ -1,9 +1,10 @@
 import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import InputError from "@/Components/Form/InputError.jsx";
 import { FormChild } from "@/Components/Form/FormChild.jsx";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const GroupPropertiesForm = ({
   group,
@@ -14,6 +15,8 @@ export const GroupPropertiesForm = ({
   resetField = () => {},
   isTest = false,
 }) => {
+  const { properties } = useContext(ThemeContext);
+
   const groupName = Object.entries(group).filter(
     ([key, value]) => key === group.group_name,
   )[0][0];
@@ -33,7 +36,6 @@ export const GroupPropertiesForm = ({
     resetField(`groupsProperties.${id}.difficult.difficult_on`);
   };
 
-  // TODO: dark mode
   return (
     <>
       <div className={"flex gap-x-2"}>
@@ -43,9 +45,9 @@ export const GroupPropertiesForm = ({
           {...register(`groupsProperties.${id}.${groupName}`)}
         />
         <InputLabel
+          // className={properties.labelText}
           htmlFor={groupName}
           value={groupName}
-          className={"font-bold text-gray-700"}
         />
       </div>
 
@@ -70,7 +72,7 @@ export const GroupPropertiesForm = ({
                   )}
                   {...register(`groupsProperties.${id}.range.range_on`)}
                 />
-                <InputLabel value={"Range"} className={"text-gray-700"} />
+                <InputLabel value={"Range"} />
               </div>
               <div
                 className={
@@ -81,7 +83,7 @@ export const GroupPropertiesForm = ({
                 }
               >
                 <div>
-                  <InputLabel value={"From:"} className={"text-gray-700"} />
+                  <InputLabel value={"From:"} />
                   <TextInput
                     disabled={
                       !getValues(`groupsProperties.${id}.range.range_on`)
@@ -113,7 +115,7 @@ export const GroupPropertiesForm = ({
                   )}
                 </div>
                 <div>
-                  <InputLabel value={"To:"} className={"text-gray-700"} />
+                  <InputLabel value={"To:"} />
 
                   <TextInput
                     type="number"
@@ -151,10 +153,7 @@ export const GroupPropertiesForm = ({
                   disabled={getValues(`groupsProperties.${id}.range.range_on`)}
                   {...register(`groupsProperties.${id}.difficult.difficult_on`)}
                 />
-                <InputLabel
-                  value={"Only difficult"}
-                  className={"text-gray-700 "}
-                />
+                <InputLabel value={"Only difficult"} />
               </div>
             )}
           </section>

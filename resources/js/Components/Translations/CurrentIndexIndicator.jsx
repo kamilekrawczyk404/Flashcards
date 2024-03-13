@@ -1,7 +1,11 @@
+import { useContext } from "react";
+import { ThemeContext } from "@/ThemeContext.jsx";
+
 export const CurrentIndexIndicator = ({ index, length }) => {
-    return (
-        <span className={"absolute top-3 right-3 text-sm text-gray-900"}>
-            {index + 1} / {length}
-        </span>
-    );
+  const { properties } = useContext(ThemeContext);
+  return (
+    <span className={properties.text + " absolute top-3 right-3 text-sm"}>
+      {index + 1} / {length}
+    </span>
+  );
 };

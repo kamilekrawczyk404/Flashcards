@@ -1,11 +1,12 @@
 import { MainButton } from "@/Components/Buttons/MainButton.jsx";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useContext, useLayoutEffect, useRef, useState } from "react";
 import Animation from "@/Pages/Animation.js";
 import { FormSection } from "@/Components/Form/FormSection.jsx";
 import { FormChild } from "@/Components/Form/FormChild.jsx";
 import { Select } from "@/Components/Form/Select.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
 import { getFormCustomErrors } from "@/getFormCustomErrors.js";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const PlanningForm = ({
   handleSubmit,
@@ -19,6 +20,7 @@ export const PlanningForm = ({
   children,
   isTest = false,
 }) => {
+  const { properties } = useContext(ThemeContext);
   const refs = useRef([]);
 
   const onSubmit = (data) => {
@@ -40,7 +42,9 @@ export const PlanningForm = ({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex gap-4 flex-col relative polygon-start opacity-0 translate-y-12 text-md"
+      className={
+        "flex gap-4 flex-col relative polygon-start opacity-0 translate-y-12 text-md"
+      }
       ref={(element) => {
         refs.current[1] = element;
       }}
@@ -52,7 +56,10 @@ export const PlanningForm = ({
         <p className="text-2xl text-indigo-500 font-semibold mt-2">{title}</p>
       </div>
       <div
-        className="relative flex  flex-col items-start bg-gray-100 py-4 rounded-md polygon-start opacity-0 translate-y-12 before:absolute before:w-1 before:h-full before:bg-indigo-400 before:top-0 before:left-4 pl-6 pr-4 text-gray-700"
+        className={
+          properties.background +
+          " relative flex flex-col items-start py-4 rounded-md polygon-start opacity-0 translate-y-12 before:absolute before:w-1 before:h-full before:bg-indigo-400 before:top-0 before:left-4 pl-6 pr-4 text-gray-700"
+        }
         ref={(element) => {
           refs.current[2] = element;
         }}

@@ -41,9 +41,7 @@ export const Table = ({ groups, data = [], className = "", ...props }) => {
               });
             } else {
               return group.translations.map((component, componentIndex) => {
-                if (
-                  data.some((element) => element === component.translation.id)
-                ) {
+                if (data.some((element) => element === component.id)) {
                   return (
                     <SingleTableRow
                       component={component}

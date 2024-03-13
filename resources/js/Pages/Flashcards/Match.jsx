@@ -1,5 +1,11 @@
 import { Container } from "@/Components/Container";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
 import { Feedback } from "@/Pages/Flashcards/Feedback.jsx";
@@ -11,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFeedbackResults } from "@/useFeedbackResults.js";
 import gradient from "@material-tailwind/react/theme/components/timeline/timelineIconColors/gradient.js";
 import { faHourglassStart } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 const Match = ({
   set,
@@ -20,6 +27,7 @@ const Match = ({
   rankingList,
   groups,
 }) => {
+  const { properties } = useContext(ThemeContext);
   const [isStarted, setIsStarted] = useState(false);
   const [isFirstCard, setIsFirstCard] = useState(true);
   const [isSecondCard, setIsSecondCard] = useState(false);
@@ -39,7 +47,10 @@ const Match = ({
   const additionalSeconds = 10;
   const SECONDS = 500;
   const styling =
-    "aspect-square text-center text-xl font-medium shadow-md transition rounded-md text-gray-700 polygon-y-start hover:scale-[1.05] hover:bg-indigo-500 bg-gray-100 ";
+    properties.text +
+    " " +
+    properties.background +
+    " aspect-square text-center text-xl font-medium shadow-md transition rounded-md polygon-y-start hover:scale-[1.05] hover:bg-indigo-500 ";
 
   useEffect(() => {
     let timer;
@@ -130,11 +141,11 @@ const Match = ({
       );
       cardRefs.current[secondCard.ref_id].classList.replace(
         "!bg-red-500",
-        "bg-gray-100",
+        properties.background.split(" ")[0],
       );
       cardRefs.current[refIndex].classList.replace(
         "!bg-red-500",
-        "bg-gray-100",
+        properties.background.split(" ")[0],
       );
     }, SECONDS);
   };
@@ -145,7 +156,7 @@ const Match = ({
       "bg-lime-500",
     );
     cardRefs.current[card.ref_id].classList.replace(
-      "bg-gray-100",
+      properties.background.split(" ")[0],
       "bg-lime-500",
     );
     cardRefs.current[card.ref_id].classList.add("text-white");
@@ -168,7 +179,7 @@ const Match = ({
   const checkCards = (currentCard, index) => {
     if (isFirstCard) {
       cardRefs.current[currentCard.ref_id].classList.replace(
-        "bg-gray-100",
+        properties.background.split(" ")[0],
         "bg-indigo-500",
       );
       cardRefs.current[currentCard.ref_id].classList.add("text-white");
@@ -223,8 +234,6 @@ const Match = ({
     }
   };
 
-  console.log(groups);
-
   return (
     <>
       <GamesNavigation set={set}>
@@ -239,10 +248,15 @@ const Match = ({
             }}
           >
             <RankingList rankings={rankingList} />
-            <p className="text-2xl text-indigo-500 font-bold bg-gray-100 p-2 rounded-md">
+            <p className={"text-2xl text-indigo-500 font-bold p-2 rounded-md"}>
               Ready to play?
             </p>
-            <p className="text-gray-700 text-xl md:max-w-[35%] text-center border-b-4 border-gray-300 pb-2">
+            <p
+              className={
+                properties.text +
+                " text-xl md:max-w-[35%] text-center border-b-4 border-gray-300 pb-2"
+              }
+            >
               Match all the terms with their definitions as quick as possible.
               Try avoiding incorrect matches. They add extra time!
             </p>

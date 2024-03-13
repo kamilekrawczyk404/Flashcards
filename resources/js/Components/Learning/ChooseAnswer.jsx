@@ -1,5 +1,6 @@
 import { CurrentIndexIndicator } from "@/Components/Translations/CurrentIndexIndicator.jsx";
-import { forwardRef, useState } from "react";
+import { forwardRef, useContext, useState } from "react";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const ChooseAnswer = forwardRef(
   (
@@ -23,14 +24,18 @@ export const ChooseAnswer = forwardRef(
     },
     ref,
   ) => {
+    const { properties } = useContext(ThemeContext);
     const [selectedButtonIndex, setSelectedButtonIndex] = useState(null);
     const buttons = isForeignLanguage
       ? answers.targetAnswers
       : answers.sourceAnswers;
 
     const styling =
-      "bg-indigo-100 h-14 rounded-md transition-all relative flex flex-col justify-center text-gray-700 " +
-      (isEnd || isClicked ? "" : "hover:bg-indigo-300 ");
+      properties.text +
+      " " +
+      properties.background +
+      " h-14 rounded-md transition-all relative flex flex-col justify-center " +
+      (isEnd || isClicked ? "" : "hover:brightness-75 ");
 
     return (
       <form
@@ -39,7 +44,9 @@ export const ChooseAnswer = forwardRef(
         className={
           "relative " +
           (isTest
-            ? (wasCheckedOnce && isEmpty ? "bg-red-300 " : "bg-gray-100 ") +
+            ? (wasCheckedOnce && isEmpty
+                ? "bg-red-300 "
+                : properties.background + " ") +
               (isEnd
                 ? isCorrect
                   ? "border-2 border-lime-500 "
@@ -59,7 +66,11 @@ export const ChooseAnswer = forwardRef(
           <span className="text-2xl text-indigo-500 font-semibold">
             {isForeignLanguage ? translation.term : translation.definition}
           </span>
-          {!isClicked && <p className="mt-8">Select the correct definition</p>}
+          {!isClicked && (
+            <p className={properties.text + " mt-8"}>
+              Select the correct definition
+            </p>
+          )}
           {isClicked && isCorrect && (
             <p className="font-semibold text-lime-600 mt-8">
               Brilliant! Your answer is correct!
@@ -83,7 +94,7 @@ export const ChooseAnswer = forwardRef(
                             ? " hover:cursor-not-allowed bg-lime-500 bg-opacity-60 border-none"
                             : " hover:cursor-not-allowed bg-red-500 bg-opacity-60 border-none"
                           : " ") + " border-[3px] border-indigo-500 "
-                      : " bg-indigo-100"
+                      : " " + properties.container
                     : !isClicked
                       ? " hover:cursor-pointer"
                       : element ===
@@ -91,7 +102,7 @@ export const ChooseAnswer = forwardRef(
                             ? translation.definition
                             : translation.term)
                         ? " bg-lime-500 bg-opacity-60 hover:cursor-not-allowed"
-                        : " bg-red-500 bg-opacity-60 hover:cursor-not-allowed")
+                        : " bg-red-700 bg-opacity-60 hover:cursor-not-allowed")
                 }
                 key={index}
                 onClick={() => {
@@ -113,7 +124,7 @@ export const ChooseAnswer = forwardRef(
                 }}
                 disabled={isClicked}
               >
-                <span className="text-gray-900 absolute left-4">
+                <span className={"text-lg absolute left-4 font-bold"}>
                   {index + 1}
                 </span>
                 <span className="ml-10 inline-block">{element}</span>

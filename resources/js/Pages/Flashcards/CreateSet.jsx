@@ -117,11 +117,7 @@ export default function CreateSet({ auth, errorsFromController }) {
               ref={(element) => (refs.current[0] = element)}
             >
               <div className={"shadow-lg"}>
-                <InputLabel
-                  htmlFor={"title"}
-                  className={"text-white"}
-                  value={"Title"}
-                />
+                <InputLabel htmlFor={"title"} value={"Title"} />
                 <TextInput
                   id={"title"}
                   placeholder={"Enter a title"}
@@ -137,11 +133,7 @@ export default function CreateSet({ auth, errorsFromController }) {
 
               <div className="w-full flex sm:flex-row flex-col gap-2">
                 <div className="md:w-1/2 w-full shadow-lg">
-                  <InputLabel
-                    htmlFor={"description"}
-                    className={"text-white"}
-                    value={"Description"}
-                  />
+                  <InputLabel htmlFor={"description"} value={"Description"} />
                   <Textarea
                     id={"description"}
                     placeholder="Add a description"
@@ -156,7 +148,6 @@ export default function CreateSet({ auth, errorsFromController }) {
                 <div className="md:w-1/2 w-full flex flex-col">
                   <InputLabel
                     htmlFor={"source"}
-                    className={"text-white"}
                     value={"Languages (source - target)"}
                   />
                   <div

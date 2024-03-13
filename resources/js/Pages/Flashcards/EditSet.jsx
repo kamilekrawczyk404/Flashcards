@@ -101,7 +101,7 @@ export default function EditSet({ auth, set, groups, errorsFromController }) {
       fullScreen={true}
       user={auth.user}
       header={
-        <h2 className="font-semibold text-xl text-gray-700 leading-tight">
+        <h2 className="font-semibold text-xl leading-tight">
           Editing set
           <Link
             href={route("flashcards.showSet", [set.id, set.title])}
@@ -119,7 +119,7 @@ export default function EditSet({ auth, set, groups, errorsFromController }) {
         <Container>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="p-2 text-gray-900 flex gap-4 flex-col"
+            className="p-2 flex gap-4 flex-col"
           >
             <div
               className="bg-gradient-to-br from-indigo-600 to-indigo-400 rounded-md shadow-md p-4 polygon-start opacity-0 translate-y-12"
@@ -127,9 +127,7 @@ export default function EditSet({ auth, set, groups, errorsFromController }) {
             >
               <div className={"flex items-center justify-between gap-4"}>
                 <div className={"shadow-lg w-full self-start"}>
-                  <InputLabel htmlFor={"title"} className={"text-white"}>
-                    Title
-                  </InputLabel>
+                  <InputLabel htmlFor={"title"}>Title</InputLabel>
                   <TextInput
                     id={"title"}
                     placeholder={"Enter a title"}
@@ -144,9 +142,7 @@ export default function EditSet({ auth, set, groups, errorsFromController }) {
                   />
                 </div>
                 <div className="shadow-lg w-full">
-                  <InputLabel htmlFor={"description"} className={"text-white"}>
-                    Description
-                  </InputLabel>
+                  <InputLabel htmlFor={"description"}>Description</InputLabel>
                   <Textarea
                     placeholder="Add a description"
                     name="description"

@@ -1,6 +1,8 @@
 import { Link } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const CancelButton = ({
   className = "",
@@ -8,11 +10,15 @@ export const CancelButton = ({
   isModal = false,
   ...props
 }) => {
+  const { properties } = useContext(ThemeContext);
   return (
     <Link
       {...props}
       className={
-        "text-gray-900 rounded-md bg-gray-100 text-xl flex items-center justify-between px-2 py-[6px] hover:bg-gray-200 transition shadow-md " +
+        properties.contrastBackground +
+        " " +
+        properties.contrastText +
+        " rounded-md text-xl flex items-center justify-between px-2 py-[6px] hover:brightness-75 transition shadow-md " +
         className
       }
     >

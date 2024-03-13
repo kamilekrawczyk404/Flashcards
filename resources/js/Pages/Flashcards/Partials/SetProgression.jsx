@@ -1,14 +1,17 @@
 import { ProgressBar } from "@/Pages/Flashcards/Partials/ProgressBar.jsx";
-import { useLayoutEffect, useRef } from "react";
+import { useContext, useLayoutEffect, useRef } from "react";
 import Animation from "@/Pages/Animation.js";
 import { Container } from "@/Components/Container.jsx";
 import { useObserver } from "@/useObserver.js";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const SetProgression = ({
   progression,
   translationsCount,
   asSection = true,
 }) => {
+  const { properties } = useContext(ThemeContext);
+
   const progressBars = [
     { type: "known", color: "bg-lime-500", text: "Already learned" },
     { type: "unknown", color: "bg-gray-500", text: "Not learned yet" },
@@ -28,7 +31,8 @@ export const SetProgression = ({
   return asSection ? (
     <section
       className={
-        "2xl:fixed 2xl:top-1/2 2xl:-translate-y-1/2 2xl:left-[calc((100vw-62rem)/4)] transform 2xl:-translate-x-1/2 md:max-w-[62rem] max-w-[76rem] mx-auto my-4 bg-white rounded-md "
+        properties.container +
+        " 2xl:fixed 2xl:top-1/2 2xl:-translate-y-1/2 2xl:left-[calc((100vw-62rem)/4)] transform 2xl:-translate-x-1/2 md:max-w-[62rem] max-w-[76rem] mx-auto my-4 rounded-md "
       }
     >
       <div className={"text-lg text-indigo-500 font-bold p-4"}>

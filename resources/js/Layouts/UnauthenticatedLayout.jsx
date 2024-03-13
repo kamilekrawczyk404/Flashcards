@@ -1,14 +1,25 @@
 import { SignUpSignIn } from "@/Pages/Auth/SignUpSignIn.jsx";
 import { ApplicationLogo } from "@/Layouts/Partials/ApplicationLogo.jsx";
+import { ThemeContext, ThemeProvider } from "@/ThemeContext.jsx";
+import { useContext } from "react";
+import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
 
 export default function Unauthenticated({
   header,
   fullScreen = false,
   children,
 }) {
+  const { properties, changeMode } = useContext(ThemeContext);
+
+  console.log(properties);
   return (
-    <div className={"bg-gray-100 " + (fullScreen && "sm:h-screen h-auto ")}>
-      <nav className="bg-white border-b border-gray-100">
+    <div
+      className={
+        properties.background +
+        (fullScreen && " sm:h-screen overflow-hidden h-auto ")
+      }
+    >
+      <nav className={properties.container + " border-b border-gray-100"}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex relative justify-between items-center h-16">
             <ApplicationLogo className={"text-4xl"} />
@@ -18,7 +29,7 @@ export default function Unauthenticated({
       </nav>
 
       {header && (
-        <header className="bg-white shadow">
+        <header className={properties.container + " shadow"}>
           <div className="max-w-7xl mx-auto h-10 px-4 sm:px-6 lg:px-8 flex justify-between items-center text-indigo-500 font-bold text-2xl">
             {header}
           </div>

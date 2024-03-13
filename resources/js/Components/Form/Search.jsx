@@ -1,8 +1,9 @@
-import { forwardRef, useEffect, useRef } from "react";
+import { forwardRef, useContext, useEffect, useRef } from "react";
 import { button } from "@material-tailwind/react";
 import Animation from "@/Pages/Animation.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const Search = forwardRef(
   (
@@ -18,6 +19,7 @@ export const Search = forwardRef(
     },
     ref,
   ) => {
+    const { properties } = useContext(ThemeContext);
     const TIMEOUT = 100;
 
     let previousSearchesContainerRef = useRef();
@@ -43,7 +45,8 @@ export const Search = forwardRef(
       >
         <div
           className={
-            "flex relative bg-gray-100 gap-2 items-center " +
+            properties.container +
+            " flex relative gap-2 items-center " +
             (isSearching
               ? "rounded-t-md p-2"
               : "p-1 rounded-md bg-transparent ")
@@ -75,7 +78,10 @@ export const Search = forwardRef(
               handleSetSearching(e.target.value);
             }}
             className={
-              "border-none focus:ring-0 " +
+              properties.background +
+              " " +
+              properties.text +
+              " border-none rounded-sm focus:ring-0 " +
               (isSearching ? "block w-full" : "hidden")
             }
           />
@@ -89,7 +95,8 @@ export const Search = forwardRef(
                 }, TIMEOUT);
               }}
               className={
-                "bg-indigo-500 rounded-md text-gray-100 flex items-center justify-center"
+                properties.text +
+                " bg-indigo-500 rounded-md flex items-center justify-center"
               }
             >
               <FontAwesomeIcon
@@ -109,7 +116,8 @@ export const Search = forwardRef(
           <div
             ref={previousSearchesContainerRef}
             className={
-              "w-full space-y-2 mx-auto bg-gray-100 rounded-b-md p-2 max-h-[4.95rem] polygon-from-top opacity-0"
+              properties.container +
+              " w-full space-y-2 mx-auto rounded-b-md p-2 max-h-[4.95rem] polygon-from-top opacity-0"
             }
           >
             <p className={"text-indigo-500"}>Last searches</p>
@@ -123,7 +131,7 @@ export const Search = forwardRef(
                       }
                       key={index}
                       className={
-                        "flex items-center justify-center cursor-pointer relative h-[2rem] shadow-lg rounded-full"
+                        "flex items-center justify-center cursor-pointer relative h-[2rem] shadow-md rounded-full"
                       }
                     >
                       <button
@@ -131,7 +139,10 @@ export const Search = forwardRef(
                           handleSetSearching(previous);
                         }}
                         className={
-                          "bg-white w-full px-4 text-gray-700 text-xl h-full rounded-l-full"
+                          properties.background +
+                          " " +
+                          properties.text +
+                          " w-full px-4 text-xl h-full rounded-l-full"
                         }
                       >
                         {previous}

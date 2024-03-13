@@ -5,6 +5,7 @@ import { FormSection } from "@/Components/Form/FormSection.jsx";
 import { PlanningForm } from "@/Components/Form/PlanningForm.jsx";
 import { GroupPropertiesForm } from "@/Components/Form/GroupPropertiesForm.jsx";
 import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
+import InputLabel from "@/Components/Form/InputLabel.jsx";
 
 export const TestChooseGroups = ({
   set,
@@ -65,15 +66,15 @@ export const TestChooseGroups = ({
           <FormSection title={"Test modes"}>
             <FormChild>
               <AnimatedCheckbox {...register("TrueOrFalseAnswer")} />
-              True / false
+              <InputLabel value={"True / false"} />
             </FormChild>
             <FormChild>
               <AnimatedCheckbox {...register("ChooseAnswer")} />
-              Multiple choice
+              <InputLabel value={"Multiple choice"} />
             </FormChild>
             <FormChild>
               <AnimatedCheckbox {...register("EnterAnswer")} />
-              Written
+              <InputLabel value={"Written"} />
             </FormChild>
           </FormSection>
         )}

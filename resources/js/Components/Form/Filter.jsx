@@ -1,9 +1,16 @@
 import { button } from "@material-tailwind/react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import Animation from "@/Pages/Animation.js";
 import { act } from "react-dom/test-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const Filter = ({
   isSearching,
@@ -11,10 +18,7 @@ export const Filter = ({
   filters,
   handleSetFilters,
 }) => {
-  // TODO: what we can filter?
-  // count of translations | followed users |
-  // show in button count of results
-
+  const { properties } = useContext(ThemeContext);
   const [isHide, setIsHide] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
   let fieldsRef = useRef();
@@ -59,7 +63,10 @@ export const Filter = ({
         <div className={isSearching ? "relative lg:w-1/5 w-full" : "w-0"}>
           <div
             className={
-              "bg-gray-100 rounded-t-md p-2 self-start text-gray-700 transition-[width] flex flex-col relative"
+              properties.container +
+              " " +
+              properties.contrastText +
+              " rounded-t-md p-2 self-start transition-[width] flex flex-col relative"
             }
           >
             <button
@@ -69,7 +76,11 @@ export const Filter = ({
                 hideOrShowFilters();
               }}
             >
-              <p className={"flex items-center p-2 bg-white rounded-sm"}>
+              <p
+                className={
+                  properties.background + " flex items-center p-2 rounded-sm"
+                }
+              >
                 <FontAwesomeIcon
                   icon={faFilter}
                   className={"text-xl text-indigo-500 mr-2"}
@@ -99,7 +110,8 @@ export const Filter = ({
           <div
             ref={fieldsRef}
             className={
-              "absolute w-full polygon-from-top opacity-0 bg-gray-100 p-2 rounded-b-md"
+              properties.container +
+              " absolute w-full polygon-from-top opacity-0 p-2 rounded-b-md"
             }
           >
             <div className={"flex flex-col gap-2 mt-[.25rem]"}>
@@ -114,7 +126,10 @@ export const Filter = ({
                         : addActiveField(language);
                     }}
                     className={
-                      "bg-white space-x-2 px-4 rounded-full h-[2rem] text-lg shadow-lg " +
+                      properties.background +
+                      " " +
+                      properties.text +
+                      " space-x-2 px-4 rounded-full h-[2rem] text-lg shadow-lg " +
                       (filters.languages.indexOf(language) !== -1
                         ? "ring-2 ring-indigo-500"
                         : "")

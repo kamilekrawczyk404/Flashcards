@@ -2,9 +2,10 @@ import { SoundButton } from "@/Components/Translations/SoundButton.jsx";
 import { EditButton } from "@/Components/Buttons/EditButton.jsx";
 import MicroModal from "micromodal";
 import { router } from "@inertiajs/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const Translation = ({
   permissions,
@@ -13,6 +14,7 @@ export const Translation = ({
   set,
   handleSetChosenTranslation,
 }) => {
+  const { properties } = useContext(ThemeContext);
   const submit = (e) => {
     e.preventDefault();
 
@@ -39,29 +41,31 @@ export const Translation = ({
     >
       <div className={"relative w-1/2 font-bold flex flex-col"}>
         <div className={"flex gap-2 items-center"}>
-          <span className={"text-lg text-gray-700 "}>Term</span>
+          <span className={properties.text + " text-lg"}>Term</span>
           <SoundButton audioPath={translation.term_audio} />
         </div>
         <div className={"flex gap-2 items-center"}>
-          <span className={"text-2xl text-white"}>{translation.term}</span>
-          <span className={"text-lg text-gray-100"}>
+          <span className={properties.contrastText + " text-2xl"}>
+            {translation.term}
+          </span>
+          <span className={properties.contrastText + " text-lg"}>
             {translation.term_phonetic}
           </span>
         </div>
       </div>
       <div className={"relative w-1/2 font-bold flex flex-col"}>
         <div className={"flex gap-2 items-center"}>
-          <span className={"text-lg text-gray-700 "}>Definition</span>
+          <span className={properties.text + " text-lg"}>Definition</span>
           <SoundButton
             className={"text-lg"}
             audioPath={translation.definition_audio}
           />
         </div>
         <div className={"flex gap-2 items-center"}>
-          <span className={"text-2xl text-white"}>
+          <span className={properties.contrastText + " text-2xl"}>
             {translation.definition}
           </span>
-          <span className={"text-lg text-gray-100"}>
+          <span className={properties.contrastText + " text-lg"}>
             {translation.definition_phonetic}
           </span>
         </div>
@@ -80,7 +84,6 @@ export const Translation = ({
               });
               MicroModal.show("modal-edit-translation");
             }}
-            className={"text-gray-100"}
           />
           <button>
             {parseInt(translation.is_favourite) ? (
@@ -93,12 +96,14 @@ export const Translation = ({
       )}
       <div
         className={
-          "absolute w-1 h-[20rem] transform rotate-45 bg-gray-100 right-[-2.5rem] bottom-[-6rem]"
+          properties.background +
+          " absolute w-1 h-[20rem] transform rotate-45 right-[-2.5rem] bottom-[-6rem]"
         }
       ></div>
       <div
         className={
-          "absolute w-1 h-[20rem] transform rotate-45 bg-gray-100 right-[-1rem] bottom-[-6rem]"
+          properties.background +
+          " absolute w-1 h-[20rem] transform rotate-45 right-[-1rem] bottom-[-6rem]"
         }
       ></div>
     </form>

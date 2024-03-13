@@ -1,5 +1,6 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useContext, useState } from "react";
 import { CurrentIndexIndicator } from "@/Components/Translations/CurrentIndexIndicator.jsx";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const TrueOrFalseAnswer = forwardRef(
   (
@@ -21,11 +22,15 @@ export const TrueOrFalseAnswer = forwardRef(
     },
     ref,
   ) => {
+    const { properties } = useContext(ThemeContext);
     const [selectedButtonIndex, setSelectedButtonIndex] = useState(null);
     const buttons = ["False", "True"];
     const styling =
-      "md:w-1/2 w-full block h-14 rounded-md transition text-start bg-indigo-100 " +
-      (isEnd ? "" : "hover:bg-indigo-300");
+      properties.background +
+      " " +
+      properties.text +
+      " md:w-1/2 w-full block h-14 rounded-md transition text-start " +
+      (isEnd ? "" : "hover:brightness-75");
 
     return (
       <div
@@ -33,7 +38,9 @@ export const TrueOrFalseAnswer = forwardRef(
         {...props}
         className={
           "relative " +
-          (wasCheckedOnce && isEmpty ? "bg-red-300 " : "bg-gray-100 ") +
+          (wasCheckedOnce && isEmpty
+            ? "bg-red-300 "
+            : properties.background + " ") +
           (isEnd
             ? isCorrect
               ? "border-2 border-lime-500 "
@@ -55,7 +62,7 @@ export const TrueOrFalseAnswer = forwardRef(
               <span className="absolute top-0 left-0 text-sm text-gray-500 font-semibold">
                 Term
               </span>
-              <span>
+              <span className={properties.text}>
                 {isForeignLanguage ? translation.term : translation.definition}
               </span>
             </div>
@@ -63,13 +70,15 @@ export const TrueOrFalseAnswer = forwardRef(
               <span className="absolute top-0 left-2 text-sm text-gray-500 font-semibold">
                 Definition
               </span>
-              <span>
+              <span className={properties.text}>
                 {isForeignLanguage ? translation.definition : translation.term}
               </span>
             </div>
           </div>
           {!isClicked && (
-            <p className="mt-2 ml-2">Select the correct definition</p>
+            <p className={properties.text + " mt-2 ml-2"}>
+              Select the correct definition
+            </p>
           )}
           {isClicked && isCorrect && (
             <p className="font-semibold text-lime-600 mt-8">
@@ -107,7 +116,9 @@ export const TrueOrFalseAnswer = forwardRef(
                       : "") +
                     " border-[3px] border-indigo-500 "
                   : styling) +
-                (isEnd ? " hover:cursor-not-allowed" : " bg-indigo-100")
+                (isEnd
+                  ? " hover:cursor-not-allowed"
+                  : " " + properties.container)
               }
             >
               <span className={"ml-4"}>{button}</span>

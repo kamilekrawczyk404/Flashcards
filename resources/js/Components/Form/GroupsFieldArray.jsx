@@ -5,11 +5,18 @@ import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import Animation from "@/Pages/Animation.js";
 import gsap from "gsap/all";
 import InputError from "@/Components/Form/InputError.jsx";
 import { error } from "@splidejs/splide/src/js/utils";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export default function ({
   control,
@@ -19,6 +26,7 @@ export default function ({
   errors,
   editingMode = false,
 }) {
+  const { properties } = useContext(ThemeContext);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "groups",
@@ -102,7 +110,7 @@ export default function ({
             to={"to-amber-300"}
           >
             <div className={"w-1/2"}>
-              <InputLabel value={"Group name"} className={"text-gray-700"} />
+              <InputLabel value={"Group name"} />
               <TextInput
                 className={"w-full"}
                 type="text"
@@ -125,7 +133,10 @@ export default function ({
               {index > 0 && (
                 <button
                   className={
-                    "flex items-center justify-center bg-gray-100 p-2 rounded-sm shadow-lg"
+                    properties.background +
+                    " " +
+                    properties.text +
+                    " flex items-center justify-center p-2 rounded-sm shadow-lg"
                   }
                   type={"button"}
                   onClick={() => {
@@ -140,9 +151,7 @@ export default function ({
                 >
                   <FontAwesomeIcon
                     icon="fa-solid fa-trash"
-                    className={
-                      "hover:text-red-500 transition text-gray-700 text-lg"
-                    }
+                    className={"hover:text-red-500 transition text-lg"}
                   />
                 </button>
               )}
@@ -150,7 +159,10 @@ export default function ({
               {lastGroupIndex > 1 && (
                 <button
                   className={
-                    "flex items-center justify-center bg-gray-100 rounded-sm shadow-lg " +
+                    properties.background +
+                    " " +
+                    properties.text +
+                    " flex items-center justify-center rounded-sm shadow-lg " +
                     (activeGroup === index && "[&>span]:rotate-0")
                   }
                   type={"button"}
@@ -167,7 +179,7 @@ export default function ({
                       "transform transition origin-[center,center] rotate-180 p-2"
                     }
                   >
-                    <FontAwesomeIcon icon="fa-solid fa-arrow-up text-gray-700 text-lg" />
+                    <FontAwesomeIcon icon="fa-solid fa-arrow-up text-lg" />
                   </span>
                 </button>
               )}

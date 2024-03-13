@@ -4,8 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background-color:  rgb(243 244 246);
+.dark-background {
+    background-color: rgb(55 65 81);
+}
+
+.light-background {
+    background-color: rgb(243 244 246);
 }
 
 .rotate-x-180 {

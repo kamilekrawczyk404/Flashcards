@@ -1,6 +1,7 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useContext, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export default forwardRef(function TextInput(
   {
@@ -13,6 +14,8 @@ export default forwardRef(function TextInput(
   },
   ref,
 ) {
+  const { properties } = useContext(ThemeContext);
+
   const input = ref ? ref : useRef();
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
 
@@ -38,9 +41,12 @@ export default forwardRef(function TextInput(
         {...props}
         type={type}
         className={
-          "border-gray-300 rounded-md shadow-sm " +
+          properties.container +
+          " " +
+          properties.text +
+          " border-gray-300 rounded-md shadow-sm " +
           (error
-            ? "bg-red-400 bg-opacity-60 "
+            ? "bg-red-700 bg-opacity-60 "
             : "" + (type === "number" ? " w-24 " : " w-full ") + className)
         }
         ref={input}
