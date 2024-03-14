@@ -1,4 +1,8 @@
+import { useContext } from "react";
+import { ThemeContext } from "@/ThemeContext.jsx";
+
 export const ModalLayout = ({ modalId, children }) => {
+  const { properties } = useContext(ThemeContext);
   return (
     <div
       className="micromodal-slide modal m-10 absolute z-10"
@@ -11,7 +15,7 @@ export const ModalLayout = ({ modalId, children }) => {
         data-micromodal-close={modalId}
       >
         <div
-          className="modal__container flex gap-6 flex-col bg-white lg:w-[76rem] w-full sm:m-6 m-0 p-4 rounded-md overflow-y-auto border-b relative z-10"
+          className={`${properties.container} modal__container flex gap-6 flex-col lg:max-w-5xl w-full sm:m-6 m-0 p-4 rounded-md overflow-y-auto border-b relative z-10`}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-1-title"

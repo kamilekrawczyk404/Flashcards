@@ -1,12 +1,28 @@
-export const OptionCard = ({ className = "", children, ...props }) => {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+export const OptionCard = ({
+  className = "",
+  icon,
+  text,
+  children,
+  ...props
+}) => {
   return (
     <button
       type={"button"}
       {...props}
       className={
-        "xl:w-[30rem] lg:w-[25rem] sm:w-[16rem] xl:h-[30rem] lg:h-[25rem] sm:h-[16rem] sm:aspect-square p-4 flex hover:opacity-[95%] hover:scale-[1.015] transition flex-col border-indigo-500 border-4 rounded-md hover:shadow-xl relative"
+        "flex flex-col items-center justify-center hover:brightness-[1.05] w-full hover:-translate-y-1 hover:scale-[1.025] transition-all lg:h-full h-1/2 py-12"
       }
     >
+      <div
+        className={
+          "flex items-center text-indigo-500 text-2xl font-bold self-justify-center"
+        }
+      >
+        <p>{text}</p>
+        <FontAwesomeIcon icon={icon} className={"text-amber-500 ml-2"} />
+      </div>
       {children}
     </button>
   );

@@ -98,7 +98,6 @@ export default function EditSet({ auth, set, groups, errorsFromController }) {
 
   return (
     <AuthenticatedLayout
-      fullScreen={true}
       user={auth.user}
       header={
         <h2 className="font-semibold text-xl leading-tight">
@@ -116,7 +115,7 @@ export default function EditSet({ auth, set, groups, errorsFromController }) {
       <Head title={`Editing set - ${set.title}`} />
 
       {(!isSetBeingUpdated || Object.values(serverErrors).length !== 0) && (
-        <Container>
+        <Container className={"my-4"}>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="p-2 flex gap-4 flex-col"

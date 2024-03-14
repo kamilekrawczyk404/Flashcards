@@ -36,7 +36,7 @@ export const TestChooseGroups = ({
   });
 
   return (
-    <Container>
+    <Container className={"mt-4"}>
       <PlanningForm
         handleSubmit={handleSubmit}
         handleSetIsChoosingGroups={handleSetIsChoosingGroups}

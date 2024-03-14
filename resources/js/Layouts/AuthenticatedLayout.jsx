@@ -23,7 +23,11 @@ export default function Authenticated({
 
   return (
     <div
-      className={properties.background + " " + (fullScreen ? "h-screen" : "")}
+      className={
+        properties.background +
+        " " +
+        (fullScreen ? "h-screen overflow-hidden" : "")
+      }
     >
       <nav className={properties.container + " border-b border-gray-100"}>
         <div className="md:max-w-[66rem] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,7 +66,7 @@ export default function Authenticated({
                         type="button"
                         className={
                           properties.text +
-                          " space-x-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-gray-700 focus:outline-none transition ease-in-out duration-150 "
+                          " space-x-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:brightness-75 focus:outline-none transition ease-in-out duration-150 "
                         }
                       >
                         <span
@@ -83,14 +87,18 @@ export default function Authenticated({
                     </span>
                   </Dropdown.Trigger>
 
-                  <Dropdown.Content>
-                    <Dropdown.Link href={route("profile.edit")}>
+                  <Dropdown.Content className={`${properties.text}`}>
+                    <Dropdown.Link
+                      href={route("profile.edit")}
+                      className={properties.background}
+                    >
                       Profile
                     </Dropdown.Link>
                     <Dropdown.Link
                       href={route("logout")}
                       method="post"
                       as="button"
+                      className={properties.background}
                     >
                       Log Out
                     </Dropdown.Link>
@@ -186,7 +194,7 @@ export default function Authenticated({
         </header>
       )}
 
-      <main className={properties.background + " mt-4"}>{children}</main>
+      <main className={properties.background}>{children}</main>
     </div>
   );
 }

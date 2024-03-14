@@ -23,8 +23,10 @@ export const RankingList = ({ className = "", rankings, ...props }) => {
       </div>
       <div className={"space-y-2 relative text-lg"}>
         {!rankings.length && (
-          <div>
-            <p>Nobody has finished this game yet.</p>
+          <div className={"space-y-2"}>
+            <p className={properties.text}>
+              Nobody has finished this game yet.
+            </p>
             <p
               className={
                 properties.container +

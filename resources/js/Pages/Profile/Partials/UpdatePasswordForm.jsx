@@ -1,12 +1,15 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import InputError from "@/Components/Form/InputError.jsx";
 import PrimaryButton from "@/Components/Buttons/PrimaryButton.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import { useForm } from "@inertiajs/react";
 import { Transition } from "@headlessui/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export default function UpdatePasswordForm({ className = "" }) {
+  const { properties } = useContext(ThemeContext);
+
   const passwordInput = useRef();
   const currentPasswordInput = useRef();
 
@@ -40,20 +43,18 @@ export default function UpdatePasswordForm({ className = "" }) {
   return (
     <section className={className}>
       <header>
-        <h2 className="text-lg font-medium text-gray-900">Update Password</h2>
+        <h2 className={`${properties.text} text-lg font-medium`}>
+          Update Password
+        </h2>
 
-        <p className="mt-1 text-sm text-gray-600">
+        <p className={`${properties.text} mt-1 text-sm`}>
           Ensure your account is using a long, random password to stay secure.
         </p>
       </header>
 
       <form onSubmit={updatePassword} className="mt-6 space-y-6">
         <div>
-          <InputLabel
-            htmlFor="current_password"
-            value="Current Password"
-            className={"text-gray-700"}
-          />
+          <InputLabel htmlFor="current_password" value="Current Password" />
 
           <TextInput
             id="current_password"
@@ -69,11 +70,7 @@ export default function UpdatePasswordForm({ className = "" }) {
         </div>
 
         <div>
-          <InputLabel
-            htmlFor="password"
-            value="New Password"
-            className={"text-gray-700"}
-          />
+          <InputLabel htmlFor="password" value="New Password" />
 
           <TextInput
             id="password"
@@ -92,7 +89,6 @@ export default function UpdatePasswordForm({ className = "" }) {
           <InputLabel
             htmlFor="password_confirmation"
             value="Confirm Password"
-            className={"text-gray-700"}
           />
 
           <TextInput

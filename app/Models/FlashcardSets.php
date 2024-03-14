@@ -64,7 +64,7 @@ class FlashcardSets extends Model
         return $final;
     }
 
-    public static function getAvailableLanguages() {
+    public static function getAvailableLanguages(): array {
         return ["English", "Polish", "German", "Spanish"];
     }
 

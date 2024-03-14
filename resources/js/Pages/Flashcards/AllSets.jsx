@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useContext,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -11,33 +12,26 @@ import { SingleSet } from "@/Pages/Flashcards/Partials/SingleSet.jsx";
 import { GoBackIndicator } from "@/Pages/Flashcards/Partials/GoBackIndicator.jsx";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
 import { usePage } from "@inertiajs/react";
+import { useGetUserSets } from "@/useGetUserSets.js";
+import { ProgressModal } from "@/Components/Loading/ProgressModal.jsx";
+import { EmptyImage } from "@/Images/EmptyImage.jsx";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const AllSets = forwardRef(
   (
     { handleAnimateToLeft, hasMovedToAllSets, handleHasMovedToAllSets },
     ref,
   ) => {
-    const [sets, setSets] = useState([]);
-    let refs = useRef([]);
-
+    const { properties } = useContext(ThemeContext);
     const feedback = usePage().props?.feedback;
-
     const auth = usePage().props.auth;
-
-    // Fatch data async with all sets...
-    useEffect(() => {
-      fetch(`/get-user-sets/${auth.user.id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setSets(data);
-        })
-        .catch((e) => console.log("There is a problem: ", e));
-    }, [feedback]);
+    const { loading, sets } = useGetUserSets(auth.user.id);
+    let refs = useRef([]);
 
     useLayoutEffect(() => {
       if (sets.length) {
         let animation = new Animation(refs.current);
-        animation.animateAll("", "", "");
+        animation.animateAll("-.3", "", "");
       } else {
         let animation = new Animation([refs.current]);
         animation.animateAll("", "", "");
@@ -48,7 +42,7 @@ export const AllSets = forwardRef(
       <>
         <div
           className={
-            "w-full absolute left-[-100%] opacity-0 flex items-center justify-center "
+            "w-full h-full absolute left-[-100%] opacity-0 flex items-center justify-center "
           }
           ref={ref}
         >
@@ -57,14 +51,12 @@ export const AllSets = forwardRef(
               ref={(element) => {
                 refs.current[0] = element;
               }}
-              className="mt-10 max-w-[76rem] rounded-md mx-auto bg-white flex flex-col items-center gap-2 p-4 polygon-start translate-y-12 opacity-0"
+              className={`${properties.container} rounded-md flex flex-col items-center gap-2 p-4 polygon-start translate-y-12 opacity-0 sm:w-1/2 w-full`}
             >
-              <img
-                className={"w-[35rem] bg-contain -m-10"}
-                src="http://127.0.0.1:8000/storage/images/not_found.jpg"
-                alt="not found sets"
-              />
-              <p className="text-gray-700">It looks like you don't any sets.</p>
+              <EmptyImage className={"w-full"} />
+              <p className={properties.text}>
+                It looks like you don't any sets.
+              </p>
               <MainButton
                 isRedirect={true}
                 href={route("flashcards.storeNewSet")}
@@ -74,12 +66,10 @@ export const AllSets = forwardRef(
               </MainButton>
             </div>
           ) : (
-            <div
-              className={"w-full flex items-center flex-col gap-4 relative "}
-            >
+            <>
               <div
                 className={
-                  "rounded-md overflow-y-scroll space-y-2 w-full h-[70vh] "
+                  "w-full flex items-center flex-col gap-y-4 relative mt-4 rounded-md overflow-y-scroll h-[70vh]"
                 }
               >
                 {sets.map((set, index) => (
@@ -92,22 +82,28 @@ export const AllSets = forwardRef(
                   />
                 ))}
               </div>
-              <div className={""}>
-                <MainButton
-                  isRedirect={true}
-                  href={route("flashcards.showNewSet")}
-                  className={"bg-indigo-500 hover:bg-indigo-600 text-gray-100"}
-                >
-                  Create a new set
-                </MainButton>
-              </div>
-            </div>
+              <MainButton
+                isRedirect={true}
+                href={route("flashcards.showNewSet")}
+                className={
+                  "absolute bottom-12 left-1/2 -translate-x-1/2 bg-indigo-500 hover:bg-indigo-600 text-gray-100"
+                }
+              >
+                Create a new set
+              </MainButton>
+            </>
           )}
+
           <GoBackIndicator
             handleAnimate={handleAnimateToLeft}
             onMoved={() => handleHasMovedToAllSets((prev) => !prev)}
           />
+          <ProgressModal
+            inProgress={loading}
+            text={"We're searching for your sets."}
+          />
         </div>
+
         <SuccessModal feedback={feedback} />
       </>
     );

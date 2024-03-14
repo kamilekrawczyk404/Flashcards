@@ -12,9 +12,7 @@ export const ProgressModal = ({
   const { properties } = useContext(ThemeContext);
   return (
     <>
-      {Object.values(errors).every(
-        (value) => Object.keys(value).length === 0,
-      ) &&
+      {Object.values(errors).every((value) => !Object.keys(value).length) &&
         inProgress && (
           <div
             className={

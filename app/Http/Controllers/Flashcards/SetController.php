@@ -146,11 +146,9 @@ class SetController extends Controller
                     'term' => $term['word'],
                     'term_phonetic' => $term['phonetic'] ?? "",
                     'term_audio' => $term['audioPath'] ?? "",
-                    'term_language' => $term['language'],
                     'definition' => $definition['word'],
                     'definition_phonetic' => $definition['phonetic'] ?? "",
                     'definition_audio' => $definition['audioPath'] ?? "",
-                    'definition_language' => $definition['language'],
                 ];
 
                 if (in_array('isNew', $translation)) {
@@ -195,8 +193,8 @@ class SetController extends Controller
         return redirect()->route('home')->with('success', 'Set has been removed successfully');
     }
 
-    public static function getUserSets(int $id): array {
-        return FlashcardSets::getUserSets($id);
+    public static function getUserSets(int $user_id): array {
+        return FlashcardSets::getUserSets($user_id);
     }
 
     public static function getFoundSets(int $currentPage, string $searching, $filters): array {

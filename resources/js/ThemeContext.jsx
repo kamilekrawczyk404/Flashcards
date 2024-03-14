@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import Cookies from "js-cookie";
 
@@ -44,6 +44,16 @@ export const ThemeProvider = ({ children }) => {
       );
     }
   };
+
+  useEffect(() => {
+    addEventListener("load", () => {
+      if (darkMode) {
+        document.body.classList.add(modeProperties.darkMode.backgroundPureCss);
+      } else {
+        document.body.classList.add(modeProperties.lightMode.backgroundPureCss);
+      }
+    });
+  }, [darkMode]);
 
   const value = {
     properties: darkMode ? modeProperties.darkMode : modeProperties.lightMode,

@@ -27,7 +27,7 @@ class UserFactory extends Factory
 //            'email' => $userEmail,
             'email_verified_at' => now(),
             'password' => 'qwerty',
-            'avatar' => 'default.png',
+            'avatar' => 'default.jpg',
             'remember_token' => Str::random(10),
             'facebook' => "https://facebook.com/user1234qwerty",
             'instagram' => "qwerty",

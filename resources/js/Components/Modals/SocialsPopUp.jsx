@@ -41,7 +41,7 @@ export const SocialsPopUp = ({
   });
 
   const validate = (value, socialMediaName, index) => {
-    if (value.length === 0) {
+    if (!value.length) {
       setIsMatching((prev) => ({
         ...prev,
         [socialMediaName]: true,
@@ -136,7 +136,6 @@ export const SocialsPopUp = ({
               </div>
             ),
         )}
-
         <PrimaryButton
           disabled={processing}
           className={"bg-indigo-500 hover:bg-indigo-600 mt-2"}

@@ -13,6 +13,7 @@ import { Container } from "@/Components/Container.jsx";
 import { getFilePath } from "@/getFilePath.jsx";
 import { faFlagCheckered } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "@/ThemeContext.jsx";
+import { FeedbackImage } from "@/Images/FeedbackImage.jsx";
 
 export const Feedback = ({
   answersResults,
@@ -186,21 +187,17 @@ export const Feedback = ({
           <div
             className={
               properties.background +
-              " mt-4 relative flex sm:flex-row flex-col-reverse items-center justify-evenly rounded-md"
+              " mt-4 relative flex sm:flex-row flex-col-reverse items-center justify-evenly rounded-md p-8"
             }
           >
-            <img
-              className={"w-[25rem]"}
-              src={getFilePath("/images/success.jpg")}
-              alt="success"
-            />
+            {/*<img*/}
+            {/*  className={"w-[25rem]"}*/}
+            {/*  src={getFilePath("/images/success.jpg")}*/}
+            {/*  alt="success"*/}
+            {/*/>*/}
+            <FeedbackImage className={"scale-75"} />
             <div
-              className={
-                properties.container +
-                " " +
-                properties.text +
-                " text-xl p-4 rounded-md font-semibold flex gap-2 flex-col sm:w-fit w-full"
-              }
+              className={`${properties.container} ${properties.text} text-xl p-4 rounded-md font-semibold flex gap-2 flex-col  w-full`}
             >
               <div className={"flex items-center relative mb-4"}>
                 {"Congratulations!".split("").map((element, index) => {
@@ -242,7 +239,7 @@ export const Feedback = ({
       </Container>
 
       {!isTest && (
-        <div className="flex justify-center items-center mx-auto left-1/2 -translate-x-1/2 gap-4 transition fixed animate-show-from-bottom bottom-0 z-10">
+        <div className="flex sm:flex-row flex-col justify-center items-center mx-auto left-1/2 -translate-x-1/2 gap-4 transition fixed animate-show-from-bottom bottom-0 z-10">
           <MainButton
             className={"bg-indigo-500 hover:bg-indigo-600 text-gray-100"}
             isRedirect={true}

@@ -190,7 +190,7 @@ const Match = ({
       setIsSecondCard(true);
 
       if (
-        Object.keys(feedbackData).length === 0 ||
+        !Object.keys(feedbackData) ||
         !feedbackData?.incorrectIds?.some(
           (id) => id === currentCard.translation_id,
         )

@@ -1,10 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { forwardRef, useLayoutEffect, useRef } from "react";
+import { forwardRef, useContext, useLayoutEffect, useRef } from "react";
 import Animation from "@/Pages/Animation.js";
 import { usePage } from "@inertiajs/react";
+import { ThemeContext } from "@/ThemeContext.jsx";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 
 export const SuccessModal = ({ feedback = {} }) => {
   let modalRef = useRef(null);
+  const { properties } = useContext(ThemeContext);
 
   useLayoutEffect(() => {
     if (feedback.success) {
@@ -18,15 +21,13 @@ export const SuccessModal = ({ feedback = {} }) => {
       {feedback.success && (
         <div
           ref={modalRef}
-          className={
-            "fixed top-[100vh] transform md:right-[2rem] right-0 md:translate-x-1 md:translate-y-0 p-6 md:w-fit w-full bg-white items-center gap-4 rounded-md shadow-xl opacity-0 hidden overflow-hidden"
-          }
+          className={`${properties.container} fixed top-[100vh] transform md:right-[2rem] right-0 md:translate-x-1 md:translate-y-0 p-6 md:w-fit w-full items-center gap-4 rounded-md shadow-xl opacity-0 hidden overflow-hidden`}
         >
           <FontAwesomeIcon
-            icon="fa-solid fa-circle-check"
+            icon={faCircleCheck}
             className={"text-lime-500 text-3xl"}
           />
-          <p className={"font-semibold text-gray-700 text-xl"}>
+          <p className={`${properties.text} font-semibold text-xl`}>
             {feedback.success}.
           </p>
           <div

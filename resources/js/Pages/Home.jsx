@@ -21,6 +21,9 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "@/ThemeContext.jsx";
+import { LearnImage } from "@/Images/LearnImage.jsx";
+import { ExploreImage } from "@/Images/ExploreImage.jsx";
+import { UnauthenticatedImage } from "@/Images/UnauthenticatedImage.jsx";
 
 export default function Home({
   auth,
@@ -52,8 +55,6 @@ export default function Home({
   const [hasMovedToAllSets, setHasMovedToAllSets] = useState(false);
 
   let animatedText = useRef();
-
-  const [isShowedUp, setIsShowedUp] = useState(false);
 
   const getNextIndex = (current) => {
     return sentences.length - 1 === current ? 0 : current + 1;
@@ -113,10 +114,6 @@ export default function Home({
 
   useEffect(() => {
     if (animatedText.current && !auth.user) {
-      let textAnimation = setInterval(() => {
-        setIsShowedUp((prev) => !prev);
-      }, 500);
-
       if (isPaused) {
         setTimeout(() => {
           setIsPaused(false);
@@ -124,20 +121,15 @@ export default function Home({
       } else if (!isPaused && startErasing) {
         setTimeout(() => {
           erase();
-          setIsShowedUp((prev) => !prev);
         }, 50);
       } else {
         setTimeout(
           () => {
             write();
-            setIsShowedUp((prev) => !prev);
           },
-          Math.floor(Math.random() * (200 - 150) + 150),
+          Math.floor(Math.random() * (200 - 150) + 100),
         );
       }
-      return () => {
-        clearInterval(textAnimation);
-      };
     }
   }, [index, currentIndex, isPaused]);
 
@@ -150,113 +142,82 @@ export default function Home({
     <>
       {auth.user === null ? (
         <Unauthenticated fullScreen={true}>
-          <SectionWithVerticalMargin className={"flex items-center flex-row"}>
+          <SectionWithVerticalMargin className={"flex items-center z-10"}>
             <div
               ref={welcomeScreen}
               className={
-                "flex sm:mx-auto items-center xl:flex-row flex-col-reverse justify-between xl:gap-0 gap-10 max-w-[76rem] m-2 polygon-start translate-y-12 opacity-0"
+                "flex sm:mx-auto items-center lg:flex-row flex-col-reverse justify-between xl:gap-0 gap-4 polygon-start translate-y-12 opacity-0 max-w-7xl sm:px-8 px-4"
               }
             >
-              <div className={"xl:space-y-16 space-y-8 rounded-md"}>
+              <div
+                className={
+                  "flex flex-col lg:items-start items-center  space-y-8 rounded-md lg:w-1/2 w-full"
+                }
+              >
                 <h1 className={properties.text + " sm:text-3xl text-2xl"}>
                   Start your learning journey right now!
                   <div
-                    className={
-                      "h-9 font-bold w-fit text-indigo-500 border-b-4 border-indigo-500 relative before:absolute before:-right-2 before:w-[.25rem] before:h-4/5 before:transform before:top-1/2 before:-translate-y-1/2 before:bg-gray-700 " +
-                      (isShowedUp ? "before:block" : "before:hidden")
-                    }
+                    className={"h-9 font-bold w-fit text-indigo-500 relative "}
                   >
                     <span
+                      className={"border-b-2 border-indigo-500 "}
                       ref={(element) => (animatedText.current = element)}
                     ></span>
                   </div>
                 </h1>
                 <SignUpSignIn
-                  className={"rounded-md [&>a]:  space-x-6"}
+                  className={"rounded-md space-x-6"}
                   isInNav={false}
                 />
               </div>
-              <img
-                className={"sm:max-w-[55%] w-fit"}
-                src={getFilePath("/images/home_unauthenticated.jpg")}
-                alt="Study Image"
+              <UnauthenticatedImage
+                className={"lg:w-1/2 md:w-2/3 w-full h-auto"}
               />
             </div>
           </SectionWithVerticalMargin>
+          <div
+            className={
+              properties.container +
+              " lg:block hidden absolute top-0 left-1/2 w-full h-full"
+            }
+          ></div>
         </Unauthenticated>
       ) : (
         <Authenticated user={auth?.user} fullScreen={true}>
-          <SectionWithVerticalMargin
-            className={"flex items-center justify-center gap-8 relative"}
-          >
+          <SectionWithVerticalMargin className={"flex"}>
             <div
               ref={(element) => (welcomeScreen.current = element)}
               className={
-                "flex items-center justify-center flex-col gap-8 translate-y-12 opacity-0 polygon-start"
+                "flex lg:flex-row flex-col items-center justify-center translate-y-12 opacity-0 polygon-start w-full"
               }
             >
+              <OptionCard
+                disabled={isDisabled}
+                onClick={() => {
+                  animateToLeft();
+                  setHasMovedToAllSets(true);
+                }}
+                text={"Learn"}
+                icon={faGraduationCap}
+              >
+                <LearnImage className={"lg:scale-100 scale-75"} />
+              </OptionCard>
               <div
                 className={
-                  "mx-auto py-2 border-b-4 border-indigo-500 w-fit sm:p-0 p-4"
+                  properties.container +
+                  " absolute lg:left-1/2 lg:top-0 lg:h-full lg:w-1 lg:-translate-y-0 left-0 top-1/2 -translate-y-1/2 w-full h-1"
                 }
+              ></div>
+              <OptionCard
+                disabled={isDisabled}
+                onClick={() => {
+                  animateToRight();
+                }}
+                text={"Explore"}
+                icon={faMagnifyingGlass}
               >
-                <h1 className={properties.text + " text-3xl font-bold"}>
-                  Welcome back{" "}
-                  <span className={"text-amber-500"}>{auth.user.name}</span>!
-                </h1>
-                <p className={properties.text + " text-xl"}>
-                  What do we do today?
-                </p>
-              </div>
-              <div
-                className={
-                  "flex relative w-full sm:flex-row flex-col sm:items-center p-4 gap-4"
-                }
-              >
-                <OptionCard
-                  disabled={isDisabled}
-                  onClick={() => {
-                    animateToLeft();
-                    setHasMovedToAllSets(true);
-                  }}
-                >
-                  <h1 className={"text-indigo-500 text-2xl font-bold"}>
-                    Learn
-                    <FontAwesomeIcon
-                      icon={faGraduationCap}
-                      className={"text-amber-500 ml-2"}
-                    />
-                  </h1>
-                  <img
-                    className={
-                      "sm:block hidden xl:max-w-[25rem] lg:max-w-[20rem] sm:max-w-[12rem] rounded-md self-center"
-                    }
-                    src={getFilePath("/images/learn.jpg")}
-                    alt="learning image"
-                  />
-                </OptionCard>
-                <OptionCard
-                  disabled={isDisabled}
-                  onClick={() => {
-                    animateToRight();
-                  }}
-                >
-                  <span className={"text-indigo-500 text-2xl font-bold"}>
-                    Explore
-                    <FontAwesomeIcon
-                      icon={faMagnifyingGlass}
-                      className={"text-amber-500 ml-2"}
-                    />
-                  </span>
-                  <img
-                    className={
-                      "sm:block hidden xl:max-w-[25rem] lg:max-w-[20rem] sm:max-w-[12rem] w-full rounded-md self-center xl:mt-20 lg:mt-12 mt-8"
-                    }
-                    src={getFilePath("/images/searching.jpg")}
-                    alt="explore"
-                  />
-                </OptionCard>
-              </div>
+                <ExploreImage className={"lg:scale-95 scale-75"} />
+              </OptionCard>
             </div>
             <AllSets
               handleHasMovedToAllSets={setHasMovedToAllSets}

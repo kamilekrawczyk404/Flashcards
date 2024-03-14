@@ -13,7 +13,7 @@ export const SignUpSignIn = ({ className, isInNav = true }) => {
       <Link
         href={route("login")}
         className={
-          "border-2 p-2 rounded-md tracking-widest border-indigo-500 font-bold text-indigo-500 sm:w-fit w-full"
+          "border-2 p-2 rounded-md tracking-widest border-indigo-500 font-bold text-indigo-500 sm:w-fit w-full whitespace-nowrap"
         }
       >
         Sign in
@@ -23,7 +23,7 @@ export const SignUpSignIn = ({ className, isInNav = true }) => {
         href={route("register")}
         value={"Sign in"}
         className={
-          "bg-indigo-500 hover:bg-indigo-600 text-white sm:w-fit w-full"
+          "bg-indigo-500 hover:bg-indigo-600 text-white sm:w-fit w-full whitespace-nowrap "
         }
       >
         Sign up

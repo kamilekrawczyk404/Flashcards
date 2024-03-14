@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import DangerButton from "@/Components/Buttons/DangerButton.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
 import Modal from "@/Components/Modals/Modal.jsx";
@@ -6,11 +6,13 @@ import SecondaryButton from "@/Components/Buttons/SecondaryButton.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import { useForm } from "@inertiajs/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export default function DeleteUserForm({ className = "" }) {
   const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
   const passwordInput = useRef();
 
+  const { properties } = useContext(ThemeContext);
   const {
     data,
     setData,
@@ -46,9 +48,11 @@ export default function DeleteUserForm({ className = "" }) {
   return (
     <section className={`space-y-6 ${className}`}>
       <header>
-        <h2 className="text-lg font-medium text-gray-900">Delete Account</h2>
+        <h2 className={`${properties.text} text-lg font-medium`}>
+          Delete Account
+        </h2>
 
-        <p className="mt-1 text-sm text-gray-600">
+        <p className={`${properties.text} mt-1 text-sm`}>
           Once your account is deleted, all of its resources and data will be
           permanently deleted. Before deleting your account, please download any
           data or information that you wish to retain.

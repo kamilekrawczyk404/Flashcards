@@ -1,2 +1,2 @@
 export const getFilePath = (pathFromPublic) =>
-  `${window.location.origin}/storage${pathFromPublic}`;
+  `http://localhost:8000/storage${pathFromPublic}`;

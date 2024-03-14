@@ -1,5 +1,5 @@
 import { MainButton } from "@/Components/Buttons/MainButton.jsx";
-import React, { useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { CancelButton } from "@/Components/Modals/CancelButton.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import { useForm } from "react-hook-form";
@@ -7,14 +7,17 @@ import InputError from "@/Components/Form/InputError.jsx";
 import { router } from "@inertiajs/react";
 import TranslationsData from "@/TranslationsData.js";
 import { GradientAndLines } from "@/Components/GradientAndLines.jsx";
+import { ThemeContext } from "@/ThemeContext.jsx";
+import { ModalLayout } from "@/Components/Modals/ModalLayout.jsx";
+import { ModalButtons } from "@/Components/Modals/ModalButtons.jsx";
 
 export const PopUpEdit = ({
   modalId = "",
   translation,
   set,
   cancelEditing,
-  handleFetchTranslations,
 }) => {
+  const { properties } = useContext(ThemeContext);
   const {
     formState: { errors, dirtyFields, isDirty },
     handleSubmit,
@@ -34,9 +37,6 @@ export const PopUpEdit = ({
       {
         preserveScroll: true,
         preserveState: false,
-        onFinish: () => {
-          // handleFetchTranslations();
-        },
       },
     );
   };
@@ -46,110 +46,69 @@ export const PopUpEdit = ({
   }, [translation]);
 
   return (
-    <div
-      className="micromodal-slide modal m-10 absolute z-10"
-      id={modalId}
-      aria-hidden="true"
-    >
-      <div
-        className="modal__overlay fixed top-0 left-0 right-0 bg-opacity-gray bottom-0 flex items-center justify-center"
-        tabIndex="-1"
-        data-micromodal-close={modalId}
-      >
-        <div
-          className="modal__container flex gap-6 flex-col bg-white lg:max-w-[62rem] w-full m-6 p-4 rounded-md overflow-y-auto border-b relative z-10"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-1-title"
+    <ModalLayout modalId={modalId}>
+      <header className="flex justify-between items-center">
+        <h2 className="font-bold text-2xl text-indigo-500">Edit translation</h2>
+        <CancelButton
+          isModal={true}
+          modalId={modalId}
+          className={"modal__close"}
+          onClick={(e) => {
+            e.preventDefault();
+            cancelEditing();
+            MicroModal.close(modalId);
+          }}
+        />
+      </header>
+      <form className={"flex gap-6 flex-col"} onSubmit={handleSubmit(onSubmit)}>
+        <GradientAndLines
+          className={"p-4"}
+          from={"from-indigo-600"}
+          to={"to-indigo-400"}
+          hasLines={true}
+          linesColor={"bg-gray-100"}
         >
-          <header className="flex justify-between items-center">
-            <h2 className="font-bold text-2xl text-indigo-500">Edit</h2>
-            <CancelButton
-              isModal={true}
-              modalId={"modal-1"}
-              className={"modal__close"}
-              onClick={(e) => {
-                e.preventDefault();
-                cancelEditing();
-                MicroModal.close(modalId);
-              }}
-            />
-          </header>
-          <form
-            className={"flex gap-6 flex-col"}
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <GradientAndLines
-              className={"p-4"}
-              from={"from-indigo-600"}
-              to={"to-indigo-400"}
-              hasLines={true}
-              linesColor={"bg-gray-100"}
-            >
-              <div className="flex flex-col gap-4">
-                <div className="w-full">
-                  <span className={"text-gray-100 text-xl font-semibold"}>
-                    Term
-                  </span>
-                  <TextInput
-                    placeholder="Term"
-                    className="w-full text-lg mt-2"
-                    {...register("term", {
-                      required: "This field is required",
-                    })}
-                  />
-                  {errors.term && (
-                    <InputError
-                      message={"This field is required"}
-                      className={"mt-2"}
-                    />
-                  )}
-                </div>
-                <div className="w-full">
-                  <span className={"text-gray-100 text-xl font-semibold"}>
-                    Definition
-                  </span>
-                  <TextInput
-                    placeholder="Definition"
-                    className="w-full text-lg mt-2"
-                    {...register("definition", {
-                      required: "This field is required",
-                    })}
-                  />
-                  {errors.definition && (
-                    <InputError
-                      message={"This field is required"}
-                      className={"mt-2"}
-                    />
-                  )}
-                </div>
-              </div>
-            </GradientAndLines>
-            <div className={"self-end"}>
-              <button
-                type={"button"}
-                onClick={(e) => {
-                  e.preventDefault();
-                  MicroModal.close(modalId);
-                  cancelEditing();
-                }}
-                className={"border-b-2 tracking-widest mr-8 border-indigo-500"}
-              >
-                Cancel
-              </button>
-              <MainButton
-                onClick={() => {
-                  MicroModal.close(modalId);
-                  cancelEditing();
-                }}
-                className={"bg-indigo-500 text-gray-100 hover:bg-indigo-600"}
-              >
-                Save
-              </MainButton>
+          <div className="flex flex-col gap-4">
+            <div className="w-full">
+              <span className={"text-gray-100 text-xl font-semibold"}>
+                Term
+              </span>
+              <TextInput
+                placeholder="Term"
+                className="w-full text-lg mt-2"
+                {...register("term", {
+                  required: "This field is required",
+                })}
+              />
+              {errors.term && (
+                <InputError
+                  message={"This field is required"}
+                  className={"mt-2"}
+                />
+              )}
             </div>
-          </form>
-        </div>
-      </div>
-    </div>
+            <div className="w-full">
+              <span className={"text-gray-100 text-xl font-semibold"}>
+                Definition
+              </span>
+              <TextInput
+                placeholder="Definition"
+                className="w-full text-lg mt-2"
+                {...register("definition", {
+                  required: "This field is required",
+                })}
+              />
+              {errors.definition && (
+                <InputError
+                  message={"This field is required"}
+                  className={"mt-2"}
+                />
+              )}
+            </div>
+          </div>
+        </GradientAndLines>
+        <ModalButtons cancelEditing={cancelEditing} />
+      </form>
+    </ModalLayout>
   );
 };

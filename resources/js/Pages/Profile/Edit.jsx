@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import DeleteUserForm from "./Partials/DeleteUserForm";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
 import { Head } from "@inertiajs/react";
-import { useLayoutEffect, useRef } from "react";
+import { useContext, useLayoutEffect, useRef } from "react";
 import Animation from "@/Pages/Animation.js";
 import UpdateProfileInformation from "@/Pages/Profile/Partials/UpdateProfileInformationForm.jsx";
 import { SocialsPopUp } from "@/Components/Modals/SocialsPopUp.jsx";
@@ -13,6 +13,7 @@ import {
   faSquareXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { SuccessModal } from "@/Components/Modals/SuccessModal.jsx";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export default function Edit({
   auth,
@@ -21,6 +22,8 @@ export default function Edit({
   userSocialMedias,
   feedback,
 }) {
+  const { properties } = useContext(ThemeContext);
+
   const linesStyle =
     "relative before:absolute before:-right-[13rem] before:bottom-0 before:bg-indigo-500 before:w-1/2 before:h-1 before:transform before:-rotate-45 after:absolute after:-right-[15rem] after:bottom-0 after:bg-indigo-500 after:w-1/2 after:h-1 after:transform after:-rotate-45 overflow-hidden";
 
@@ -38,8 +41,6 @@ export default function Edit({
     animation.animateAll("<-.1", "", "<+.1");
   }, []);
 
-  console.log(feedback);
-
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -56,7 +57,7 @@ export default function Edit({
           <div
             ref={(element) => (refs.current[0] = element)}
             className={
-              "p-4 sm:p-8 bg-white shadow sm:rounded-lg opacity-0 polygon-start translate-y-12 " +
+              `${properties.container} ${properties.text} p-4 sm:p-8 shadow sm:rounded-lg opacity-0 polygon-start translate-y-12 ` +
               linesStyle
             }
           >
@@ -70,7 +71,7 @@ export default function Edit({
           <div
             ref={(element) => (refs.current[1] = element)}
             className={
-              "p-4 sm:p-8 bg-white shadow sm:rounded-lg polygon-start translate-y-12 opacity-0 " +
+              `${properties.container} ${properties.text} p-4 sm:p-8 shadow sm:rounded-lg opacity-0 polygon-start translate-y-12 ` +
               linesStyle
             }
           >
@@ -80,7 +81,7 @@ export default function Edit({
           <div
             ref={(element) => (refs.current[2] = element)}
             className={
-              "p-4 sm:p-8 bg-white shadow sm:rounded-lg polygon-start translate-y-12 opacity-0 " +
+              `${properties.container} ${properties.text} p-4 sm:p-8 shadow sm:rounded-lg opacity-0 polygon-start translate-y-12 ` +
               linesStyle
             }
           >

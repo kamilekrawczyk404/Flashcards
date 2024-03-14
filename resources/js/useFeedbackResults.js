@@ -7,10 +7,9 @@ export const useFeedbackResults = (
   userAnswer,
   isMatch = false,
 ) => {
-  let feedbackResults =
-    Object.keys(prev).length === 0
-      ? { correctIds: [], incorrectIds: [] }
-      : { ...prev };
+  let feedbackResults = !Object.keys(prev).length
+    ? { correctIds: [], incorrectIds: [] }
+    : { ...prev };
 
   if (
     !isMatch

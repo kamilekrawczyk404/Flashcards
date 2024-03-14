@@ -4,13 +4,14 @@ import TextInput from "@/Components/Form/TextInput.jsx";
 import { Link, router, useForm, usePage } from "@inertiajs/react";
 import { Transition } from "@headlessui/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SocialsPopUp } from "@/Components/Modals/SocialsPopUp.jsx";
 import MicroModal from "micromodal";
 import { SocialButton } from "@/Components/Buttons/SocialButton.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useUserAvatar } from "@/useUserAvatar.js";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export default function UpdateProfileInformation({
   mustVerifyEmail,
@@ -18,6 +19,7 @@ export default function UpdateProfileInformation({
   userSocialMedias,
   socialMediasProps,
 }) {
+  const { properties } = useContext(ThemeContext);
   const user = usePage().props.auth.user;
   let fileInputRef = useRef();
   let avatarRef = useRef();
@@ -69,7 +71,7 @@ export default function UpdateProfileInformation({
             Profile Information
           </h2>
 
-          <p className="mt-1 text-sm text-gray-600">
+          <p className={`${properties.text} mt-1 text-sm`}>
             Update your account's profile information.
           </p>
         </header>
@@ -84,11 +86,7 @@ export default function UpdateProfileInformation({
               className={"flex flex-col md:w-1/2 w-full gap-2 justify-between"}
             >
               <div className={"flex flex-col"}>
-                <InputLabel
-                  htmlFor="name"
-                  value="Name"
-                  className={"text-gray-700"}
-                />
+                <InputLabel htmlFor="name" value="Name" />
 
                 <TextInput
                   id="name"
@@ -104,11 +102,7 @@ export default function UpdateProfileInformation({
               </div>
 
               <div>
-                <InputLabel
-                  htmlFor="email"
-                  value="Email"
-                  className={"text-gray-700"}
-                />
+                <InputLabel htmlFor="email" value="Email" />
 
                 <TextInput
                   id="email"
@@ -147,25 +141,19 @@ export default function UpdateProfileInformation({
               )}
 
               <div>
-                <InputLabel
-                  htmlFor="socials"
-                  value="Socials"
-                  className={"text-gray-700"}
-                />
+                <InputLabel htmlFor="socials" value="Socials" />
 
-                <div className={"flex mt-1 items-center gap-2"}>
+                <div className={"flex items-center gap-4"}>
                   <button
                     type={"button"}
-                    className={
-                      "bg-gray-200 border-[.175rem] border-dashed border-indigo-500 aspect-square h-[3rem] rounded-md transition hover:bg-gray-300 flex items-center justify-center"
-                    }
+                    className={`${properties.background} border-[.175rem] border-dashed border-indigo-500 aspect-square h-[3rem] rounded-md transition hover:brightness-75 flex items-center justify-center`}
                     onClick={() => {
                       MicroModal.show("socials");
                     }}
                   >
                     <FontAwesomeIcon
                       icon={faPlus}
-                      className={"text-xl text-gray-500"}
+                      className={`${properties.text} text-xl`}
                     />
                   </button>
 
@@ -189,7 +177,7 @@ export default function UpdateProfileInformation({
             </div>
 
             <div className={"mx-auto"}>
-              <InputLabel value={"Picture"} className={"text-gray-700"} />
+              <InputLabel value={"Picture"} />
 
               <input
                 accept={"image/*"}

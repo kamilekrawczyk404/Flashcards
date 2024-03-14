@@ -9,14 +9,13 @@ export default function Unauthenticated({
   fullScreen = false,
   children,
 }) {
-  const { properties, changeMode } = useContext(ThemeContext);
+  const { properties } = useContext(ThemeContext);
 
-  console.log(properties);
   return (
     <div
       className={
         properties.background +
-        (fullScreen && " sm:h-screen overflow-hidden h-auto ")
+        (fullScreen ? " sm:h-screen h-auto overflow-hidden " : "")
       }
     >
       <nav className={properties.container + " border-b border-gray-100"}>

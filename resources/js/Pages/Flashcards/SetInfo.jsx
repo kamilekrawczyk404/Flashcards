@@ -141,7 +141,7 @@ export default function SetInfo({
           translationsCount={translationsCount}
         />
 
-        <Container>
+        <Container className={"mb-4"}>
           <div className="overflow-hidden sm:rounded-md">
             <div className="flex gap-4 text-md md:flex-row flex-col relative">
               <TestLink
@@ -207,10 +207,7 @@ export default function SetInfo({
                     >
                       <div
                         className={
-                          properties.text +
-                          " " +
-                          properties.background +
-                          " flip-card-inner relative mx-auto w-full h-full transition ease-in-out duration-[1s] flex items-center text-3xl break-keep font-bold " +
+                          `${properties.background} ${properties.text} flip-card-inner relative mx-auto w-full h-full transition-all ease-in-out duration-[1s] flex items-center text-3xl break-keep font-bold ` +
                           (cards[translationIndex]?.isRotated
                             ? "rotate-x-0"
                             : "rotate-x-180")
@@ -257,12 +254,7 @@ export default function SetInfo({
 
           <div className="space-y-4 rounded-md">
             <div
-              className={
-                properties.background +
-                " " +
-                properties.text +
-                " rounded-md px-4 py-2 flex gap-2 flex-col shadow-lg"
-              }
+              className={`${properties.background} ${properties.text} rounded-md px-4 py-2 flex gap-2 flex-col shadow-lg`}
             >
               <div
                 ref={(element) => {
@@ -367,7 +359,6 @@ export default function SetInfo({
         }
         set={set}
         cancelEditing={cancelEditing}
-        // handleFetchTranslations={fetchTranslations}
       />
     </>
   );

@@ -17,22 +17,30 @@ use Illuminate\Support\Facades\Redirect;
 
 class TranslationsController extends Controller
 {
-    public function update(int $id, int $translation_id, string $title, Request $request): RedirectResponse{
+    public function update(int $set_id, int $translation_id, Request $request): RedirectResponse{
         $translation = $request->translation;
         $data = [];
 
         foreach($translation as $key => $item) {
             match($key) {
-                'definition' => $data['definition'] = TranslationsController::makeSingle($translation['definition']['word'],
-                    $translation['definition']['language']),
-                'term' => $data['term'] = TranslationsController::makeSingle($translation['term']['word'], $translation['term']['language']),
+                'definition' => $data['definition'] = TranslationsController::makeSingle($translation['definition'],
+                    $translation['term_language']),
+                'term' => $data['term'] = TranslationsController::makeSingle($translation['term'], $translation['term_language']),
                 default => ""
             };
         }
+        $values = [
+            'term' => $data['term']['word'],
+            'term_phonetic' => $data['term']['phonetic'] ?? "",
+            'term_audio' => $data['term']['audioPath'] ?? "",
+            'definition' =>  $data['definition']['word'],
+            'definition_phonetic' => $data['definition']['phonetic'] ?? "",
+            'definition_audio' => $data['definition']['audioPath'] ?? ""
+        ];
 
-        DB::connection('mysql')->table($title)->where(['id' => $translation_id])->update($data);
+        DB::connection('mysql')->table(FlashcardSets::getTitle($set_id))->where(['id' => $translation_id])->update($values);
 
-        return redirect()->route('flashcards.showSet', ['id' => $id, 'title' => $title])->with('success', "Translation has been updated successfully");
+        return redirect()->route('flashcards.showSet', ['set_id' => $set_id])->with('success', "Translation has been updated successfully");
     }
     public function delete($id, $translation_id, $title): void {
         DB::table($title)->where('id', $translation_id)->delete();

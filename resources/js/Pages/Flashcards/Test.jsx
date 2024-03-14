@@ -179,7 +179,6 @@ const Test = ({ set, groupsProperties }) => {
     )?.isCorrect;
   };
 
-  console.log(groups);
   return (
     <>
       <GamesNavigation set={set}>
@@ -200,7 +199,7 @@ const Test = ({ set, groupsProperties }) => {
           text={"We're preparing your learning plan."}
         />
       ) : (
-        <>
+        <div>
           {isEnd && (
             <Feedback
               set={set}
@@ -324,7 +323,7 @@ const Test = ({ set, groupsProperties }) => {
               )}
             </div>
           </Container>
-        </>
+        </div>
       )}
     </>
   );

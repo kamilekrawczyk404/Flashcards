@@ -91,8 +91,8 @@ export const ChooseAnswer = forwardRef(
                     ? selectedButtonIndex === index
                       ? (isEnd
                           ? isCorrect
-                            ? " hover:cursor-not-allowed bg-lime-500 bg-opacity-60 border-none"
-                            : " hover:cursor-not-allowed bg-red-500 bg-opacity-60 border-none"
+                            ? " hover:cursor-not-allowed border-none"
+                            : " hover:cursor-not-allowed border-none"
                           : " ") + " border-[3px] border-indigo-500 "
                       : " " + properties.container
                     : !isClicked

@@ -107,7 +107,7 @@ export default function CreateSet({ auth, errorsFromController }) {
       <Head title={`Creating a new set`} />
 
       {(!isBeingCreated || Object.values(serverErrors).length !== 0) && (
-        <Container>
+        <Container className={"my-4"}>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className=" text-gray-900 flex gap-4 flex-col"
