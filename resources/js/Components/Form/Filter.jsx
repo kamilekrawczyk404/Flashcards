@@ -11,6 +11,7 @@ import { act } from "react-dom/test-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "@/ThemeContext.jsx";
+import { isClient } from "flowbite-react/lib/esm/helpers/is-client.js";
 
 export const Filter = ({
   isSearching,
@@ -48,101 +49,100 @@ export const Filter = ({
     let animation = new Animation([fieldsRef.current], !isHide, () =>
       setIsDisabled(false),
     );
+    setIsHide((prev) => !prev);
 
     animation.animateAll(
       isHide ? "+0.1" : "-0.1",
-      "+0.1",
+      isHide ? "-0.1" : "+0.2",
       isHide ? "+0.3" : "-0.2",
     );
-    setIsHide((prev) => !prev);
   };
 
   return (
     <>
-      {isSearching && (
-        <div className={isSearching ? "relative lg:w-1/5 w-full" : "w-0"}>
-          <div
-            className={
-              properties.container +
-              " " +
-              properties.contrastText +
-              " rounded-t-md p-2 self-start transition-[width] flex flex-col relative"
-            }
+      <div
+        className={
+          "transition-all relative duration-500 " +
+          (isSearching ? " lg:w-1/5 w-full" : " w-0")
+        }
+      >
+        <div
+          className={
+            `${properties.container} ${properties.contrastText} rounded-t-md p-2 self-start flex-col relative ` +
+            (isSearching ? "flex" : "hidden")
+          }
+        >
+          <button
+            disabled={isDisabled}
+            className={"relative"}
+            onClick={() => {
+              hideOrShowFilters();
+            }}
           >
-            <button
-              disabled={isDisabled}
-              className={"relative"}
-              onClick={() => {
-                hideOrShowFilters();
-              }}
-            >
-              <p
-                className={
-                  properties.background + " flex items-center p-2 rounded-sm"
-                }
-              >
-                <FontAwesomeIcon
-                  icon={faFilter}
-                  className={"text-xl text-indigo-500 mr-2"}
-                />
-                <span>Filters</span>
-              </p>
-              <span
-                className={
-                  "transform origin-center absolute right-2 top-1/2 -translate-y-1/2 inline-block transition " +
-                  (!isHide ? "rotate-[540deg]" : "rotate-0")
-                }
-              >
-                <FontAwesomeIcon
-                  icon={faArrowUp}
-                  className={"text-xl text-indigo-500"}
-                />
-              </span>
-            </button>
-            <div
+            <p
               className={
-                "absolute left-0 -bottom-[.25rem] bg-indigo-500 h-[.25rem] transition-width z-10 " +
-                (isSearching ? "w-full" : "w-0")
+                properties.background + " flex items-center p-2 rounded-sm"
               }
-            ></div>
-          </div>
-
+            >
+              <FontAwesomeIcon
+                icon={faFilter}
+                className={"text-xl text-indigo-500 mr-2"}
+              />
+              <span>Filters</span>
+            </p>
+            <span
+              className={
+                "transform origin-center absolute right-2 top-1/2 -translate-y-1/2 inline-block transition " +
+                (!isHide ? "rotate-[540deg]" : "rotate-0")
+              }
+            >
+              <FontAwesomeIcon
+                icon={faArrowUp}
+                className={"text-xl text-indigo-500"}
+              />
+            </span>
+          </button>
           <div
-            ref={fieldsRef}
             className={
-              properties.container +
-              " absolute w-full polygon-from-top opacity-0 p-2 rounded-b-md"
+              "absolute left-0 -bottom-[.25rem] bg-indigo-500 h-[.25rem] transition-width z-10 " +
+              (isSearching ? "w-full" : "w-0")
             }
-          >
-            <div className={"flex flex-col gap-2 mt-[.25rem]"}>
-              <p className={"text-indigo-500"}>Languages</p>
-              <div className={"flex flex-wrap gap-2"}>
-                {availableLanguages.map((language) => (
-                  <button
-                    key={language}
-                    onClick={() => {
-                      filters.languages.includes(language)
-                        ? removeActiveField(language)
-                        : addActiveField(language);
-                    }}
-                    className={
-                      properties.background +
-                      " " +
-                      properties.text +
-                      " space-x-2 px-4 rounded-full h-[2rem] text-lg shadow-lg " +
-                      (filters.languages.indexOf(language) !== -1
-                        ? "ring-2 ring-indigo-500"
-                        : "")
-                    }
-                  >
-                    {language}
-                  </button>
-                ))}
-              </div>
+          ></div>
+        </div>
+
+        <div
+          ref={fieldsRef}
+          className={
+            properties.container +
+            " w-full polygon-from-top opacity-0 p-2 rounded-b-md h-0 " +
+            (isSearching ? "block" : "hidden")
+          }
+        >
+          <div className={"flex flex-col gap-2 mt-[.25rem]"}>
+            <p className={"text-indigo-500"}>Languages</p>
+            <div className={"flex gap-2 overflow-x-scroll py-2"}>
+              {availableLanguages.map((language) => (
+                <button
+                  key={language}
+                  onClick={() => {
+                    filters.languages.includes(language)
+                      ? removeActiveField(language)
+                      : addActiveField(language);
+                  }}
+                  className={
+                    `${properties.background} ${properties.text} space-x-2 px-4 rounded-full h-[2rem] text-lg shadow-lg ` +
+                    (filters.languages.indexOf(language) !== -1
+                      ? "ring-2 ring-indigo-500"
+                      : "")
+                  }
+                >
+                  {language}
+                </button>
+              ))}
             </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };

@@ -140,7 +140,7 @@ export const Feedback = ({
       <Container
         ref={feedbackRef}
         className={
-          "rounded-md flex flex-col z-10 p-4 polygon-from-top opacity-0 -translate-y-12 mt-4"
+          "sm:rounded-md flex flex-col z-10 p-4 polygon-from-top opacity-0 -translate-y-12 mt-4"
         }
       >
         <div>
@@ -246,13 +246,6 @@ export const Feedback = ({
             href={route("flashcards.showSet", [set.id])}
           >
             Back to the set preview
-          </MainButton>
-          <MainButton
-            className={"bg-indigo-500 hover:bg-indigo-600 text-gray-100"}
-            isRedirect={true}
-            href={route(`flashcards.${routeName}`, [set.id])}
-          >
-            Check yourself again
           </MainButton>
         </div>
       )}

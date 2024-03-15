@@ -141,7 +141,7 @@ export default function SetInfo({
           translationsCount={translationsCount}
         />
 
-        <Container className={"mb-4"}>
+        <Container className={"my-4"}>
           <div className="overflow-hidden sm:rounded-md">
             <div className="flex gap-4 text-md md:flex-row flex-col relative">
               <TestLink

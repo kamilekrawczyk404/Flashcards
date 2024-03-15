@@ -41,7 +41,7 @@ export default function Login({ status, canResetPassword }) {
   return (
     <Unauthenticated fullScreen={true}>
       <SectionWithVerticalMargin
-        className={"flex items-center justify-center flex-col gap-4"}
+        className={"flex items-center justify-center flex-col gap-4 h-fit "}
       >
         <Head title="Log in" />
 

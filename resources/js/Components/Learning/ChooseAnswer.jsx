@@ -31,10 +31,7 @@ export const ChooseAnswer = forwardRef(
       : answers.sourceAnswers;
 
     const styling =
-      properties.text +
-      " " +
-      properties.background +
-      " h-14 rounded-md transition-all relative flex flex-col justify-center " +
+      `${properties.container} ${properties.text} h-14 rounded-md transition-all relative flex flex-col justify-center ` +
       (isEnd || isClicked ? "" : "hover:brightness-75 ");
 
     return (

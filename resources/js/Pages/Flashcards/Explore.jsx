@@ -105,13 +105,11 @@ export const Explore = forwardRef(
       >
         <div
           className={
-            "sm:max-h-[70vh] h-full mx-auto w-full flex gap-4 flex-col items-center justify-center"
+            "sm:max-h-[70vh] h-full  mx-auto w-full flex gap-4 flex-col items-center justify-center"
           }
         >
           <div
-            className={
-              "flex w-full justify-center gap-2 lg:flex-row flex-col-reverse"
-            }
+            className={"flex w-full justify-center gap-2 lg:flex-row flex-col"}
           >
             <Filter
               filters={filters}

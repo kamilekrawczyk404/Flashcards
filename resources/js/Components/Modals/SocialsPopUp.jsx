@@ -3,12 +3,13 @@ import MicroModal from "micromodal";
 import TextInput from "@/Components/Form/TextInput.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import PrimaryButton from "@/Components/Buttons/PrimaryButton.jsx";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import { SocialButton } from "@/Components/Buttons/SocialButton.jsx";
 import InputError from "@/Components/Form/InputError.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalLayout } from "@/Components/Modals/ModalLayout.jsx";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const SocialsPopUp = ({
   modalId,
@@ -16,6 +17,7 @@ export const SocialsPopUp = ({
   userSocialMedias,
   socialMediasProps,
 }) => {
+  const { properties } = useContext(ThemeContext);
   const [activeSocial, setActiveSocial] = useState(socialMediasProps[0].name);
 
   const regexExpressions = {
@@ -85,10 +87,10 @@ export const SocialsPopUp = ({
       </header>
       <form
         onSubmit={submit}
-        className={"bg-gray-50 p-4 rounded-md shadow-md space-y-4 relative"}
+        className={`${properties.background} p-4 rounded-md shadow-md space-y-4 w-full relative`}
       >
         <div
-          className={"space-x-4 p-4 bg-white shadow-md rounded-md w-fit z-0"}
+          className={`${properties.container} space-x-4 p-4 shadow-md rounded-md w-fit z-0`}
         >
           {socialMediasProps.map((element, index) => (
             <SocialButton
@@ -105,16 +107,16 @@ export const SocialsPopUp = ({
             activeSocial === element.name && (
               <div
                 key={index}
-                className={"bg-white p-4 shadow-md rounded-md space-y-4"}
+                className={`${properties.container} p-4 shadow-md rounded-md space-y-4 relative w-full`}
               >
                 <InputLabel
-                  className={"block text-gray-700"}
+                  className={"block"}
                   value={
                     element.name.at(0).toUpperCase() + element.name.substring(1)
                   }
                   htmlFor={element.name}
                 />
-                <div className={"flex items-center"}>
+                <div className={"relative flex items-center w-full"}>
                   <FontAwesomeIcon
                     icon={element.icon}
                     className={`aspect-square h-[3.5rem] mr-4 ${element.color}`}
@@ -122,7 +124,6 @@ export const SocialsPopUp = ({
                   <TextInput
                     id={element.name}
                     value={Object.values(data).at(index) ?? ""}
-                    className={"w-full"}
                     onChange={(e) => {
                       setData(element.name, e.target.value);
                       validate(e.target.value, element.name, index);

@@ -5,10 +5,11 @@ import Cookies from "js-cookie";
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const TRANSITION_DURATION = "2s";
+  const TRANSITION_DURATION = "500ms";
 
   const modeProperties = {
     darkMode: {
+      mode: "dark",
       backgroundPureCss: "dark-background",
       background: `bg-gray-700 transition-[background] duration-[${TRANSITION_DURATION}]`,
       container: `bg-gray-800 transition-[background] duration-[${TRANSITION_DURATION}]`,
@@ -19,6 +20,7 @@ export const ThemeProvider = ({ children }) => {
       contrastText: "text-gray-700",
     },
     lightMode: {
+      mode: "light",
       backgroundPureCss: "light-background",
       background: `bg-gray-100 transition-[background] duration-[${TRANSITION_DURATION}]`,
       container: `bg-white transition-[background] duration-[${TRANSITION_DURATION}]`,
@@ -45,14 +47,20 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
+  const setMode = () => {
+    if (darkMode) {
+      document.body.classList.add(modeProperties.darkMode.backgroundPureCss);
+    } else {
+      document.body.classList.add(modeProperties.lightMode.backgroundPureCss);
+    }
+  };
+
   useEffect(() => {
-    addEventListener("load", () => {
-      if (darkMode) {
-        document.body.classList.add(modeProperties.darkMode.backgroundPureCss);
-      } else {
-        document.body.classList.add(modeProperties.lightMode.backgroundPureCss);
-      }
-    });
+    addEventListener("load", setMode);
+
+    return () => {
+      removeEventListener("load", setMode);
+    };
   }, [darkMode]);
 
   const value = {

@@ -57,7 +57,7 @@ export default function Register() {
       <Head title="Register" />
 
       <SectionWithVerticalMargin
-        className={"flex items-center justify-center flex-col gap-4"}
+        className={"flex items-center justify-center flex-col gap-4 h-auto"}
       >
         <ApplicationLogo
           ref={(element) => (logoRef.current = element)}
@@ -66,7 +66,7 @@ export default function Register() {
         <GradientAndLines
           ref={formRef}
           className={
-            "relative 2xl:w-1/3 lg:w-1/2 md:w-2/3 sm:w-full p-8 translate-y-12 opacity-0 polygon-start"
+            "relative 2xl:w-1/3 lg:w-1/2 md:w-2/3 w-full p-8 translate-y-12 opacity-0 polygon-start"
           }
           hasLines={true}
           linesColor={"bg-gray-100"}
@@ -78,8 +78,8 @@ export default function Register() {
             onSubmit={submit}
             className={"flex mx-auto flex-col rounded-none md:rounded-md"}
           >
-            <div className={"flex flex-row gap-8"}>
-              <div className={"w-3/5"}>
+            <div className={"flex sm:flex-row flex-col sm:gap-0 gap-y-4"}>
+              <div className={"relative sm:w-2/5 w-full"}>
                 <div>
                   <InputLabel htmlFor="name" value="Name" />
 
@@ -158,13 +158,10 @@ export default function Register() {
               </div>
               <div
                 className={
-                  "flex items-center justify-center relative h-min self-center"
+                  "flex flex-col items-start relative h-min self-center sm:mx-auto sm:w-fit w-full "
                 }
               >
-                <InputLabel
-                  value={"Picture"}
-                  className={"absolute top-0 left-0"}
-                />
+                <InputLabel value={"Picture"} />
 
                 <input
                   ref={(element) => (fileInputRef.current = element)}
@@ -176,7 +173,7 @@ export default function Register() {
 
                 <div
                   className={
-                    "relative border-4 border-white rounded-full shadow-lg w-fit mt-8"
+                    "relative border-4 border-white rounded-full shadow-lg w-fit"
                   }
                 >
                   <button

@@ -208,7 +208,7 @@ const Test = ({ set, groupsProperties }) => {
               answersResults={feedbackData}
             />
           )}
-          <Container className={"flex flex-col gap-4 mt-4"}>
+          <Container className={"flex flex-col sm:gap-4 gap-2 mt-4"}>
             {groups.map((group, groupIndex) => {
               return group.components.map((component, componentIndex) => {
                 switch (component.type) {

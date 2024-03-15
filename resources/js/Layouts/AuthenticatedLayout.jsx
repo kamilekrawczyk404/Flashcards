@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "@/ThemeContext.jsx";
 import Cookies from "js-cookie";
+import { ChangeModeButton } from "@/Components/Buttons/ChangeModeButton.jsx";
 
 export default function Authenticated({
   user,
@@ -44,20 +45,8 @@ export default function Authenticated({
                 </NavLink>
               </div>
             </div>
-
             <div className="hidden sm:flex sm:items-center">
-              <div
-                className={
-                  properties.text + " flex items-center gap-x-2 text-xl"
-                }
-              >
-                <FontAwesomeIcon icon={faSun} />
-                <AnimatedCheckbox
-                  defaultChecked={Cookies.get("darkMode") === "true"}
-                  onClick={() => changeMode()}
-                />
-                <FontAwesomeIcon icon={faMoon} />
-              </div>
+              <ChangeModeButton />
               <div className="ml-3 relative">
                 <Dropdown>
                   <Dropdown.Trigger>
@@ -90,7 +79,7 @@ export default function Authenticated({
                   <Dropdown.Content className={`${properties.text}`}>
                     <Dropdown.Link
                       href={route("profile.edit")}
-                      className={properties.background}
+                      className={properties.container}
                     >
                       Profile
                     </Dropdown.Link>
@@ -98,7 +87,7 @@ export default function Authenticated({
                       href={route("logout")}
                       method="post"
                       as="button"
-                      className={properties.background}
+                      className={properties.container}
                     >
                       Log Out
                     </Dropdown.Link>
@@ -114,7 +103,7 @@ export default function Authenticated({
                     (previousState) => !previousState,
                   )
                 }
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                className={`${properties.text} inline-flex items-center justify-center p-2 rounded-md focus:outline-none transition duration-150 ease-in-out`}
               >
                 <svg
                   className="h-6 w-6"
@@ -158,6 +147,7 @@ export default function Authenticated({
             >
               Create set
             </ResponsiveNavLink>
+            <ChangeModeButton className={"ml-4"} />
           </div>
 
           <div className="pt-4 pb-1 border-t border-gray-200">

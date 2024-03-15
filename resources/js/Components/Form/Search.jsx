@@ -117,11 +117,11 @@ export const Search = forwardRef(
             ref={previousSearchesContainerRef}
             className={
               properties.container +
-              " w-full space-y-2 mx-auto rounded-b-md p-2 max-h-[4.95rem] polygon-from-top opacity-0"
+              " w-full space-y-2 mx-auto rounded-b-md p-2 polygon-from-top opacity-0"
             }
           >
             <p className={"text-indigo-500"}>Last searches</p>
-            <div className={"flex gap-2 flex-wrap rounded-full  "}>
+            <div className={"flex gap-x-2 py-2 overflow-x-scroll"}>
               {previousSearches.reverse().map(
                 (previous, index) =>
                   index < 10 && (

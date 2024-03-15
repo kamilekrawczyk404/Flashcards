@@ -303,14 +303,14 @@ const Match = ({
                 />
                 <span
                   className={
-                    "w-fit max-w-[10vw] overflow-hidden overflow-ellipsis font-mono"
+                    "w-fit sm:max-w-[10vw] overflow-hidden overflow-ellipsis font-mono"
                   }
                 >
                   {seconds.toFixed(2)}
                 </span>
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid sm:grid-cols-4  grid-cols-2 gap-4">
               {cards.map((card, cardIndex) => {
                 if (currentPage === card.page) {
                   return (

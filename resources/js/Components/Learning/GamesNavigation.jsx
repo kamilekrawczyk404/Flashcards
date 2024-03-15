@@ -15,7 +15,7 @@ const GamesNavigation = ({
     <div
       className={
         properties.container +
-        " border-b-2 flex justify-between items-center py-6 xl:px-[20%] lg:px-[10%] sm:px-[1rem] px-[.5rem]"
+        " border-b-2 flex justify-between items-center py-6 xl:px-[20%] lg:px-[10%] sm:px-[1rem] px-3"
       }
     >
       <h2 className="font-semibold text-xl text-gray-800 leading-tight">

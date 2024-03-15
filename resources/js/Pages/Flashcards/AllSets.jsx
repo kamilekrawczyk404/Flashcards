@@ -42,7 +42,7 @@ export const AllSets = forwardRef(
       <>
         <div
           className={
-            "w-full h-full absolute left-[-100%] opacity-0 flex items-center justify-center "
+            "w-full h-[calc(100vh-4rem)] absolute left-[-100%] opacity-0 flex mt-4"
           }
           ref={ref}
         >
@@ -66,10 +66,10 @@ export const AllSets = forwardRef(
               </MainButton>
             </div>
           ) : (
-            <>
+            <div className={"relative h-full flex w-full justify-center"}>
               <div
                 className={
-                  "w-full flex items-center flex-col gap-y-4 relative mt-4 rounded-md overflow-y-scroll h-[70vh]"
+                  "w-full flex items-center flex-col gap-y-4 relative rounded-md overflow-y-scroll h-[75vh]"
                 }
               >
                 {sets.map((set, index) => (
@@ -86,12 +86,12 @@ export const AllSets = forwardRef(
                 isRedirect={true}
                 href={route("flashcards.showNewSet")}
                 className={
-                  "absolute bottom-12 left-1/2 -translate-x-1/2 bg-indigo-500 hover:bg-indigo-600 text-gray-100"
+                  "absolute bottom-10 left-1/2 -translate-x-1/2 bg-indigo-500 hover:bg-indigo-600 text-gray-100"
                 }
               >
                 Create a new set
               </MainButton>
-            </>
+            </div>
           )}
 
           <GoBackIndicator

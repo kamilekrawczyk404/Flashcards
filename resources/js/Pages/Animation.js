@@ -97,7 +97,7 @@ export default class Animation {
         clipPath: this.inReversingMode
           ? "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)"
           : "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-        height: this.inReversingMode ? "0" : "auto",
+        height: this.inReversingMode ? "0" : "fit",
       },
     });
 

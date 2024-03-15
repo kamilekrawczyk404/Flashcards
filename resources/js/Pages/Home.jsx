@@ -184,11 +184,11 @@ export default function Home({
         </Unauthenticated>
       ) : (
         <Authenticated user={auth?.user} fullScreen={true}>
-          <SectionWithVerticalMargin className={"flex"}>
+          <SectionWithVerticalMargin className={"flex h-screen"}>
             <div
               ref={(element) => (welcomeScreen.current = element)}
               className={
-                "flex lg:flex-row flex-col items-center justify-center translate-y-12 opacity-0 polygon-start w-full"
+                "flex lg:flex-row flex-col justify-center items-center translate-y-12 opacity-0 polygon-start w-full sm:gap-0 gap-y-8"
               }
             >
               <OptionCard
@@ -200,7 +200,7 @@ export default function Home({
                 text={"Learn"}
                 icon={faGraduationCap}
               >
-                <LearnImage className={"lg:scale-100 scale-75"} />
+                <LearnImage className={"sm:h-full h-[40vh]"} />
               </OptionCard>
               <div
                 className={
@@ -216,7 +216,7 @@ export default function Home({
                 text={"Explore"}
                 icon={faMagnifyingGlass}
               >
-                <ExploreImage className={"lg:scale-95 scale-75"} />
+                <ExploreImage className={"sm:scale-75 sm:h-full h-[40vh]"} />
               </OptionCard>
             </div>
             <AllSets

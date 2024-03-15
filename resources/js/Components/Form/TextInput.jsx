@@ -36,15 +36,12 @@ export default forwardRef(function TextInput(
   }, []);
 
   return (
-    <div className={"relative " + (type === "number" ? " w-fit" : " w-full")}>
+    <div className={"relative w-full"}>
       <input
         {...props}
         type={type}
         className={
-          properties.container +
-          " " +
-          properties.text +
-          " border-gray-300 rounded-md shadow-sm " +
+          `${properties.container} ${properties.text} border-gray-300 rounded-md shadow-sm ` +
           (error
             ? "bg-red-700 bg-opacity-60 "
             : "" + (type === "number" ? " w-24 " : " w-full ") + className)
@@ -58,19 +55,15 @@ export default forwardRef(function TextInput(
           onClick={() => changeVisibility()}
           type={"button"}
           className={
-            "absolute top-[.5rem] text-indigo-500 right-10 text-xl flex items-center justify-center"
+            "absolute top-1/2 -translate-y-1/2 right-5 text-indigo-500 text-xl flex items-center justify-center"
           }
         >
-          <span
-            className={
-              !isPasswordHidden
-                ? "hidden"
-                : "absolute right-[-.05rem] top-[.0rem]"
-            }
-          >
+          <span className={!isPasswordHidden ? "hidden" : "absolute"}>
             {eyesClosed}
           </span>
-          <span className={isPasswordHidden ? "hidden" : ""}>{eyesOpened}</span>
+          <span className={isPasswordHidden ? "hidden" : "absolute"}>
+            {eyesOpened}
+          </span>
         </button>
       )}
     </div>

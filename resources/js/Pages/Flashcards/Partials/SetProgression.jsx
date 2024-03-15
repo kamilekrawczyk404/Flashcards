@@ -32,7 +32,7 @@ export const SetProgression = ({
     <section
       className={
         properties.container +
-        " 2xl:fixed 2xl:top-1/2 2xl:-translate-y-1/2 2xl:left-[calc((100vw-62rem)/4)] transform 2xl:-translate-x-1/2 md:max-w-[62rem] max-w-[76rem] mx-auto my-4 rounded-md "
+        " 2xl:fixed 2xl:top-1/2 2xl:-translate-y-1/2 2xl:left-[calc((100vw-62rem)/4)] transform 2xl:-translate-x-1/2 md:max-w-[62rem] max-w-[76rem] mx-auto my-4 sm:rounded-md "
       }
     >
       <div className={"text-lg text-indigo-500 font-bold p-4"}>
