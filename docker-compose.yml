@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+
+    # PHP Service
+    php:
+        build:
+            context: .
+            target: php
+            args:
+                - APP_ENV=${APP_ENV}
+        environment:
+            - APP_ENV=${APP_ENV}
+        working_dir: /var/www
+        networks:
+            deployment:
+                ipv4_address: 10.10.5.2
+                # 255.255.0.0/16
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "64m"
+
+    # Node
+    node:
+        build:
+            context: .
+            target: node
+        volumes:
+            - ./node_modules:/usr/node_modules
+        tty: true
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "64m"
+
+networks:
+    deployment:
+        external: true
