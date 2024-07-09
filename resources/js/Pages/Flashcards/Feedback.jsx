@@ -10,7 +10,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Animation from "@/Pages/Animation.js";
 import { Container } from "@/Components/Container.jsx";
-import { getFilePath } from "@/getFilePath.jsx";
 import { faFlagCheckered } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "@/ThemeContext.jsx";
 import { FeedbackImage } from "@/Images/FeedbackImage.jsx";
@@ -152,12 +151,12 @@ export const Feedback = ({
             {Object.entries(feedbackProperties).map(([key, value]) => {
               if (feedback.score === key)
                 return (
-                  <>
+                  <div key={key}>
                     <p className={value.headerColor}>
                       {value.headers[feedback.index]}
                     </p>
                     <p>{value.messages[feedback.index]}</p>
-                  </>
+                  </div>
                 );
             })}
           </section>

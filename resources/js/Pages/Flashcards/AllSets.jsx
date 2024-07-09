@@ -42,7 +42,7 @@ export const AllSets = forwardRef(
       <>
         <div
           className={
-            "w-full h-[calc(100vh-4rem)] absolute left-[-100%] opacity-0 flex mt-4"
+            "w-full h-[calc(100vh-4rem)] absolute left-[-100%] opacity-0 flex"
           }
           ref={ref}
         >
@@ -51,7 +51,7 @@ export const AllSets = forwardRef(
               ref={(element) => {
                 refs.current[0] = element;
               }}
-              className={`${properties.container} rounded-md flex flex-col items-center gap-2 p-4 polygon-start translate-y-12 opacity-0 sm:w-1/2 w-full`}
+              className={`${properties.container} rounded-md flex flex-col items-center gap-2 p-4 polygon-start translate-y-12 opacity-0 sm:w-1/2 w-full mx-auto my-12`}
             >
               <EmptyImage className={"w-full"} />
               <p className={properties.text}>
@@ -66,7 +66,11 @@ export const AllSets = forwardRef(
               </MainButton>
             </div>
           ) : (
-            <div className={"relative h-full flex w-full justify-center"}>
+            <div
+              className={
+                "relative h-full flex w-full justify-center md:mt-8 mt-14 mx-4"
+              }
+            >
               <div
                 className={
                   "w-full flex items-center flex-col gap-y-4 relative rounded-md overflow-y-scroll h-[75vh]"

@@ -21,8 +21,8 @@ class LearnController extends Controller
         ]);
     }
 
-    public static function prepareForLearn(int $user_id, int $set_id, $groups ): array {
-        $groups = FlashcardSets::getGroups($user_id, $set_id, $groups);
+    public static function prepareForLearn(int $user_id, int $set_id, $groups, $options): array {
+        $groups = FlashcardSets::getGroups($user_id, $set_id, $groups, $options);
 
         $final = [];
         $components = ['EnterAnswer', 'ChooseAnswer'];

@@ -2,7 +2,7 @@ import { CancelButton } from "../Modals/CancelButton.jsx";
 import { useContext } from "react";
 import { ThemeContext } from "@/ThemeContext.jsx";
 
-const GamesNavigation = ({
+const StudyNavigation = ({
   className = "",
   children,
   set,
@@ -28,4 +28,4 @@ const GamesNavigation = ({
     </div>
   );
 };
-export default GamesNavigation;
+export default StudyNavigation;

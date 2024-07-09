@@ -296,7 +296,7 @@ export default function SetInfo({
                     }
                   >
                     <GradientAndLines
-                      className={"px-2 py-1"}
+                      className={"px-2 py-1 rounded-md"}
                       from={"from-amber-500"}
                       to={"to-amber-300"}
                     >

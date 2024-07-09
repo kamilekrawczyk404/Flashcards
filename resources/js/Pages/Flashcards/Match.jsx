@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { MainButton } from "@/Components/Buttons/MainButton.jsx";
-import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
+import StudyNavigation from "@/Components/Learning/StudyNavigation.jsx";
 import { Feedback } from "@/Pages/Flashcards/Feedback.jsx";
 import gsap from "gsap/all";
 import { router } from "@inertiajs/react";
@@ -236,9 +236,9 @@ const Match = ({
 
   return (
     <>
-      <GamesNavigation set={set}>
+      <StudyNavigation set={set}>
         <span className="text-indigo-500 font-bold">Match</span>
-      </GamesNavigation>
+      </StudyNavigation>
       <Container className={"mt-4"}>
         {!isStarted && !isEnd && (
           <div

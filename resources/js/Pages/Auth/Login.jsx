@@ -41,7 +41,7 @@ export default function Login({ status, canResetPassword }) {
   return (
     <Unauthenticated fullScreen={true}>
       <SectionWithVerticalMargin
-        className={"flex items-center justify-center flex-col gap-4 h-fit "}
+        className={"flex items-center justify-center flex-col md:gap-8 gap-4"}
       >
         <Head title="Log in" />
 
@@ -51,32 +51,27 @@ export default function Login({ status, canResetPassword }) {
           </div>
         )}
 
-        <div
-          className={
-            "translate-y-12 opacity-0 polygon-start flex items-center flex-col p-1 sm:w-fit w-full"
+        <InputError
+          className={"shadow-none font-normal mt-4"}
+          message={
+            <div className={"flex flex-col gap-1"}>
+              <h2 className={"font-semibold text-2xl"}>
+                Default user credentials
+              </h2>
+              <p>
+                login: <span>user@gmail.com</span>
+              </p>
+              <p>
+                pass: <span>flashcards</span>
+              </p>
+            </div>
           }
-          ref={(element) => (logoRef.current = element)}
-        >
-          <ApplicationLogo className={"text-[4rem]"}></ApplicationLogo>
-          <InputError
-            className={"shadow-none"}
-            message={
-              <>
-                <p>
-                  login: <span>user@gmail.com</span>
-                </p>
-                <p>
-                  pass: <b>qwerty</b>
-                </p>
-              </>
-            }
-          />
-        </div>
+        />
 
         <GradientAndLines
           ref={formRef}
           className={
-            "relative 2xl:w-1/3 lg:w-1/2 md:w-2/3 w-full p-8 translate-y-12 opacity-0 polygon-start"
+            "relative 2xl:w-1/4 lg:w-1/3 md:w-2/3 w-full p-4 translate-y-12 opacity-0 polygon-start"
           }
           hasLines={true}
           linesColor={"bg-gray-100"}
@@ -130,9 +125,9 @@ export default function Login({ status, canResetPassword }) {
               </label>
             </div>
 
-            <div className="flex items-center mt-12 space-x-2">
+            <div className="flex md:flex-row flex-col-reverse gap-4 items-center mt-12 space-x-2">
               <MainButton
-                className="bg-white hover:bg-gray-300 text-indigo-500"
+                className="bg-white hover:bg-gray-300 text-indigo-500 md:w-fit w-full"
                 disabled={processing}
               >
                 Log in

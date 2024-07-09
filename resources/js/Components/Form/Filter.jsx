@@ -1,17 +1,9 @@
 import { button } from "@material-tailwind/react";
-import {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Animation from "@/Pages/Animation.js";
-import { act } from "react-dom/test-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "@/ThemeContext.jsx";
-import { isClient } from "flowbite-react/lib/esm/helpers/is-client.js";
 
 export const Filter = ({
   isSearching,
@@ -62,13 +54,13 @@ export const Filter = ({
     <>
       <div
         className={
-          "transition-all relative duration-500 " +
+          "transition-all relative duration-500 flex flex-col " +
           (isSearching ? " lg:w-1/5 w-full" : " w-0")
         }
       >
         <div
           className={
-            `${properties.container} ${properties.contrastText} rounded-t-md p-2 self-start flex-col relative ` +
+            `${properties.container} ${properties.text} rounded-t-md p-2 self-start flex-col relative w-full ` +
             (isSearching ? "flex" : "hidden")
           }
         >
@@ -112,11 +104,9 @@ export const Filter = ({
 
         <div
           ref={fieldsRef}
-          className={
-            properties.container +
-            " w-full polygon-from-top opacity-0 p-2 rounded-b-md h-0 " +
-            (isSearching ? "block" : "hidden")
-          }
+          className={`${properties.container} ${
+            isSearching ? "!h-fit" : "hidden"
+          } w-full p-2 rounded-b-md polygon-start`}
         >
           <div className={"flex flex-col gap-2 mt-[.25rem]"}>
             <p className={"text-indigo-500"}>Languages</p>

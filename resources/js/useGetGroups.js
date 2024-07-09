@@ -25,17 +25,19 @@ export const useGetGroups = (
             "settings_on",
           )
             ? componentProperties.groupsProperties.filter((groupProperty) =>
-                Object.entries(groupProperty).filter(
-                  ([property, value]) =>
-                    property === "group_name" && value === true,
-                ),
+                Object.entries(groupProperty).filter(([property, value]) => {
+                  console.log(property, value);
+                  return property === "group_name" && value === true;
+                }),
               )
             : componentProperties.groupsProperties,
-          options: Object.fromEntries(
-            Object.entries(componentProperties).filter(
-              ([key, value]) => typeof value === "boolean",
-            ),
-          ),
+          options: !componentProperties.hasOwnProperty("onlyDifficult")
+            ? Object.fromEntries(
+                Object.entries(componentProperties).filter(
+                  ([key, value]) => typeof value === "boolean",
+                ),
+              )
+            : { onlyDifficult: componentProperties.onlyDifficult },
         },
       })
         .then((response) => {

@@ -14,8 +14,8 @@ export const GoBackIndicator = ({
       }}
       type={"button"}
       className={
-        "absolute right-[1vw] top-1/2 transform -translate-y-1/2 hover:bg-indigo-600 transition text-3xl flex items-center justify-center text-gray-100 bg-indigo-500 w-[2.5rem] aspect-square rounded-full " +
-        (onRight ? "left-[1vw] rotate-180 " : "right-[1vw]")
+        "absolute top-0 transform hover:bg-indigo-600 transition text-3xl flex items-center justify-center text-gray-100 bg-indigo-500 md:h-screen h-10 md:w-fit w-full px-4 " +
+        (onRight ? "left-0 rotate-180 " : "right-0")
       }
     >
       <FontAwesomeIcon icon={faArrowRight} />

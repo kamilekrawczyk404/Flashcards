@@ -1,5 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import { ThemeContext } from "@/ThemeContext.jsx";
 
 export const SearchLoadingAnimation = ({
   progress,
@@ -9,6 +11,8 @@ export const SearchLoadingAnimation = ({
 }) => {
   const styling =
     "animate-loading transform bg-indigo-500 h-[.75rem] aspect-square rounded-full origin-bottom animate-loading ";
+
+  const { properties } = useContext(ThemeContext);
 
   const delays = [100, 200, 300, 400, 500];
 
@@ -27,9 +31,7 @@ export const SearchLoadingAnimation = ({
 
       {!hasMore && !sets.length && (
         <div
-          className={
-            "bg-gray-100 rounded-md p-4 text-red-500 font-bold flex items-center gap-2"
-          }
+          className={`${properties.container} rounded-md p-4 text-red-500 font-bold flex items-center gap-2`}
         >
           <FontAwesomeIcon icon={faXmark} className={"text-xl"} />
           No sets found!

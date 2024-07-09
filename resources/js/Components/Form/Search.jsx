@@ -46,15 +46,13 @@ export const Search = forwardRef(
         <div
           className={
             properties.container +
-            " flex relative gap-2 items-center " +
-            (isSearching
-              ? "rounded-t-md p-2"
-              : "p-1 rounded-md bg-transparent ")
+            " flex relative gap-2 items-center justify-center p-2 " +
+            (isSearching ? "rounded-t-md" : "w-fit aspect-square rounded-md")
           }
         >
           <button
             type={"button"}
-            className={isSearching ? "hidden" : "block"}
+            className={isSearching ? "hidden" : "inline-block"}
             onClick={() => {
               handleSetIsSearching(true);
               setTimeout(() => {
@@ -95,8 +93,7 @@ export const Search = forwardRef(
                 }, TIMEOUT);
               }}
               className={
-                properties.text +
-                " bg-indigo-500 rounded-md flex items-center justify-center"
+                "text-gray-100 bg-indigo-500 rounded-md flex items-center justify-center"
               }
             >
               <FontAwesomeIcon

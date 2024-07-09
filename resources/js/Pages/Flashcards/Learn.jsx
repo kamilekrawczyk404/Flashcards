@@ -5,7 +5,7 @@ import { ChooseAnswer } from "@/Components/Learning/ChooseAnswer.jsx";
 import { EnterAnswer } from "@/Components/Learning/EnterAnswer.jsx";
 import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import { Container } from "@/Components/Container";
-import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
+import StudyNavigation from "@/Components/Learning/StudyNavigation.jsx";
 import { LearnChooseGroups } from "@/Components/Learning/LearnChooseGroups.jsx";
 import { useGetGroups } from "@/useGetGroups.js";
 import { ProgressModal } from "@/Components/Loading/ProgressModal.jsx";
@@ -14,7 +14,7 @@ import { updateTranslationStatus } from "@/updateTranslationStatus.js";
 import { isTheLastTranslation } from "@/isTheLastTranslation.js";
 import { useFeedbackResults } from "@/useFeedbackResults.js";
 
-export default function Learn({ auth, set, groupsProperties, hasDifficult }) {
+export default function Learn({ auth, set, groupsProperties }) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isSeen, setIsSeen] = useState(false);
@@ -135,9 +135,9 @@ export default function Learn({ auth, set, groupsProperties, hasDifficult }) {
 
   return (
     <>
-      <GamesNavigation set={set}>
+      <StudyNavigation set={set}>
         <span className="text-indigo-500 font-bold">Learn</span>
-      </GamesNavigation>
+      </StudyNavigation>
 
       {isChoosingGroups ? (
         <LearnChooseGroups
@@ -145,7 +145,6 @@ export default function Learn({ auth, set, groupsProperties, hasDifficult }) {
           groupsProperties={groupsProperties}
           handleSetComponentProperties={setComponentProperties}
           handleSetIsChoosingGroups={setIsChoosingGroups}
-          hasDifficult={hasDifficult}
         />
       ) : loading || fakeLoading ? (
         <ProgressModal

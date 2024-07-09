@@ -3,7 +3,7 @@ import { useContext } from "react";
 
 export const SingleTableRow = ({ component }) => {
   const { properties } = useContext(ThemeContext);
-  console.log(component);
+
   return (
     <tr
       className={

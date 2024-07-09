@@ -1,4 +1,5 @@
 export const getFormCustomErrors = (properties, isTest = false) => {
+  console.log(properties);
   const defaultValues = {
     minBiggerThanMax: {
       message: "The 'To' field must be bigger than the 'From' field",
@@ -22,7 +23,8 @@ export const getFormCustomErrors = (properties, isTest = false) => {
   }
 
   if (
-    // first property has value whether the user checked group (true / false)
+    // only difficult checked or first property has value whether the user checked group (true / false)
+    !properties?.onlyDifficult &&
     Object.values(properties.groupsProperties).every(
       (property) => Object.values(property)[0] === false,
     )

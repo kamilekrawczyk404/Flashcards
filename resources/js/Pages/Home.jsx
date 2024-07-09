@@ -25,15 +25,7 @@ import { LearnImage } from "@/Images/LearnImage.jsx";
 import { ExploreImage } from "@/Images/ExploreImage.jsx";
 import { UnauthenticatedImage } from "@/Images/UnauthenticatedImage.jsx";
 
-export default function Home({
-  auth,
-  availableLanguages,
-  canLogin,
-  canRegister,
-  feedback,
-}) {
-  // convert images to webp
-
+export default function Home({ auth, availableLanguages, feedback }) {
   const { properties } = useContext(ThemeContext);
 
   const sentences = [
@@ -142,29 +134,35 @@ export default function Home({
     <>
       {auth.user === null ? (
         <Unauthenticated fullScreen={true}>
-          <SectionWithVerticalMargin className={"flex items-center z-10"}>
+          <SectionWithVerticalMargin
+            className={
+              "flex items-center justify-center z-10  md:min-h-fit h-[calc(100vh-4rem)]"
+            }
+          >
             <div
               ref={welcomeScreen}
               className={
-                "flex sm:mx-auto items-center lg:flex-row flex-col-reverse justify-between xl:gap-0 gap-4 polygon-start translate-y-12 opacity-0 max-w-7xl sm:px-8 px-4"
+                "flex sm:mx-auto items-center lg:flex-row flex-col-reverse justify-between xl:gap-0 gap-4 polygon-start translate-y-12 opacity-0 max-w-7xl sm:px-8 px-4 "
               }
             >
               <div
                 className={
-                  "flex flex-col lg:items-start items-center  space-y-8 rounded-md lg:w-1/2 w-full"
+                  "flex flex-col lg:items-start items-center md:gap-4 gap-8 rounded-md lg:w-1/2 w-full"
                 }
               >
-                <h1 className={properties.text + " sm:text-3xl text-2xl"}>
+                <h1 className={properties.text + " md:text-3xl text-xl"}>
                   Start your learning journey right now!
-                  <div
-                    className={"h-9 font-bold w-fit text-indigo-500 relative "}
-                  >
-                    <span
-                      className={"border-b-2 border-indigo-500 "}
-                      ref={(element) => (animatedText.current = element)}
-                    ></span>
-                  </div>
                 </h1>
+                <div
+                  className={
+                    "h-9 font-bold w-fit text-indigo-500 relative md:text-3xl text-xl"
+                  }
+                >
+                  <span
+                    className={"border-b-2 border-indigo-500 "}
+                    ref={(element) => (animatedText.current = element)}
+                  ></span>
+                </div>
                 <SignUpSignIn
                   className={"rounded-md space-x-6"}
                   isInNav={false}
@@ -184,11 +182,11 @@ export default function Home({
         </Unauthenticated>
       ) : (
         <Authenticated user={auth?.user} fullScreen={true}>
-          <SectionWithVerticalMargin className={"flex h-screen"}>
+          <SectionWithVerticalMargin className={"flex h-[calc(100vh-4rem)]"}>
             <div
               ref={(element) => (welcomeScreen.current = element)}
               className={
-                "flex lg:flex-row flex-col justify-center items-center translate-y-12 opacity-0 polygon-start w-full sm:gap-0 gap-y-8"
+                "flex lg:flex-row flex-col justify-center items-center translate-y-12 opacity-0 polygon-start w-full sm:gap-0 gap-y-8 h-full relative"
               }
             >
               <OptionCard
@@ -200,7 +198,7 @@ export default function Home({
                 text={"Learn"}
                 icon={faGraduationCap}
               >
-                <LearnImage className={"sm:h-full h-[40vh]"} />
+                <LearnImage className={"sm:h-2/3 w-fit h-[15rem]"} />
               </OptionCard>
               <div
                 className={
@@ -216,7 +214,7 @@ export default function Home({
                 text={"Explore"}
                 icon={faMagnifyingGlass}
               >
-                <ExploreImage className={"sm:scale-75 sm:h-full h-[40vh]"} />
+                <ExploreImage className={"sm:scale-75 sm:h-2/3 h-[12rem]"} />
               </OptionCard>
             </div>
             <AllSets

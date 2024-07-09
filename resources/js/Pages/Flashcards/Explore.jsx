@@ -94,8 +94,6 @@ export const Explore = forwardRef(
       resultsAppearingAnimation.animateAll("<-.3", "", "<-.4");
     }, [sets]);
 
-    //TODO: filtering by title, created_date, desc, asc
-
     return (
       <div
         className={
@@ -105,7 +103,7 @@ export const Explore = forwardRef(
       >
         <div
           className={
-            "sm:max-h-[70vh] h-full  mx-auto w-full flex gap-4 flex-col items-center justify-center"
+            "mx-auto w-full flex gap-4 flex-col items-center justify-center md:mt-0 mt-8"
           }
         >
           <div
@@ -130,7 +128,7 @@ export const Explore = forwardRef(
           </div>
           {!sets.length && (
             <SearchLoadingAnimation
-              className={"lg:ml-[20%] ml-0 lg:mt-0 mt-32"}
+              className={"lg:ml-[20%] ml-0"}
               progress={progress}
               hasMore={hasMore}
               sets={sets}
@@ -138,7 +136,7 @@ export const Explore = forwardRef(
           )}
           <div
             className={
-              "overflow-y-scroll h-[75vh] w-full flex flex-col items-center gap-4 lg:ml-[20.75%] ml-0 lg:mt-0 mt-32"
+              "overflow-y-scroll h-fit !w-full flex flex-col items-center gap-4 md:ml-[19rem] ml-0"
             }
           >
             {sets.map((set, index) =>

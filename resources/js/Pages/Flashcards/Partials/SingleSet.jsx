@@ -48,7 +48,7 @@ export const SingleSet = forwardRef(
         ref={ref}
         className={
           properties.container +
-          " rounded-md relative xl:w-1/2 lg:w-2/3 md:w-3/4 w-[82vw] transition flex justify-between items-center overflow-hidden mx-auto " +
+          " rounded-md relative xl:w-1/2 lg:w-2/3 md:w-3/4 w-full transition flex justify-between items-center overflow-hidden mx-auto " +
           (set.progression
             ? "md:min-h-[14rem] min-h-[20rem] "
             : "min-h-[14rem] ") +
