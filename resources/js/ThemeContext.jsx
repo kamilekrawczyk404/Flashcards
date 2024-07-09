@@ -18,6 +18,9 @@ export const ThemeProvider = ({ children }) => {
       border: "border-gray-100",
       contrastBackground: `bg-gray-100 transition-[background] duration-[${TRANSITION_DURATION}]`,
       contrastText: "text-gray-700",
+      disabledBorder: "border-gray-700",
+      disabledBackground: "bg-gray-900",
+      disabledText: "text-gray-700",
     },
     lightMode: {
       mode: "light",
@@ -29,6 +32,9 @@ export const ThemeProvider = ({ children }) => {
       border: "border-gray-700",
       contrastBackground: `bg-gray-700 transition-[background] duration-[${TRANSITION_DURATION}]`,
       contrastText: "text-gray-100",
+      disabledBorder: "border-gray-400",
+      disabledBackground: "bg-gray-300",
+      disabledText: "text-gray-400",
     },
   };
   const [darkMode, setDarkMode] = useState(Cookies.get("darkMode") === "true");

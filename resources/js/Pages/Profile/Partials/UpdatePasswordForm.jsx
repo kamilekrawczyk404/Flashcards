@@ -7,7 +7,7 @@ import { Transition } from "@headlessui/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import { ThemeContext } from "@/ThemeContext.jsx";
 
-export default function UpdatePasswordForm({ className = "" }) {
+export default function UpdatePasswordForm({ isDefaultUser, className = "" }) {
   const { properties } = useContext(ThemeContext);
 
   const passwordInput = useRef();
@@ -57,6 +57,7 @@ export default function UpdatePasswordForm({ className = "" }) {
           <InputLabel htmlFor="current_password" value="Current Password" />
 
           <TextInput
+            disabled={isDefaultUser}
             id="current_password"
             ref={currentPasswordInput}
             value={data.current_password}
@@ -73,6 +74,7 @@ export default function UpdatePasswordForm({ className = "" }) {
           <InputLabel htmlFor="password" value="New Password" />
 
           <TextInput
+            disabled={isDefaultUser}
             id="password"
             ref={passwordInput}
             value={data.password}
@@ -92,6 +94,7 @@ export default function UpdatePasswordForm({ className = "" }) {
           />
 
           <TextInput
+            disabled={isDefaultUser}
             id="password_confirmation"
             value={data.password_confirmation}
             onChange={(e) => setData("password_confirmation", e.target.value)}
@@ -104,7 +107,10 @@ export default function UpdatePasswordForm({ className = "" }) {
         </div>
 
         <div className="flex items-center gap-4">
-          <PrimaryButton className={"bg-indigo-500"} disabled={processing}>
+          <PrimaryButton
+            className={"bg-indigo-500"}
+            disabled={isDefaultUser || processing}
+          >
             Save
           </PrimaryButton>
 

@@ -26,7 +26,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
 //            'email' => $userEmail,
             'email_verified_at' => now(),
-            'password' => 'qwerty',
+            'password' => 'flashcards',
             'avatar' => 'default.jpg',
             'remember_token' => Str::random(10),
             'facebook' => "https://facebook.com/user1234qwerty",

@@ -16,6 +16,7 @@ export const SocialsPopUp = ({
   header,
   userSocialMedias,
   socialMediasProps,
+  isDefaultUser,
 }) => {
   const { properties } = useContext(ThemeContext);
   const [activeSocial, setActiveSocial] = useState(socialMediasProps[0].name);
@@ -138,7 +139,7 @@ export const SocialsPopUp = ({
             ),
         )}
         <PrimaryButton
-          disabled={processing}
+          disabled={processing || isDefaultUser}
           className={"bg-indigo-500 hover:bg-indigo-600 mt-2"}
           onClick={() => {
             isValidatedBeforeSubmitting() && MicroModal.close(modalId);

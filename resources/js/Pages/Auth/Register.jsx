@@ -59,14 +59,10 @@ export default function Register() {
       <SectionWithVerticalMargin
         className={"flex items-center justify-center flex-col gap-4 h-auto"}
       >
-        <ApplicationLogo
-          ref={(element) => (logoRef.current = element)}
-          className={"text-[4rem] translate-y-12 opacity-0 polygon-start"}
-        />
         <GradientAndLines
           ref={formRef}
           className={
-            "relative 2xl:w-1/3 lg:w-1/2 md:w-2/3 w-full p-8 translate-y-12 opacity-0 polygon-start"
+            "relative 2xl:w-1/3 lg:w-1/2 md:w-2/3 w-full p-4 translate-y-12 opacity-0 polygon-start"
           }
           hasLines={true}
           linesColor={"bg-gray-100"}
@@ -158,10 +154,10 @@ export default function Register() {
               </div>
               <div
                 className={
-                  "flex flex-col items-start relative h-min self-center sm:mx-auto sm:w-fit w-full "
+                  "flex flex-col items-start relative h-min self-center sm:mx-auto sm:w-fit w-full"
                 }
               >
-                <InputLabel value={"Picture"} />
+                <InputLabel value={"Avatar"} />
 
                 <input
                   ref={(element) => (fileInputRef.current = element)}
@@ -173,7 +169,7 @@ export default function Register() {
 
                 <div
                   className={
-                    "relative border-4 border-white rounded-full shadow-lg w-fit"
+                    "relative border-4 border-white rounded-full shadow-lg w-fit md:mx-0 mx-auto"
                   }
                 >
                   <button
@@ -213,9 +209,9 @@ export default function Register() {
               )}
             </div>
 
-            <div className="flex items-center mt-8 space-x-2">
+            <div className="flex items-center md:flex-row flex-col-reverse mt-8 space-x-2 gap-4">
               <MainButton
-                className="z-10 bg-white text-indigo-500 hover:bg-gray-300"
+                className="z-10 bg-white text-indigo-500 hover:bg-gray-300 md:w-fit w-full"
                 disabled={processing}
               >
                 Register

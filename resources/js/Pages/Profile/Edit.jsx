@@ -36,6 +36,9 @@ export default function Edit({
     { name: "snapchat", color: "text-amber-400", icon: faSquareSnapchat },
   ];
 
+  // prevent other user whose logged on the public account to modify and delete it
+  const isDefaultUser = auth.user.email === process.env.DEFAULT_USER_LOGIN;
+
   useLayoutEffect(() => {
     let animation = new Animation(refs.current);
     animation.animateAll("<-.1", "", "<+.1");
@@ -62,6 +65,7 @@ export default function Edit({
             }
           >
             <UpdateProfileInformation
+              isDefaultUser={isDefaultUser}
               mustVerifyEmail={mustVerifyEmail}
               status={status}
               socialMediasProps={socialMediasProps}
@@ -75,7 +79,10 @@ export default function Edit({
               linesStyle
             }
           >
-            <UpdatePasswordForm className="max-w-xl" />
+            <UpdatePasswordForm
+              className="max-w-xl"
+              isDefaultUser={isDefaultUser}
+            />
           </div>
 
           <div
@@ -85,7 +92,10 @@ export default function Edit({
               linesStyle
             }
           >
-            <DeleteUserForm className="max-w-xl" />
+            <DeleteUserForm
+              className="max-w-xl"
+              isDefaultUser={isDefaultUser}
+            />
           </div>
         </div>
       </div>
@@ -94,6 +104,7 @@ export default function Edit({
         userSocialMedias={userSocialMedias}
         modalId={"socials"}
         header={"Social media"}
+        isDefaultUser={isDefaultUser}
       />
       <SuccessModal feedback={feedback} />
     </AuthenticatedLayout>

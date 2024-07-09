@@ -1,4 +1,4 @@
-import GamesNavigation from "@/Components/Learning/GamesNavigation.jsx";
+import StudyNavigation from "@/Components/Learning/StudyNavigation.jsx";
 import { MainButton } from "@/Components/Buttons/MainButton.jsx";
 import React, { useEffect, useRef, useState } from "react";
 import { EnterAnswer } from "@/Components/Learning/EnterAnswer.jsx";
@@ -181,9 +181,9 @@ const Test = ({ set, groupsProperties }) => {
 
   return (
     <>
-      <GamesNavigation set={set}>
+      <StudyNavigation set={set}>
         <span className="text-indigo-500 font-bold">Test</span>
-      </GamesNavigation>
+      </StudyNavigation>
 
       {isChoosingGroups ? (
         <TestChooseGroups

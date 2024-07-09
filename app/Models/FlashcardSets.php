@@ -104,7 +104,7 @@ class FlashcardSets extends Model
             // if user choose a language and count of all available languages not equals to total length of languages in sets
             if (count($languages) > 0 && count($languages) !== count(FlashcardSets::getAvailableLanguages())) {
                 $sets[] = FlashcardSets
-                    ::whereIn('source_language', $languages)
+                    ::orWhereIn('source_language', $languages)
                     ->orWhereIn('target_language', $languages)
                     ->where('title', 'like', "%$word%")
                     ->skip($currentPage * $take)
@@ -134,7 +134,7 @@ class FlashcardSets extends Model
         return $final;
     }
 
-    public static function getGroups($user_id, $set_id, $groups = [], $matching_properties = []): array {
+    public static function getGroups($user_id, $set_id, $groups = [], $options = []): array {
         $data = [];
         $allGroups = false;
         $translationTableName = FlashcardSets::getTitle($set_id);
@@ -153,12 +153,12 @@ class FlashcardSets extends Model
         }
 
         foreach($groups as $gKey => $group) {
-
+            // setting suitable mode for getting translations from groups
             $optionMode = "";
             if (gettype($group) === 'array') {
                 if ($group['range']['range_on'] !== 'false') {
                     $optionMode =  "range";
-                } else if ($group['difficult']['difficult_on'] !== 'false') {
+                } else {
                     $optionMode = "difficult";
                 }
             }
@@ -182,10 +182,10 @@ class FlashcardSets extends Model
 
             // if user wants to generate matching component, first we need to convert groups into single translations which can help us to display and separate them apart. Then we need to assign to a single translation properties: group name, page and ref index (for calling correctly animations)
 
-            if (count($matching_properties)) {
+            if (count($options) && !isset($options['onlyDifficult'])) {
                 foreach ($translationsBelongToGroup as $translation) {
 
-                    if ($count % ($matching_properties['translations_per_page'] * 2) == 0) {
+                    if ($count % ($options['translations_per_page'] * 2) == 0) {
                         $breakPoints += 1;
                     }
 
@@ -197,10 +197,10 @@ class FlashcardSets extends Model
                 for ($i = 0; $i < $breakPoints; $i++) {
                     $temp = $translationsApart;
 
-                    $shuffled = array_splice($temp, ($i * $matching_properties['translations_per_page'] * 2), $matching_properties['translations_per_page'] * 2);
+                    $shuffled = array_splice($temp, ($i * $options['translations_per_page'] * 2), $options['translations_per_page'] * 2);
                     shuffle($shuffled);
 
-                    array_splice($translationsApart, ($i * $matching_properties['translations_per_page'] * 2), $matching_properties['translations_per_page'] * 2, $shuffled);
+                    array_splice($translationsApart, ($i * $options['translations_per_page'] * 2), $options['translations_per_page'] * 2, $shuffled);
                 }
 
             } else {
@@ -211,7 +211,7 @@ class FlashcardSets extends Model
             }
         }
 
-        return count($matching_properties) !== 0  ? $translationsApart : $data ;
+        return count($options) !== 0 && !isset($options["onlyDifficult"]) ? $translationsApart : $data ;
     }
 
 

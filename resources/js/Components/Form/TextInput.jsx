@@ -19,6 +19,10 @@ export default forwardRef(function TextInput(
   const input = ref ? ref : useRef();
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
 
+  const isDisabled = props?.disabled ?? false;
+
+  console.log(isDisabled);
+
   const eyesOpened = <FontAwesomeIcon icon={faEye} />;
   const eyesClosed = <FontAwesomeIcon icon={faEyeSlash} />;
 
@@ -41,7 +45,11 @@ export default forwardRef(function TextInput(
         {...props}
         type={type}
         className={
-          `${properties.container} ${properties.text} border-gray-300 rounded-md shadow-sm ` +
+          `${
+            isDisabled
+              ? `${properties.disabledBackground} ${properties.disabledBorder} ${properties.disabledText} cursor-not-allowed`
+              : `${properties.container} ${properties.text} ${properties.border} cursor-pointer`
+          }  rounded-md shadow-sm ` +
           (error
             ? "bg-red-700 bg-opacity-60 "
             : "" + (type === "number" ? " w-24 " : " w-full ") + className)

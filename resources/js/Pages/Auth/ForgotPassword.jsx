@@ -38,7 +38,7 @@ export default function ForgotPassword({ status }) {
             "bg-gray-100 xl:w-1/3 md:w-1/2 w-full space-y-12 translate-y-12 opacity-0 polygon-start"
           }
           hasLines={true}
-          className={"p-8"}
+          className={"p-4"}
           from={"bg-indigo-600"}
           to={"bg-indigo-400"}
         >

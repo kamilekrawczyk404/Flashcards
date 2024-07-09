@@ -8,7 +8,7 @@ import { useForm } from "@inertiajs/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import { ThemeContext } from "@/ThemeContext.jsx";
 
-export default function DeleteUserForm({ className = "" }) {
+export default function DeleteUserForm({ isDefaultUser, className = "" }) {
   const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
   const passwordInput = useRef();
 
@@ -62,12 +62,12 @@ export default function DeleteUserForm({ className = "" }) {
       <DangerButton onClick={confirmUserDeletion}>Delete Account</DangerButton>
 
       <Modal show={confirmingUserDeletion} onClose={closeModal}>
-        <form onSubmit={deleteUser} className="p-6">
-          <h2 className="text-lg font-medium text-gray-900">
+        <form onSubmit={deleteUser} className={`p-6 ${properties.container}`}>
+          <h2 className={`${properties.text} text-lg font-medium`}>
             Are you sure you want to delete your account?
           </h2>
 
-          <p className="mt-1 text-sm text-gray-600">
+          <p className={`${properties.text} mt-1 text-sm`}>
             Once your account is deleted, all of its resources and data will be
             permanently deleted. Please enter your password to confirm you would
             like to permanently delete your account.
@@ -81,6 +81,7 @@ export default function DeleteUserForm({ className = "" }) {
             />
 
             <TextInput
+              disabled={isDefaultUser}
               id="password"
               type="password"
               name="password"
@@ -98,7 +99,10 @@ export default function DeleteUserForm({ className = "" }) {
           <div className="mt-6 flex justify-end">
             <SecondaryButton onClick={closeModal}>Cancel</SecondaryButton>
 
-            <DangerButton className="ml-3" disabled={processing}>
+            <DangerButton
+              className="ml-3"
+              disabled={processing || isDefaultUser}
+            >
               Delete Account
             </DangerButton>
           </div>

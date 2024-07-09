@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
 
             $file->storeAs('public/users_avatars', $filename);
         } else {
-            $filename = "default.png";
+            $filename = "default.jpg";
         }
 
         $user = User::create([

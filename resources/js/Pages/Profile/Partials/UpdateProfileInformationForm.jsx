@@ -4,8 +4,7 @@ import TextInput from "@/Components/Form/TextInput.jsx";
 import { Link, router, useForm, usePage } from "@inertiajs/react";
 import { Transition } from "@headlessui/react";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
-import { useContext, useEffect, useRef, useState } from "react";
-import { SocialsPopUp } from "@/Components/Modals/SocialsPopUp.jsx";
+import { useContext, useRef, useState } from "react";
 import MicroModal from "micromodal";
 import { SocialButton } from "@/Components/Buttons/SocialButton.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,9 +17,11 @@ export default function UpdateProfileInformation({
   status,
   userSocialMedias,
   socialMediasProps,
+  isDefaultUser,
 }) {
   const { properties } = useContext(ThemeContext);
   const user = usePage().props.auth.user;
+
   let fileInputRef = useRef();
   let avatarRef = useRef();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -89,6 +90,7 @@ export default function UpdateProfileInformation({
                 <InputLabel htmlFor="name" value="Name" />
 
                 <TextInput
+                  disabled={isDefaultUser}
                   id="name"
                   className="mt-1 block w-full"
                   value={data.name}
@@ -105,6 +107,7 @@ export default function UpdateProfileInformation({
                 <InputLabel htmlFor="email" value="Email" />
 
                 <TextInput
+                  disabled={isDefaultUser}
                   id="email"
                   type="email"
                   className="mt-1 block w-full"
@@ -168,6 +171,7 @@ export default function UpdateProfileInformation({
                           )}
                           handleDeleteSocial={deleteSocial}
                           isDeleting={isDeleting}
+                          isDefaultUser={isDefaultUser}
                         />
                       );
                     }
@@ -180,6 +184,7 @@ export default function UpdateProfileInformation({
               <InputLabel value={"Picture"} />
 
               <input
+                disabled={isDefaultUser}
                 accept={"image/*"}
                 ref={(element) => (fileInputRef.current = element)}
                 type="file"
@@ -200,9 +205,9 @@ export default function UpdateProfileInformation({
                     fileInputRef.current.click();
                   }}
                   type={"button"}
-                  className={
-                    "transition cursor-pointer hover:bg-indigo-600 absolute flex items-center justify-center w-10 aspect-square bottom-1 right-1 bg-indigo-500 rounded-full"
-                  }
+                  className={`transition hover:bg-indigo-600 absolute flex items-center justify-center w-10 aspect-square bottom-1 right-1 bg-indigo-500 rounded-full ${
+                    isDefaultUser ? "cursor-not-allowed" : "cursor-pointer"
+                  }`}
                 >
                   <FontAwesomeIcon
                     icon={faCamera}
@@ -243,7 +248,7 @@ export default function UpdateProfileInformation({
           <div className="flex items-center gap-4">
             <PrimaryButton
               className={"bg-indigo-500 hover:bg-indigo-600"}
-              disabled={processing}
+              disabled={processing || isDefaultUser}
             >
               Save
             </PrimaryButton>

@@ -39,7 +39,7 @@ class ProfileController extends Controller
             $file = $request->file('avatar');
 
 
-            if ($file !== 'default.png' && Storage::fileExists('public/users_avatars/' . User::getAvatarName())) {
+            if ($file !== 'default.jpg' && Storage::fileExists('public/users_avatars/' . User::getAvatarName())) {
                 Storage::delete('public/users_avatars/' . User::getAvatarName());
             }
 

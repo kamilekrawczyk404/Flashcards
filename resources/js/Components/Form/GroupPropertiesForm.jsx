@@ -1,7 +1,7 @@
 import { AnimatedCheckbox } from "@/Components/Form/AnimatedCheckbox.jsx";
 import InputLabel from "@/Components/Form/InputLabel.jsx";
 import TextInput from "@/Components/Form/TextInput.jsx";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import InputError from "@/Components/Form/InputError.jsx";
 import { FormChild } from "@/Components/Form/FormChild.jsx";
 import { ThemeContext } from "@/ThemeContext.jsx";
@@ -11,6 +11,7 @@ export const GroupPropertiesForm = ({
   register,
   id,
   errors,
+  disabled = false,
   getValues = () => {},
   resetField = () => {},
   isTest = false,
@@ -36,16 +37,21 @@ export const GroupPropertiesForm = ({
     resetField(`groupsProperties.${id}.difficult.difficult_on`);
   };
 
+  useEffect(() => {
+    switchOffSettings();
+  }, [disabled]);
+
   return (
     <>
       <div className={"flex gap-x-2"}>
         <AnimatedCheckbox
+          disabled={disabled}
           id={groupName}
           onClick={() => switchOffSettings()}
           {...register(`groupsProperties.${id}.${groupName}`)}
         />
         <InputLabel
-          // className={properties.labelText}
+          className={properties.labelTextl}
           htmlFor={groupName}
           value={groupName}
         />
@@ -67,9 +73,11 @@ export const GroupPropertiesForm = ({
             <section className={"flex items-center justify-center gap-x-16"}>
               <div className={"flex gap-x-2"}>
                 <AnimatedCheckbox
-                  disabled={getValues(
-                    `groupsProperties.${id}.difficult.difficult_on`,
-                  )}
+                  disabled={
+                    getValues(
+                      `groupsProperties.${id}.difficult.difficult_on`,
+                    ) || disabled
+                  }
                   {...register(`groupsProperties.${id}.range.range_on`)}
                 />
                 <InputLabel value={"Range"} />
@@ -86,7 +94,8 @@ export const GroupPropertiesForm = ({
                   <InputLabel value={"From:"} />
                   <TextInput
                     disabled={
-                      !getValues(`groupsProperties.${id}.range.range_on`)
+                      !getValues(`groupsProperties.${id}.range.range_on`) ||
+                      disabled
                     }
                     type="number"
                     placeholder={"From:"}
@@ -120,7 +129,8 @@ export const GroupPropertiesForm = ({
                   <TextInput
                     type="number"
                     disabled={
-                      !getValues(`groupsProperties.${id}.range.range_on`)
+                      !getValues(`groupsProperties.${id}.range.range_on`) ||
+                      disabled
                     }
                     placeholder={"To:"}
                     {...register(`groupsProperties.${id}.range.maxValue`, {
@@ -150,7 +160,10 @@ export const GroupPropertiesForm = ({
             {!getValues(`groupsProperties.${id}.difficult.disabled`) && (
               <div className={"relative flex items-start gap-x-2 "}>
                 <AnimatedCheckbox
-                  disabled={getValues(`groupsProperties.${id}.range.range_on`)}
+                  disabled={
+                    getValues(`groupsProperties.${id}.range.range_on`) ||
+                    disabled
+                  }
                   {...register(`groupsProperties.${id}.difficult.difficult_on`)}
                 />
                 <InputLabel value={"Only difficult"} />
