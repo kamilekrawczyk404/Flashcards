@@ -21,8 +21,6 @@ export default forwardRef(function TextInput(
 
   const isDisabled = props?.disabled ?? false;
 
-  console.log(isDisabled);
-
   const eyesOpened = <FontAwesomeIcon icon={faEye} />;
   const eyesClosed = <FontAwesomeIcon icon={faEyeSlash} />;
 

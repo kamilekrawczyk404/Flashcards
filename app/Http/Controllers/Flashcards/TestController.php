@@ -20,6 +20,7 @@ class TestController extends Controller
 
     public static function prepareForTest(int $user_id, int $set_id, $groups, $options): array {
         $options = array_filter($options, fn ($value, $option) => $value === "true", ARRAY_FILTER_USE_BOTH);
+
         $groups = FlashcardSets::getGroups($user_id, $set_id, $groups);
         $final = [];
 

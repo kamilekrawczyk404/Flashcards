@@ -8,6 +8,7 @@ export default function InputLabel({
   ...props
 }) {
   const { properties } = useContext(ThemeContext);
+
   return (
     <label
       className={properties.text + ` block font-medium text-md ` + className}

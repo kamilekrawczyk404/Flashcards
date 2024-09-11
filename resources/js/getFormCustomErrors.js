@@ -1,5 +1,4 @@
 export const getFormCustomErrors = (properties, isTest = false) => {
-  console.log(properties);
   const defaultValues = {
     minBiggerThanMax: {
       message: "The 'To' field must be bigger than the 'From' field",

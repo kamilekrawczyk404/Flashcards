@@ -11,6 +11,16 @@ export const useGetGroups = (
   const [loading, setLoading] = useState(false);
   const auth = usePage().props.auth;
 
+  // console.log(
+  //   !componentProperties.groupsProperties.hasOwnProperty("settings_on")
+  //     ? componentProperties.groupsProperties.filter((groupProperty) =>
+  //         Object.entries(groupProperty).filter(([property, value]) => {
+  //           return property === "group_name" && value === true;
+  //         }),
+  //       )
+  //     : componentProperties.groupsProperties,
+  // );
+
   useEffect(() => {
     if (!isChoosingGroups) {
       setLoading(true);
@@ -26,7 +36,6 @@ export const useGetGroups = (
           )
             ? componentProperties.groupsProperties.filter((groupProperty) =>
                 Object.entries(groupProperty).filter(([property, value]) => {
-                  console.log(property, value);
                   return property === "group_name" && value === true;
                 }),
               )
@@ -44,7 +53,9 @@ export const useGetGroups = (
           setLoading(false);
           setGroups(response.data);
         })
-        .catch((error) => console.log("Something went wront: ", error.message));
+        .catch((error) =>
+          console.error("Something went wrong: ", error.message),
+        );
     }
   }, [isChoosingGroups]);
 

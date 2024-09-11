@@ -174,11 +174,11 @@ class FlashcardSets extends Model
                 DB::table('flashcards_sets_progress AS fsp')
                     ->where(['fsp.user_id' => $user_id, 'fsp.flashcard_sets_id' => $set_id])
                     ->join($translationTableName . ' AS t', 'fsp.translation_id', '=', 't.id')
-                    ->where(['t.group_name' => $group['group_name'], 'fsp.status' => 'difficult'])
+                    ->where(['t.group_name' => $group['group_name']])
+                    ->orWhereIn('fsp.status', ['difficult', 'unknown'])
                     ->select( 't.*' ,'fsp.is_favourite', 'fsp.status')
                     ->get()
                     ->toArray();
-
 
             // if user wants to generate matching component, first we need to convert groups into single translations which can help us to display and separate them apart. Then we need to assign to a single translation properties: group name, page and ref index (for calling correctly animations)
 

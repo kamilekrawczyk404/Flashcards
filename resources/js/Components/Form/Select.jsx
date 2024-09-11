@@ -10,13 +10,7 @@ export const Select = forwardRef(
         {...props}
         id={id}
         ref={ref}
-        className={
-          properties.container +
-          " " +
-          properties.text +
-          " border border-gray-300 text-md rounded-lg focus:border-indigo-500 focus:ring-indigo-500 p-2.5 " +
-          className
-        }
+        className={`${properties.container} ${properties.text} ${properties.border} text-md rounded-lg focus:border-indigo-500 focus:ring-indigo-500 p-2.5 ${className}`}
       >
         {options.map((option, index) => {
           return (
