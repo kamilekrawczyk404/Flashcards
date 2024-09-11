@@ -10,8 +10,8 @@ A language-learning app inspired by [Quizlet](https://quizlet.com/en-gb), built 
 
 - [Key features](#key-features)
 - [Tech Stack](#tech-stack)
-- [Gallery](#gallery)
 - [Installation](#installation)
+- [Gallery](#gallery)
 - [Contribution](#contribution)
 
 ### Key Features
@@ -20,6 +20,7 @@ This app provides you wide opportunities to learn in more effective way foreign 
 
 - **Custom Flashcards** - create personalized flashcards for any language.creating flexible tests based on your preferences,
 - **Intelligent Learning Sets** - automatically generate learning sets based on user difficulties, focusing on problematic words from previous spelling or translation attempts.
+- **Dynamic Set Creation** - organize flashcards into groups, within a single set for more focused learning.
 - **Test Modes** - challenge yourself with translation quizzes, spelling tests, and more.
 - **Game-Like Interface** - interactive design with animations and a smooth user experience.
 - **Time-Based Challenges** - improve retention with timed exercises.
